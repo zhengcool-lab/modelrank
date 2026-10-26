@@ -1,0 +1,12 @@
+name = "modelrank"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat"]
+
+# @opennextjs/cloudflare 自动生成 .open-next/worker.js 作为入口，
+# 这里只声明静态资源目录。
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
+
+[dev]
+port = 8787
