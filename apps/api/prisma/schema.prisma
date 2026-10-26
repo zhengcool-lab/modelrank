@@ -1,0 +1,98 @@
+// ModelRank API — Prisma schema
+// 生产真相：PostgreSQL。本地无 DB 时，apps/api/src 自动走 InMemoryRepository fallback。
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ======================= 业务模型 =======================
+
+/// 大模型主档
+model Model {
+  id              String   @id // slug，例如 "gpt-5"
+  name            String
+  vendor          String
+  score           Float
+  priceInput      Float    @map("price_input") // 元 / 1M tokens
+  priceOutput     Float    @map("price_output")
+  throughputTps  Float    @map("throughput_tps")
+  contextLength   Int      @map("context_length")
+  tier            String   // S / A / B / C
+  multimodal      Boolean
+  coding          Boolean
+  chinese         Boolean
+  reasoning       Boolean
+  publishedAt     DateTime @map("published_at")
+
+  priceSnapshots  PriceSnapshot[]
+  evaluations     Evaluation[]
+  newsArticles    NewsArticle[]    @relation("RelatedModel")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("models")
+}
+
+/// 评测基准
+model Benchmark {
+  id               String  @id @default(cuid())
+  name             String
+  weight           Float
+  sourceUrl        String  @map("source_url")
+  contaminationRisk String @map("contamination_risk") // low / med / high
+
+  evaluations Evaluation[]
+
+  @@map("benchmarks")
+}
+
+/// 价格快照
+model PriceSnapshot {
+  id          String   @id @default(cuid())
+  modelId     String   @map("model_id")
+  priceInput  Float    @map("price_input")
+  priceOutput Float    @map("price_output")
+  capturedAt  DateTime @map("captured_at")
+
+  model Model @relation(fields: [modelId], references: [id], onDelete: Cascade)
+
+  @@index([modelId, capturedAt])
+  @@map("price_snapshots")
+}
+
+/// 新闻 / 动态
+model NewsArticle {
+  id           String   @id @default(cuid())
+  title        String
+  summary      String
+  sourceUrl    String   @map("source_url")
+  category     String   // 发布 / 评测 / 融资 / 政策 / 价格
+  relatedModelId String? @map("related_model_id")
+  publishedAt  DateTime @map("published_at")
+
+  relatedModel Model? @relation("RelatedModel", fields: [relatedModelId], references: [id], onDelete: SetNull)
+
+  @@index([category, publishedAt])
+  @@map("news_articles")
+}
+
+/// 单模型 × 单基准 打分为一条记录
+model Evaluation {
+  id          String  @id @default(cuid())
+  modelId     String  @map("model_id")
+  benchmarkId String  @map("benchmark_id")
+  score       Float
+  capturedAt  DateTime @map("captured_at")
+
+  model     Model     @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  benchmark Benchmark @relation(fields: [benchmarkId], references: [id], onDelete: Cascade)
+
+  @@unique([modelId, benchmarkId, capturedAt])
+  @@map("evaluations")
+}
