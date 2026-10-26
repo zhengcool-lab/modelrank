@@ -1,25 +1,34 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getModel, MOCK_MODELS, MOCK_NEWS } from "@modelrank/shared";
+import { getUIModel, UI_MODELS, UI_NEWS } from "@/lib/seed-data";
 import { NavHeader } from "@/components/nav-header";
 import { Footer } from "@/components/footer";
 import { DetailCharts } from "@/components/detail-charts";
 import { LeadForm } from "@/components/lead-form";
 import { DeltaText, OpenTag, TierBadge } from "@/components/badges";
 
-export default async function DetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+type Props = { params: Promise<{ id: string }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const model = getModel(id);
+  const model = getUIModel(id);
+  if (!model) return { title: "模型未找到 · ModelRank" };
+  return {
+    title: `${model.name} 详情 · ModelRank`,
+    description: `${model.name} 价格、性能、性价比详情`,
+  };
+}
+
+export default async function DetailPage({ params }: Props) {
+  const { id } = await params;
+  const model = getUIModel(id);
   if (!model) notFound();
 
-  const rank = MOCK_MODELS.filter((m) => m.score > model.score).length + 1;
+  const rank = UI_MODELS.filter((m) => m.score > model.score).length + 1;
   const rankColor =
     rank === 1 ? "var(--mr-gold)" : rank === 2 ? "var(--mr-silver)" : rank === 3 ? "var(--mr-bronze)" : "var(--mr-text-3)";
-  const relatedNews = MOCK_NEWS.filter((n) => n.relatedModel === model.name).slice(0, 2);
+  const relatedNews = UI_NEWS.filter((n) => n.relatedModel === model.name).slice(0, 2);
 
   return (
     <div>
@@ -86,9 +95,9 @@ export default async function DetailPage({
         </div>
       </div>
 
-      {/* main */}
-      <div style={{ display: "flex", gap: 20, margin: "20px 44px 0 44px" }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
+      {/* main：移动端单列，桌面端主内容 2fr + 侧栏 1fr */}
+      <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-5 mx-11 mt-5">
+        <div style={{ minWidth: 0 }}>
           {/* overview card */}
           <div
             className="mr-card"
@@ -133,10 +142,10 @@ export default async function DetailPage({
           </div>
 
           {/* price + specs */}
-          <div style={{ display: "flex", gap: 16, marginTop: 16 }}>
-            <div className="mr-card" style={{ flex: 1, padding: "18px 20px" }}>
+          <div style={{ display: "flex", gap: 16, marginTop: 16, flexWrap: "wrap" }}>
+            <div className="mr-card" style={{ flex: "1 1 260px", padding: "18px 20px" }}>
               <div style={{ fontSize: 13, fontWeight: 600, color: "var(--mr-text)" }}>价格（API 按量）</div>
-              <div style={{ display: "flex", gap: 24, marginTop: 12 }}>
+              <div style={{ display: "flex", gap: 24, marginTop: 12, flexWrap: "wrap" }}>
                 <div>
                   <div style={{ fontSize: 12, color: "var(--mr-text-3)" }}>输入</div>
                   <div style={{ fontSize: 20, fontWeight: 600, color: "var(--mr-text)" }}>
@@ -156,11 +165,18 @@ export default async function DetailPage({
                   <div style={{ fontSize: 20, fontWeight: 600, color: "var(--mr-text-2)" }}>¥9 / ¥27</div>
                 </div>
               </div>
-              <Link href="/cost" className="mr-link" style={{ display: "inline-block", marginTop: 14, fontSize: 12, fontWeight: 600 }}>
+              <div style={{ fontSize: 12, color: "var(--mr-text-3)", marginTop: 10 }}>
+                价格更新于 {model.priceUpdatedAt}
+              </div>
+              <Link
+                href={`/cost?model=${model.id}`}
+                className="mr-link"
+                style={{ display: "inline-block", marginTop: 10, fontSize: 12, fontWeight: 600 }}
+              >
                 用成本计算器测算 →
               </Link>
             </div>
-            <div className="mr-card" style={{ flex: 1, padding: "18px 20px" }}>
+            <div className="mr-card" style={{ flex: "1 1 260px", padding: "18px 20px" }}>
               <div style={{ fontSize: 13, fontWeight: 600, color: "var(--mr-text)" }}>规格</div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 12 }}>
                 {[
@@ -222,7 +238,7 @@ export default async function DetailPage({
         </div>
 
         {/* sidebar */}
-        <div style={{ width: 320, flex: "none" }}>
+        <div style={{ minWidth: 0 }}>
           <div className="mr-card" style={{ padding: "18px 20px" }}>
             <div style={{ fontSize: 13, fontWeight: 600, color: "var(--mr-text)" }}>厂商背景</div>
             <div style={{ fontSize: 12, color: "var(--mr-text-2)", lineHeight: 1.7, marginTop: 8 }}>

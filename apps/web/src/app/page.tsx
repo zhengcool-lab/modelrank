@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { MOCK_NEWS } from "@modelrank/shared";
+import { UI_NEWS } from "@/lib/seed-data";
 import { NavHeader } from "@/components/nav-header";
 import { Footer } from "@/components/footer";
 import { CompareBar } from "@/components/compare-bar";
 import { TierFilteredBoard } from "@/components/tier-filtered-board";
 
 export default function Home() {
-  const news = MOCK_NEWS.slice(0, 3);
+  const news = UI_NEWS.slice(0, 3);
 
   return (
     <div>
@@ -57,9 +57,9 @@ export default function Home() {
         <span style={{ fontSize: 13, color: "var(--mr-text)" }}>
           📈 立即订阅 Top20 变动提醒，第一时间收到排名变动推送 · <b>免费</b>
         </span>
-        <Link href="/search" className="mr-link" style={{ fontWeight: 600 }}>
+        <a href="mailto:hi@modelrank.dev?subject=订阅" className="mr-link" style={{ fontWeight: 600 }}>
           免费订阅 →
-        </Link>
+        </a>
       </div>
 
       {/* scope tabs */}
@@ -85,7 +85,18 @@ export default function Home() {
           综合
         </span>
         {["中文", "代码", "性价比", "多模态"].map((t) => (
-          <span key={t} style={{ fontSize: 14, color: "var(--mr-text-3)", padding: "8px 16px" }}>
+          <span
+            key={t}
+            title="即将上线"
+            aria-disabled="true"
+            style={{
+              fontSize: 14,
+              color: "var(--mr-text-4)",
+              padding: "8px 16px",
+              cursor: "not-allowed",
+              opacity: 0.6,
+            }}
+          >
             {t} <span style={{ fontSize: 12, color: "var(--mr-text-4)" }}>即将上线</span>
           </span>
         ))}

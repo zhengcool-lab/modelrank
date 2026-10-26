@@ -18,6 +18,71 @@ export interface ModelRecord {
   chinese: boolean;
   reasoning: boolean;
   publishedAt: string; // ISO
+  priceUpdatedAt: string; // 价格最后核对日期（ISO date，YYYY-MM-DD）
+}
+
+// ---------------------------------------------------------------------------
+// UI 展示层类型（榜单/对比/详情页用）。
+// 与上面 API DTO 的 ModelRecord 刻意不强行合并字段（context 字符串 vs contextLength 数字等），
+// 仅在 apps/web 内部使用，数据来自 lib/seed-data.ts 的 UI_MODELS。
+// ---------------------------------------------------------------------------
+
+export type Tier = ModelTier;
+export type TrendDir = "up" | "down" | "flat";
+export type ModelSource = "official" | "thirdparty" | "self";
+export type PriceLevel = "high" | "mid" | "low";
+
+export interface UIModelRecord {
+  /** url-friendly id，用于 /detail/[id] */
+  id: string;
+  name: string;
+  vendor: string;
+  openSource: boolean;
+  /** 综合分 0–100 */
+  score: number;
+  /** 周环比变化，null 表示持平 */
+  delta: number | null;
+  trend: TrendDir;
+  /** 95% 置信区间半宽 */
+  ci: number;
+  /** 子维度 */
+  dims: {
+    reasoning: number;
+    code: number;
+    math: number;
+    chinese: number;
+    multimodal: number;
+  };
+  /** ¥ / 百万 tokens */
+  priceInput: number;
+  priceOutput: number;
+  /** 价格为估算（非官方） */
+  priceEstimated?: boolean;
+  priceLevel: PriceLevel;
+  tier: Tier;
+  source: ModelSource;
+  context: string;
+  speedTokPerS: number;
+  /** 数据更新日期（MM-DD 展示用） */
+  updatedAt: string;
+  /** 价格最后核对日期（ISO date，YYYY-MM-DD） */
+  priceUpdatedAt: string;
+  /** 近 12 周综合分采样（趋势折线图） */
+  trendHistory: number[];
+  blurb: string;
+}
+
+export type NewsCategory = "发布" | "评测" | "融资" | "政策" | "价格";
+
+export interface UINewsItem {
+  id: string;
+  category: NewsCategory;
+  title: string;
+  summary: string;
+  source: string;
+  time: string;
+  relatedModel?: string;
+  url: string;
 }
 
 export interface BenchmarkRecord {

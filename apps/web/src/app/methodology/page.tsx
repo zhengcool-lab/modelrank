@@ -1,14 +1,15 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import { SEED_BENCHMARKS } from "@/lib/seed-data";
 import { NavHeader } from "@/components/nav-header";
 import { Footer } from "@/components/footer";
 
-const DATA_SOURCES = [
-  { name: "LMSYS Chatbot Arena 盲测", weight: "低", risk: "低" },
-  { name: "MMLU · GPQA（知识/推理）", weight: "中", risk: "低" },
-  { name: "GSM8K · Math（数学）", weight: "中", risk: "中" },
-  { name: "HumanEval · SWE-bench（代码）", weight: "低", risk: "中" },
-  { name: "C-Eval · CMMLU（中文）", weight: "中", risk: "低" },
-];
+export const metadata: Metadata = {
+  title: "评分方法论 · ModelRank",
+  description: "公开基准聚合加权口径、权重分配、归一化方式与数据更新说明。",
+};
+
+const RISK_LABEL: Record<string, string> = { low: "低", med: "中", high: "高" };
 
 export default function MethodologyPage() {
   return (
@@ -60,22 +61,22 @@ export default function MethodologyPage() {
           </div>
 
           <div className="mr-card" style={{ padding: "20px 22px", marginTop: 16 }}>
-            <div style={{ fontSize: 14, fontWeight: 600, color: "var(--mr-text)" }}>数据源清单</div>
+            <div style={{ fontSize: 14, fontWeight: 600, color: "var(--mr-text)" }}>数据源清单（权重取自 SEED_BENCHMARKS）</div>
             <div style={{ marginTop: 12 }}>
-              {DATA_SOURCES.map((d, i) => (
+              {SEED_BENCHMARKS.map((d, i) => (
                 <div
-                  key={d.name}
+                  key={d.id}
                   style={{
                     display: "flex",
                     alignItems: "center",
                     height: 40,
                     borderTop: "1px solid var(--mr-border-soft)",
-                    borderBottom: i === DATA_SOURCES.length - 1 ? "1px solid var(--mr-border-soft)" : "none",
+                    borderBottom: i === SEED_BENCHMARKS.length - 1 ? "1px solid var(--mr-border-soft)" : "none",
                   }}
                 >
                   <div style={{ flex: 1, fontSize: 13, color: "var(--mr-text)" }}>{d.name}</div>
-                  <div style={{ width: 110, fontSize: 12, color: "var(--mr-text-3)" }}>权重 {d.weight}</div>
-                  <div style={{ width: 110, fontSize: 12, color: "var(--mr-text-3)" }}>污染风险 {d.risk}</div>
+                  <div style={{ width: 110, fontSize: 12, color: "var(--mr-text-3)" }}>权重 {Math.round(d.weight * 100)}%</div>
+                  <div style={{ width: 110, fontSize: 12, color: "var(--mr-text-3)" }}>污染风险 {RISK_LABEL[d.contaminationRisk] ?? d.contaminationRisk}</div>
                 </div>
               ))}
             </div>

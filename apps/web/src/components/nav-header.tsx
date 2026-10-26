@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Tooltip } from "@arco-design/web-react";
 import { ThemeToggle } from "./theme-toggle";
 
 const NAV_ITEMS = [
@@ -69,6 +70,8 @@ export function NavHeader() {
           gap: 2,
           height: 64,
           boxSizing: "border-box",
+          overflowX: "auto",
+          flexWrap: "nowrap",
         }}
       >
         {NAV_ITEMS.map((item) => {
@@ -110,18 +113,23 @@ export function NavHeader() {
           🔍 搜索
         </Link>
         <ThemeToggle />
-        <span
-          style={{
-            fontSize: 12,
-            color: "var(--mr-text-3)",
-            padding: "0 8px",
-            marginLeft: 6,
-          }}
-        >
-          提交模型<span style={{ fontSize: 10, color: "var(--mr-text-4)" }}>
-            （未登录·演示）
-          </span>
-        </span>
+        <Tooltip content="即将上线" position="bottom">
+          <button
+            type="button"
+            disabled
+            style={{
+              fontSize: 12,
+              color: "var(--mr-text-4)",
+              padding: "0 8px",
+              marginLeft: 6,
+              background: "transparent",
+              border: "none",
+              cursor: "not-allowed",
+            }}
+          >
+            提交模型
+          </button>
+        </Tooltip>
       </div>
     </header>
   );

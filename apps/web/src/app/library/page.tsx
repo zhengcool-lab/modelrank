@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { MOCK_MODELS } from "@modelrank/shared";
+import { UI_MODELS } from "@/lib/seed-data";
 import { NavHeader } from "@/components/nav-header";
 import { Footer } from "@/components/footer";
 import { TierBadge } from "@/components/badges";
@@ -15,7 +15,7 @@ export default function LibraryPage() {
   const [page, setPage] = useState(1);
 
   const rows = useMemo(
-    () => (vendor === "全部" ? MOCK_MODELS : MOCK_MODELS.filter((m) => m.vendor === vendor)),
+    () => (vendor === "全部" ? UI_MODELS : UI_MODELS.filter((m) => m.vendor === vendor)),
     [vendor]
   );
 
@@ -100,7 +100,7 @@ export default function LibraryPage() {
           <div style={{ flex: 1, fontSize: 12, fontWeight: 600, color: "var(--mr-text-3)", textAlign: "right" }}>操作</div>
         </div>
         {pageRows.map((m) => {
-          const n = MOCK_MODELS.filter((x) => x.score > m.score).length + 1;
+          const n = UI_MODELS.filter((x) => x.score > m.score).length + 1;
           const rankColor =
             n === 1 ? "var(--mr-gold)" : n === 2 ? "var(--mr-silver)" : n === 3 ? "var(--mr-bronze)" : "var(--mr-text-3)";
           return (

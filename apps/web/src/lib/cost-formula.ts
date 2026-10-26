@@ -41,3 +41,24 @@ export function calculateMonthlyCost({
   const outputCost = totalTokensM * (1 - alpha) * priceOutput;
   return inputCost + outputCost;
 }
+
+/** 以「百万 tokens」为输入单位的便捷封装（成本计算器页面用）。 */
+export interface MonthlyCostByMInput {
+  totalTokensM: number;
+  alpha: number;
+  cacheRate: number;
+  priceInput: number;
+  priceOutput: number;
+}
+
+export function estimateMonthlyCost({
+  totalTokensM,
+  alpha,
+  cacheRate,
+  priceInput,
+  priceOutput,
+}: MonthlyCostByMInput): number {
+  const inputCost = totalTokensM * alpha * priceInput * (1 - cacheRate);
+  const outputCost = totalTokensM * (1 - alpha) * priceOutput;
+  return inputCost + outputCost;
+}

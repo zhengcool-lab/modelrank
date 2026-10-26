@@ -2,7 +2,8 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { MOCK_NEWS, type NewsCategory } from "@modelrank/shared";
+import { UI_NEWS } from "@/lib/seed-data";
+import type { NewsCategory } from "@/lib/types";
 import { NavHeader } from "@/components/nav-header";
 import { Footer } from "@/components/footer";
 
@@ -11,7 +12,7 @@ const CATS: ("全部" | NewsCategory)[] = ["全部", "发布", "评测", "融资
 export default function NewsPage() {
   const [cat, setCat] = useState<(typeof CATS)[number]>("全部");
   const rows = useMemo(
-    () => (cat === "全部" ? MOCK_NEWS : MOCK_NEWS.filter((n) => n.category === cat)),
+    () => (cat === "全部" ? UI_NEWS : UI_NEWS.filter((n) => n.category === cat)),
     [cat]
   );
 

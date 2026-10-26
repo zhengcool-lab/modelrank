@@ -3,10 +3,10 @@
 import { useTheme } from "next-themes";
 import { useMemo } from "react";
 import type { EChartsOption } from "echarts";
-import type { ModelRecord } from "@modelrank/shared";
+import type { UIModelRecord } from "@/lib/types";
 import { EChart } from "./echart";
 
-export function DetailCharts({ model }: { model: ModelRecord }) {
+export function DetailCharts({ model }: { model: UIModelRecord }) {
   const { resolvedTheme } = useTheme();
   const dark = resolvedTheme === "dark";
   const primary = dark ? "#5B8DEF" : "#2A5CAA";

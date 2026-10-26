@@ -1,22 +1,34 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { InputNumber } from "@arco-design/web-react";
-import { estimateMonthlyCost, MOCK_MODELS } from "@modelrank/shared";
+import { estimateMonthlyCost } from "@/lib/cost-formula";
+import { SEED_MODELS, UI_MODELS } from "@/lib/seed-data";
+import { useCompare } from "@/context/compare";
 import { NavHeader } from "@/components/nav-header";
 import { Footer } from "@/components/footer";
 
-const COST_MODELS = ["gpt-5", "deepseek-r1", "claude-opus-4-5"] as const;
+// 成本计算器可选模型 = SEED_MODELS 全部 8 个（展示名与价格从 UI_MODELS 取）
+const COST_MODEL_IDS = SEED_MODELS.map((m) => m.id);
 const CACHE_OPTIONS = [0, 0.3, 0.6] as const;
 
-export default function CostPage() {
-  const [modelId, setModelId] = useState<(typeof COST_MODELS)[number]>("gpt-5");
+function CostInner() {
+  const router = useRouter();
+  const sp = useSearchParams();
+  const { toggle, has } = useCompare();
+
+  // 初始选中模型优先取 URL ?model=，校验失败再回退到第一个模型
+  const initialFromUrl = sp.get("model");
+  const [modelId, setModelId] = useState<string>(
+    initialFromUrl && UI_MODELS.some((m) => m.id === initialFromUrl) ? initialFromUrl : COST_MODEL_IDS[0]
+  );
   const [totalWan, setTotalWan] = useState<number>(4000); // 万 token
   const [alpha, setAlpha] = useState(0.25);
   const [cache, setCache] = useState<number>(0.3);
 
-  const model = MOCK_MODELS.find((m) => m.id === modelId) ?? MOCK_MODELS[0];
+  const model = UI_MODELS.find((m) => m.id === modelId) ?? UI_MODELS[0];
   const totalM = Math.max(0, totalWan) / 100; // 万 -> 百万
 
   const result = useMemo(
@@ -36,18 +48,16 @@ export default function CostPage() {
   const inputCost = totalM * alpha * model.priceInput * (1 - cache);
   const outputCost = totalM * (1 - alpha) * model.priceOutput;
 
-  const others = MOCK_MODELS.filter((m) => m.id !== modelId).slice(0, 2);
+  const others = UI_MODELS.filter((m) => m.id !== modelId).slice(0, 2);
+
+  // 发起对比：先把当前模型加入对比集，再跳转到 /compare
+  const startCompare = () => {
+    if (!has(model.id)) toggle(model.id);
+    router.push("/compare");
+  };
 
   return (
-    <div>
-      <NavHeader />
-
-      <div style={{ padding: "14px 44px 0 44px", fontSize: 12, color: "var(--mr-text-3)" }}>
-        <Link href="/" className="mr-link">模型榜</Link>
-        <span style={{ color: "var(--mr-text-4)", margin: "0 6px" }}>/</span>
-        <span style={{ color: "var(--mr-text-2)" }}>成本计算器</span>
-      </div>
-
+    <>
       <div style={{ padding: "24px 44px 0 44px" }}>
         <div style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.4px", color: "var(--mr-text)" }}>成本计算器</div>
         <div style={{ fontSize: 13, color: "var(--mr-text-2)", marginTop: 6 }}>
@@ -55,13 +65,13 @@ export default function CostPage() {
         </div>
       </div>
 
-      <div style={{ display: "flex", gap: 20, margin: "18px 44px 0 44px" }}>
+      <div style={{ display: "flex", gap: 20, margin: "18px 44px 0 44px", flexWrap: "wrap" }}>
         {/* left params */}
-        <div className="mr-card" style={{ flex: 1, padding: "20px 22px" }}>
+        <div className="mr-card" style={{ flex: "1 1 320px", padding: "20px 22px" }}>
           <div style={{ fontSize: 13, fontWeight: 600, color: "var(--mr-text)" }}>选择模型</div>
-          <div style={{ display: "inline-flex", background: "var(--mr-card-2)", borderRadius: 4, padding: 3, marginTop: 10 }}>
-            {COST_MODELS.map((id) => {
-              const m = MOCK_MODELS.find((x) => x.id === id)!;
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, background: "var(--mr-card-2)", borderRadius: 4, padding: 3, marginTop: 10 }}>
+            {COST_MODEL_IDS.map((id) => {
+              const m = UI_MODELS.find((x) => x.id === id)!;
               const active = modelId === id;
               return (
                 <button
@@ -119,7 +129,7 @@ export default function CostPage() {
             </span>
           </div>
           <div style={{ fontSize: 12, color: "var(--mr-text-2)", marginTop: 8 }}>
-            输入 {inputTokM.toFixed(0)}M / 输出 {outputTokM.toFixed(0)} token（月总量 {totalM.toFixed(0)}M）
+            输入 {inputTokM.toFixed(0)}M / 输出 {outputTokM.toFixed(0)}M tokens（月总量 {totalM.toFixed(0)}M）
           </div>
 
           <div style={{ fontSize: 13, fontWeight: 600, color: "var(--mr-text)", marginTop: 18 }}>缓存命中率</div>
@@ -156,7 +166,7 @@ export default function CostPage() {
         <div
           style={{
             width: 400,
-            flex: "none",
+            flex: "1 1 280px",
             background: "var(--mr-primary)",
             borderRadius: 8,
             padding: "22px 24px",
@@ -178,9 +188,12 @@ export default function CostPage() {
           <div style={{ fontSize: 12, color: "rgba(255,255,255,0.7)", lineHeight: 1.7 }}>
             月成本 = 总token × α × 输入价 × (1 − 缓存命中率) + 总token × (1 − α) × 输出价
           </div>
-          <div style={{ fontSize: 12, color: "rgba(255,255,255,0.7)", marginTop: 10 }}>价格更新于 2026-10-16</div>
-          <Link
-            href="/compare"
+          <div style={{ fontSize: 12, color: "rgba(255,255,255,0.7)", marginTop: 10 }}>
+            价格更新于 {model.priceUpdatedAt}
+          </div>
+          <button
+            type="button"
+            onClick={startCompare}
             style={{
               display: "inline-block",
               marginTop: 14,
@@ -188,11 +201,15 @@ export default function CostPage() {
               fontWeight: 600,
               color: "#fff",
               textDecoration: "none",
+              border: "none",
+              background: "transparent",
               borderBottom: "1px solid rgba(255,255,255,0.6)",
+              cursor: "pointer",
+              padding: 0,
             }}
           >
             ↗ 用该模型发起对比
-          </Link>
+          </button>
           <div style={{ height: 1, background: "rgba(255,255,255,0.2)", margin: "16px 0 12px 0" }} />
           <div style={{ fontSize: 12, color: "rgba(255,255,255,0.85)", lineHeight: 1.8 }}>同预算可考虑：</div>
           {others.map((o) => {
@@ -222,6 +239,25 @@ export default function CostPage() {
           其中「总token」单位为百万 token（M）；α 为输入占比，默认 0.25；缓存命中率默认 30%。示例/mockup。
         </div>
       </div>
+    </>
+  );
+}
+
+export default function CostPage() {
+  return (
+    <div>
+      <NavHeader />
+
+      <div style={{ padding: "14px 44px 0 44px", fontSize: 12, color: "var(--mr-text-3)" }}>
+        <Link href="/" className="mr-link">模型榜</Link>
+        <span style={{ color: "var(--mr-text-4)", margin: "0 6px" }}>/</span>
+        <span style={{ color: "var(--mr-text-2)" }}>成本计算器</span>
+      </div>
+
+      {/* useSearchParams 必须包在 Suspense 边界内 */}
+      <Suspense fallback={<div style={{ padding: "24px 44px" }}>加载中…</div>}>
+        <CostInner />
+      </Suspense>
 
       <Footer />
     </div>

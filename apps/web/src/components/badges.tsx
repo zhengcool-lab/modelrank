@@ -1,4 +1,4 @@
-import type { ModelRecord, Tier } from "@modelrank/shared";
+import type { ModelSource, PriceLevel, Tier, UIModelRecord } from "@/lib/types";
 
 /** 性价比评级徽章：S 主色实底白字 / A #4C7BD9 / B 灰实底 / C 灰底字 */
 export function TierBadge({ tier }: { tier: Tier }) {
@@ -48,7 +48,7 @@ export function OpenTag({ openSource }: { openSource: boolean }) {
 }
 
 /** 数据来源 tag */
-export function SourceTag({ source }: { source: ModelRecord["source"] }) {
+export function SourceTag({ source }: { source: ModelSource }) {
   const map = {
     official: { label: "官方", color: "var(--mr-primary)", bg: "var(--mr-primary-bg)" },
     thirdparty: { label: "第三方", color: "var(--mr-text-3)", bg: "var(--mr-card-2)" },
@@ -72,7 +72,7 @@ export function SourceTag({ source }: { source: ModelRecord["source"] }) {
 }
 
 /** 价格档位 tag */
-export function PriceLevelTag({ level }: { level: ModelRecord["priceLevel"] }) {
+export function PriceLevelTag({ level }: { level: PriceLevel }) {
   const map = {
     high: { label: "高", color: "var(--mr-warn-text)", bg: "var(--mr-warn-bg)" },
     mid: { label: "中", color: "var(--mr-text-2)", bg: "var(--mr-card-2)" },
@@ -95,7 +95,7 @@ export function PriceLevelTag({ level }: { level: ModelRecord["priceLevel"] }) {
 }
 
 /** 周环比 delta 文字 */
-export function DeltaText({ model }: { model: ModelRecord }) {
+export function DeltaText({ model }: { model: UIModelRecord }) {
   if (model.trend === "flat" || model.delta === null)
     return (
       <span style={{ fontSize: 12, fontWeight: 600, color: "var(--mr-text-4)" }}>—</span>
@@ -116,7 +116,7 @@ export function DeltaText({ model }: { model: ModelRecord }) {
 }
 
 /** 迷你趋势 sparkline（SVG） */
-export function Sparkline({ model }: { model: ModelRecord }) {
+export function Sparkline({ model }: { model: UIModelRecord }) {
   if (model.trend === "flat")
     return (
       <span style={{ fontSize: 14, fontWeight: 600, color: "var(--mr-text-4)" }}>—</span>

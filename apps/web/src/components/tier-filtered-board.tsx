@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { MOCK_MODELS, type Tier } from "@modelrank/shared";
+import { UI_MODELS } from "@/lib/seed-data";
+import type { Tier } from "@/lib/types";
 import { LeaderboardTable } from "@/components/leaderboard-table";
 
 const TIERS: Tier[] = ["S", "A", "B", "C"];
@@ -26,7 +27,7 @@ export function TierFilteredBoard() {
     });
 
   const filtered = useMemo(
-    () => (selected.size === 0 ? MOCK_MODELS : MOCK_MODELS.filter((m) => selected.has(m.tier))),
+    () => (selected.size === 0 ? UI_MODELS : UI_MODELS.filter((m) => selected.has(m.tier))),
     [selected]
   );
 

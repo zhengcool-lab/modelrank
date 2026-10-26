@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
-import { MOCK_MODELS } from "@modelrank/shared";
+import { useSearchParams } from "next/navigation";
+import { Message } from "@arco-design/web-react";
+import { UI_MODELS } from "@/lib/seed-data";
 import { NavHeader } from "@/components/nav-header";
 import { Footer } from "@/components/footer";
 import { useCompare } from "@/context/compare";
@@ -35,34 +37,39 @@ function DimBars({ dims }: { dims: { reasoning: number; code: number; chinese: n
   );
 }
 
-export default function ComparePage() {
-  const { selected, toggle } = useCompare();
+function CompareInner() {
+  const sp = useSearchParams();
+  const { selected, toggle, clear, has } = useCompare();
   const [budget, setBudget] = useState<number>(1);
-  const models = MOCK_MODELS.filter((m) => selected.includes(m.id));
+  // 自定义金额受控
+  const [customBudget, setCustomBudget] = useState<string>("");
+
+  // 从 ?ids=a,b,c 同步初始选中到 CompareContext
+  useEffect(() => {
+    const idsParam = sp.get("ids");
+    if (!idsParam) return;
+    const ids = idsParam.split(",").map((s) => s.trim()).filter((s) => UI_MODELS.some((m) => m.id === s));
+    if (ids.length === 0) return;
+    clear();
+    ids.forEach((id) => {
+      if (!has(id)) toggle(id);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sp]);
+
+  const models = UI_MODELS.filter((m) => selected.includes(m.id));
   const seg = BUDGET_SEGMENTS[budget];
-  const budgetPick = MOCK_MODELS.find((m) => m.id === seg.pick);
-  const strongest = [...MOCK_MODELS].sort((a, b) => b.score - a.score)[0];
-  const cheapest = [...MOCK_MODELS].sort((a, b) => a.priceOutput - b.priceOutput)[0];
+  const budgetPick = UI_MODELS.find((m) => m.id === seg.pick);
+  const strongest = [...UI_MODELS].sort((a, b) => b.score - a.score)[0];
+  const cheapest = [...UI_MODELS].sort((a, b) => a.priceOutput - b.priceOutput)[0];
+
+  // 「重新计算」：当前为 mock，提示用户调整自定义金额
+  const onRecalc = () => {
+    Message.info({ content: "预算重算请调整自定义金额" });
+  };
 
   return (
-    <div>
-      <NavHeader />
-
-      <div style={{ padding: "14px 44px 0 44px", fontSize: 12, color: "var(--mr-text-3)" }}>
-        <Link href="/" className="mr-link">模型榜</Link>
-        <span style={{ color: "var(--mr-text-4)", margin: "0 6px" }}>/</span>
-        <span style={{ color: "var(--mr-text-2)" }}>对比器</span>
-      </div>
-
-      <div style={{ padding: "24px 44px 16px 44px" }}>
-        <div style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.4px", color: "var(--mr-text)" }}>
-          模型对比
-        </div>
-        <div style={{ fontSize: 13, color: "var(--mr-text-2)", marginTop: 6 }}>
-          按预算筛选，快速找到最值得上线的模型 · 数据更新于 10-16 08:00
-        </div>
-      </div>
-
+    <>
       {models.length === 0 && (
         <div
           style={{
@@ -79,9 +86,9 @@ export default function ComparePage() {
         </div>
       )}
 
-      <div style={{ display: "flex", gap: 20, margin: "0 44px" }}>
+      <div style={{ display: "flex", gap: 20, margin: "0 44px", flexWrap: "wrap" }}>
         {/* budget card */}
-        <div className="mr-card" style={{ width: 340, flex: "none", padding: 20 }}>
+        <div className="mr-card" style={{ width: 340, flex: "1 1 280px", padding: 20 }}>
           <div style={{ fontSize: 15, fontWeight: 600, color: "var(--mr-text)", marginBottom: 14 }}>月预算</div>
           <div style={{ display: "flex", background: "var(--mr-card-2)", borderRadius: 4, padding: 3, marginBottom: 14 }}>
             {BUDGET_SEGMENTS.map((s) => (
@@ -108,6 +115,8 @@ export default function ComparePage() {
           </div>
           <div style={{ fontSize: 12, color: "var(--mr-text-2)", marginBottom: 6 }}>自定义金额</div>
           <input
+            value={customBudget}
+            onChange={(e) => setCustomBudget(e.target.value)}
             placeholder="输入预算金额（元/月）"
             style={{
               width: "100%",
@@ -125,14 +134,14 @@ export default function ComparePage() {
           <div style={{ fontSize: 12, color: "var(--mr-text-2)", marginTop: 10 }}>
             按预算自动计算推荐模型与月用量（示例/mockup）。
           </div>
-          <button className="mr-btn-orange" style={{ width: "100%", marginTop: 16 }}>
+          <button type="button" onClick={onRecalc} className="mr-btn-orange" style={{ width: "100%", marginTop: 16 }}>
             重新计算
           </button>
         </div>
 
         {/* compare table */}
         {models.length > 0 && (
-          <div className="mr-card" style={{ flex: 1, overflow: "hidden" }}>
+          <div className="mr-card" style={{ flex: "1 1 360px", overflow: "hidden" }}>
             <div style={{ display: "flex", alignItems: "stretch", borderBottom: "1px solid var(--mr-border)" }}>
               <div style={{ width: 170, flex: "none", padding: "0 16px", fontSize: 12, fontWeight: 600, color: "var(--mr-text-3)", display: "flex", alignItems: "center" }}>
                 指标
@@ -233,8 +242,8 @@ export default function ComparePage() {
       </div>
 
       {/* conclusion cards */}
-      <div style={{ display: "flex", gap: 16, margin: "18px 44px 0 44px" }}>
-        <div style={{ flex: 1, background: "var(--mr-primary)", borderRadius: 8, padding: "18px 20px" }}>
+      <div style={{ display: "flex", gap: 16, margin: "18px 44px 0 44px", flexWrap: "wrap" }}>
+        <div style={{ flex: "1 1 220px", background: "var(--mr-primary)", borderRadius: 8, padding: "18px 20px" }}>
           <div style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.85)" }}>综合最强</div>
           <Link
             href={`/detail/${strongest.id}`}
@@ -249,7 +258,7 @@ export default function ComparePage() {
             连续 8 周榜首 · 示例/mockup
           </div>
         </div>
-        <div className="mr-card" style={{ flex: 1, padding: "18px 20px" }}>
+        <div className="mr-card" style={{ flex: "1 1 220px", padding: "18px 20px" }}>
           <div style={{ fontSize: 12, fontWeight: 600, color: "var(--mr-text-2)" }}>性价比最高</div>
           <Link
             href={`/detail/${cheapest.id}`}
@@ -265,7 +274,7 @@ export default function ComparePage() {
             {cheapest.openSource ? "开源权重" : "闭源 API"} · 推理速度 {cheapest.speedTokPerS} tok/s · {cheapest.tier} 级性价比
           </div>
         </div>
-        <div className="mr-card" style={{ flex: 1, padding: "18px 20px" }}>
+        <div className="mr-card" style={{ flex: "1 1 220px", padding: "18px 20px" }}>
           <div style={{ fontSize: 12, fontWeight: 600, color: "var(--mr-text-2)" }}>
             预算内推荐（{seg.label}）
           </div>
@@ -289,6 +298,34 @@ export default function ComparePage() {
           )}
         </div>
       </div>
+    </>
+  );
+}
+
+export default function ComparePage() {
+  return (
+    <div>
+      <NavHeader />
+
+      <div style={{ padding: "14px 44px 0 44px", fontSize: 12, color: "var(--mr-text-3)" }}>
+        <Link href="/" className="mr-link">模型榜</Link>
+        <span style={{ color: "var(--mr-text-4)", margin: "0 6px" }}>/</span>
+        <span style={{ color: "var(--mr-text-2)" }}>对比器</span>
+      </div>
+
+      <div style={{ padding: "24px 44px 16px 44px" }}>
+        <div style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.4px", color: "var(--mr-text)" }}>
+          模型对比
+        </div>
+        <div style={{ fontSize: 13, color: "var(--mr-text-2)", marginTop: 6 }}>
+          按预算筛选，快速找到最值得上线的模型 · 数据更新于 10-16 08:00
+        </div>
+      </div>
+
+      {/* useSearchParams 必须包在 Suspense 边界内 */}
+      <Suspense fallback={<div style={{ padding: "24px 44px" }}>加载中…</div>}>
+        <CompareInner />
+      </Suspense>
 
       <Footer />
     </div>

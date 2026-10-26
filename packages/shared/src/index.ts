@@ -21,6 +21,8 @@ export type TrendDir = "up" | "down" | "flat";
 export type ModelSource = "official" | "thirdparty" | "self";
 export type PriceLevel = "high" | "mid" | "low";
 
+/** @deprecated 改用 @modelrank/web/src/lib/seed-data 的 UI_MODELS（前端）与 SEED_MODELS（API DTO）。
+ *  本文件保留仅供其它仓库引用，apps/web 已不再从此处导入模型数据。 */
 export type ModelRecord = {
   /** url-friendly id, used by /detail/[id] */
   id: string;
@@ -58,6 +60,7 @@ export type ModelRecord = {
   blurb: string;
 };
 
+/** @deprecated 改用 @modelrank/web/src/lib/seed-data 的 UI_MODELS。本数组仅作向后兼容保留。 */
 export const MOCK_MODELS: ModelRecord[] = [
   {
     id: "gpt-5",

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { Message } from "@arco-design/web-react";
 import {
   createColumnHelper,
   flexRender,
@@ -10,7 +11,7 @@ import {
   useReactTable,
   type SortingState,
 } from "@tanstack/react-table";
-import type { ModelRecord } from "@modelrank/shared";
+import type { UIModelRecord } from "@/lib/types";
 import { useCompare } from "@/context/compare";
 import {
   DeltaText,
@@ -21,7 +22,7 @@ import {
   TierBadge,
 } from "./badges";
 
-const columnHelper = createColumnHelper<ModelRecord>();
+const columnHelper = createColumnHelper<UIModelRecord>();
 
 function DimBar({ label, value }: { label: string; value: number }) {
   return (
@@ -72,7 +73,7 @@ function CheckBox({ checked }: { checked: boolean }) {
   );
 }
 
-export function LeaderboardTable({ models }: { models: ModelRecord[] }) {
+export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
   const { selected, toggle, has, max } = useCompare();
   const [sorting, setSorting] = useState<SortingState>([
     { id: "score", desc: true },
@@ -105,7 +106,14 @@ export function LeaderboardTable({ models }: { models: ModelRecord[] }) {
           <div style={{ display: "flex", justifyContent: "center" }}>
             <button
               aria-label={`对比 ${row.original.name}`}
-              onClick={() => toggle(row.original.id)}
+              onClick={() => {
+                // 已选满 4 个再勾选第 5 个时给出提示（context.toggle 内部会静默拦截）
+                if (!has(row.original.id) && selected.length >= max) {
+                  Message.warning({ content: "最多对比 4 个模型" });
+                  return;
+                }
+                toggle(row.original.id);
+              }}
               style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
             >
               <CheckBox checked={has(row.original.id)} />
@@ -261,7 +269,7 @@ export function LeaderboardTable({ models }: { models: ModelRecord[] }) {
     [models, selected, has, toggle, max, sorting]
   );
 
-  const table = useReactTable<ModelRecord>({
+  const table = useReactTable<UIModelRecord>({
     data: models,
     columns,
     state: { sorting },

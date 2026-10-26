@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { MOCK_MODELS } from "@modelrank/shared";
+import { UI_MODELS } from "@/lib/seed-data";
 import { useCompare } from "@/context/compare";
 
 export function CompareBar() {
@@ -10,7 +10,7 @@ export function CompareBar() {
   if (selected.length === 0) return null;
 
   const names = selected
-    .map((id) => MOCK_MODELS.find((m) => m.id === id)?.name)
+    .map((id) => UI_MODELS.find((m) => m.id === id)?.name)
     .filter(Boolean) as string[];
 
   return (

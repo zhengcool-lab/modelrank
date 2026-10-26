@@ -1,18 +1,36 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import Link from "next/link";
-import { MOCK_MODELS, MOCK_NEWS } from "@modelrank/shared";
+import { useRouter, useSearchParams } from "next/navigation";
+import { UI_MODELS, UI_NEWS } from "@/lib/seed-data";
 import { NavHeader } from "@/components/nav-header";
 import { Footer } from "@/components/footer";
 
-export default function SearchPage() {
-  const [q, setQ] = useState("");
+function SearchInner() {
+  const router = useRouter();
+  const sp = useSearchParams();
+  // 初始 state 从 URL ?q= 读取
+  const [q, setQ] = useState(sp.get("q") ?? "");
+
+  // 输入时同步到 URL（不刷新页面，replace 不留历史记录）
+  const updateQ = (next: string) => {
+    setQ(next);
+    const trimmed = next.trim();
+    const url = trimmed ? `/search?q=${encodeURIComponent(trimmed)}` : "/search";
+    router.replace(url);
+  };
+
+  // 「搜索」按钮与回车走同一提交逻辑（这里就是即时过滤，按钮触发一次 replace 刷新 URL）
+  const onSubmit = () => {
+    const trimmed = q.trim();
+    router.replace(trimmed ? `/search?q=${encodeURIComponent(trimmed)}` : "/search");
+  };
 
   const modelHits = useMemo(() => {
     const kw = q.trim().toLowerCase();
     if (!kw) return [];
-    return MOCK_MODELS.filter(
+    return UI_MODELS.filter(
       (m) =>
         m.name.toLowerCase().includes(kw) ||
         m.vendor.toLowerCase().includes(kw) ||
@@ -23,21 +41,13 @@ export default function SearchPage() {
   const newsHits = useMemo(() => {
     const kw = q.trim().toLowerCase();
     if (!kw) return [];
-    return MOCK_NEWS.filter(
+    return UI_NEWS.filter(
       (n) => n.title.toLowerCase().includes(kw) || n.summary.toLowerCase().includes(kw)
     );
   }, [q]);
 
   return (
-    <div>
-      <NavHeader />
-
-      <div style={{ padding: "14px 44px 0 44px", fontSize: 12, color: "var(--mr-text-3)" }}>
-        <Link href="/" className="mr-link">模型榜</Link>
-        <span style={{ color: "var(--mr-text-4)", margin: "0 6px" }}>/</span>
-        <span style={{ color: "var(--mr-text-2)" }}>搜索</span>
-      </div>
-
+    <>
       <div style={{ padding: "24px 44px 0 44px" }}>
         <div style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.4px", color: "var(--mr-text)" }}>搜索</div>
         <div style={{ fontSize: 13, color: "var(--mr-text-2)", marginTop: 6 }}>
@@ -50,7 +60,10 @@ export default function SearchPage() {
         <input
           autoFocus
           value={q}
-          onChange={(e) => setQ(e.target.value)}
+          onChange={(e) => updateQ(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") onSubmit();
+          }}
           placeholder="输入模型名 / 厂商，如 GPT、DeepSeek、开源…"
           style={{
             flex: 1,
@@ -66,7 +79,9 @@ export default function SearchPage() {
             boxSizing: "border-box",
           }}
         />
-        <button className="mr-btn-primary" style={{ height: 32 }}>搜索</button>
+        <button type="button" onClick={onSubmit} className="mr-btn-primary" style={{ height: 32 }}>
+          搜索
+        </button>
       </div>
 
       {q.trim() === "" ? (
@@ -160,6 +175,25 @@ export default function SearchPage() {
           </div>
         </>
       )}
+    </>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <div>
+      <NavHeader />
+
+      <div style={{ padding: "14px 44px 0 44px", fontSize: 12, color: "var(--mr-text-3)" }}>
+        <Link href="/" className="mr-link">模型榜</Link>
+        <span style={{ color: "var(--mr-text-4)", margin: "0 6px" }}>/</span>
+        <span style={{ color: "var(--mr-text-2)" }}>搜索</span>
+      </div>
+
+      {/* useSearchParams 必须包在 Suspense 边界内，否则 next build 会报错 */}
+      <Suspense fallback={<div style={{ padding: "24px 44px" }}>加载中…</div>}>
+        <SearchInner />
+      </Suspense>
 
       <Footer />
     </div>
