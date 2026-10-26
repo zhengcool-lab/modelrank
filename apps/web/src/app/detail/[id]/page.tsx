@@ -4,6 +4,7 @@ import { getModel, MOCK_MODELS, MOCK_NEWS } from "@modelrank/shared";
 import { NavHeader } from "@/components/nav-header";
 import { Footer } from "@/components/footer";
 import { DetailCharts } from "@/components/detail-charts";
+import { LeadForm } from "@/components/lead-form";
 import { DeltaText, OpenTag, TierBadge } from "@/components/badges";
 
 export default async function DetailPage({
@@ -250,6 +251,8 @@ export default async function DetailPage({
               </span>
             </div>
           </div>
+
+          <LeadForm />
         </div>
       </div>
 

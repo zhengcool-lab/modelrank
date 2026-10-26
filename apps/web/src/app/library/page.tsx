@@ -1,20 +1,39 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { MOCK_MODELS } from "@modelrank/shared";
 import { NavHeader } from "@/components/nav-header";
 import { Footer } from "@/components/footer";
 import { TierBadge } from "@/components/badges";
 
-const VENDORS = ["全部", "OpenAI", "Anthropic", "Google", "深度求索", "阿里", "Meta", "Mistral"];
+const VENDORS = ["全部", "OpenAI", "Anthropic", "Google", "深度求索", "阿里", "Meta", "Mistral", "腾讯", "阶跃星辰", "MiniMax", "零一万物", "智谱", "百川", "Microsoft"];
+const PAGE_SIZE = 10;
 
 export default function LibraryPage() {
   const [vendor, setVendor] = useState("全部");
+  const [page, setPage] = useState(1);
+
   const rows = useMemo(
     () => (vendor === "全部" ? MOCK_MODELS : MOCK_MODELS.filter((m) => m.vendor === vendor)),
     [vendor]
   );
+
+  const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+
+  // 切换厂商筛选时回到第 1 页
+  useEffect(() => {
+    setPage(1);
+  }, [vendor]);
+
+  // 兜底：当 rows 变化导致当前页越界时收敛到最后一页
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages);
+  }, [page, totalPages]);
+
+  const pageRows = rows.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  const pickVendor = (v: string) => setVendor(v);
 
   return (
     <div>
@@ -41,7 +60,7 @@ export default function LibraryPage() {
           return (
             <button
               key={v}
-              onClick={() => setVendor(v)}
+              onClick={() => pickVendor(v)}
               style={{
                 fontSize: 12,
                 fontWeight: active ? 600 : 400,
@@ -80,7 +99,7 @@ export default function LibraryPage() {
           <div style={{ width: 120, flex: "none", fontSize: 12, fontWeight: 600, color: "var(--mr-text-3)" }}>性价比</div>
           <div style={{ flex: 1, fontSize: 12, fontWeight: 600, color: "var(--mr-text-3)", textAlign: "right" }}>操作</div>
         </div>
-        {rows.map((m) => {
+        {pageRows.map((m) => {
           const n = MOCK_MODELS.filter((x) => x.score > m.score).length + 1;
           const rankColor =
             n === 1 ? "var(--mr-gold)" : n === 2 ? "var(--mr-silver)" : n === 3 ? "var(--mr-bronze)" : "var(--mr-text-3)";
@@ -133,9 +152,67 @@ export default function LibraryPage() {
           }}
         >
           <span style={{ fontSize: 12, color: "var(--mr-text-3)" }}>
-            示例/mockup · 当前展示 {rows.length} 个模型，其余约 120 个略
+            示例/mockup · 第 {(page - 1) * PAGE_SIZE + (pageRows.length ? 1 : 0)}–
+            {(page - 1) * PAGE_SIZE + pageRows.length} 条 / 共 {rows.length} 个模型
           </span>
-          <span style={{ fontSize: 12, color: "var(--mr-text-3)" }}>共 128 条</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <button
+              type="button"
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page <= 1}
+              style={{
+                height: 28,
+                padding: "0 12px",
+                fontSize: 12,
+                borderRadius: 4,
+                border: "1px solid var(--mr-border)",
+                background: "var(--mr-card)",
+                color: page <= 1 ? "var(--mr-text-4)" : "var(--mr-text-2)",
+                cursor: page <= 1 ? "not-allowed" : "pointer",
+              }}
+            >
+              上一页
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+              <button
+                key={p}
+                type="button"
+                onClick={() => setPage(p)}
+                aria-current={p === page ? "page" : undefined}
+                style={{
+                  height: 28,
+                  minWidth: 28,
+                  padding: "0 8px",
+                  fontSize: 12,
+                  fontWeight: p === page ? 600 : 400,
+                  borderRadius: 4,
+                  border: `1px solid ${p === page ? "var(--mr-primary)" : "var(--mr-border)"}`,
+                  background: p === page ? "var(--mr-primary)" : "var(--mr-card)",
+                  color: p === page ? "#fff" : "var(--mr-text-2)",
+                  cursor: "pointer",
+                }}
+              >
+                {p}
+              </button>
+            ))}
+            <button
+              type="button"
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page >= totalPages}
+              style={{
+                height: 28,
+                padding: "0 12px",
+                fontSize: 12,
+                borderRadius: 4,
+                border: "1px solid var(--mr-border)",
+                background: "var(--mr-card)",
+                color: page >= totalPages ? "var(--mr-text-4)" : "var(--mr-text-2)",
+                cursor: page >= totalPages ? "not-allowed" : "pointer",
+              }}
+            >
+              下一页
+            </button>
+          </div>
         </div>
       </div>
 

@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { MOCK_MODELS, MOCK_NEWS } from "@modelrank/shared";
+import { MOCK_NEWS } from "@modelrank/shared";
 import { NavHeader } from "@/components/nav-header";
 import { Footer } from "@/components/footer";
 import { CompareBar } from "@/components/compare-bar";
-import { LeaderboardTable } from "@/components/leaderboard-table";
+import { TierFilteredBoard } from "@/components/tier-filtered-board";
 
 export default function Home() {
   const news = MOCK_NEWS.slice(0, 3);
@@ -130,7 +130,7 @@ export default function Home() {
         <span style={{ fontSize: 12, color: "var(--mr-text-3)" }}>示例/mockup</span>
       </div>
 
-      <LeaderboardTable models={MOCK_MODELS} />
+      <TierFilteredBoard />
 
       <CompareBar />
 
