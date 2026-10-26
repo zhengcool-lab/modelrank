@@ -64,9 +64,9 @@ export interface Paginated<T> {
 
 export interface CostCalculateInput {
   modelId: string;
-  monthlyTokens: number; // 总 tokens（输入+输出合计按比例拆）
-  alpha?: number; // 输入占比，默认 0.7
-  cacheRatio?: number; // 命中缓存比例 0..1，默认 0
+  monthlyTokens: number; // 月总 tokens（输入+输出合计，按 alpha 拆）
+  alpha?: number; // 输入占比，默认 0.25（v7.1 口径）
+  cacheRatio?: number; // 缓存命中率 0..1，默认 0
 }
 
 export interface CostRecommend {

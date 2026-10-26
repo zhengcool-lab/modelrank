@@ -1,9 +1,19 @@
 // POST /api/cost/calculate
 // body: { modelId, monthlyTokens, alpha?, cacheRatio? }
-// alpha = 输入 tokens 占比（默认 0.7）；cacheRatio = 输入命中缓存比例（默认 0，命中价按 0.25x 计）
+//
+// 口径（与 v7.1 HTML 原型 / 前端 packages/shared estimateMonthlyCost 对齐）：
+//   alpha      = 输入 token 占比（默认 0.25）
+//   cacheRatio = 缓存命中率（默认 0），直接折减输入价（原型 mockup 简化）
+//   公式：monthlyCost = (monthlyTokens/1e6) * alpha * priceInput * (1-cacheRatio)
+//                     + (monthlyTokens/1e6) * (1-alpha) * priceOutput
 import { Body, Controller, Inject, Post } from "@nestjs/common";
 import { REPOSITORY, type IRepository } from "../repository/repository.interface";
 import type { CostCalculateInput, CostRecommend } from "../repository/types";
+import {
+  calculateMonthlyCost,
+  DEFAULT_ALPHA,
+  DEFAULT_CACHE_RATIO,
+} from "./cost.formula";
 
 @Controller("cost")
 export class CostController {
@@ -13,11 +23,10 @@ export class CostController {
   async calculate(@Body() body: CostCalculateInput): Promise<{
     requested: CostRecommend;
     alternatives: CostRecommend[];
-    assumptions: { alpha: number; cacheRatio: number; cacheDiscount: number };
+    assumptions: { alpha: number; cacheRatio: number };
   }> {
-    const alpha = body.alpha ?? 0.7;
-    const cacheRatio = body.cacheRatio ?? 0;
-    const CACHE_DISCOUNT = 0.25; // 命中缓存的输入价折扣
+    const alpha = body.alpha ?? DEFAULT_ALPHA;
+    const cacheRatio = body.cacheRatio ?? DEFAULT_CACHE_RATIO;
 
     const all = await this.repo.listAllModels();
     const target = all.find((m) => m.id === body.modelId);
@@ -31,19 +40,18 @@ export class CostController {
           priceOutput: 0,
         },
         alternatives: [],
-        assumptions: { alpha, cacheRatio, cacheDiscount: CACHE_DISCOUNT },
+        assumptions: { alpha, cacheRatio },
       };
     }
 
     const costOf = (m: typeof target): CostRecommend => {
-      const inputTokens = body.monthlyTokens * alpha;
-      const outputTokens = body.monthlyTokens * (1 - alpha);
-      const billedInput =
-        inputTokens * (1 - cacheRatio) + inputTokens * cacheRatio * CACHE_DISCOUNT;
-      // 价格单位：元 / 1M tokens
-      const monthlyCost =
-        (billedInput / 1_000_000) * m.priceInput +
-        (outputTokens / 1_000_000) * m.priceOutput;
+      const monthlyCost = calculateMonthlyCost({
+        monthlyTokens: body.monthlyTokens,
+        alpha,
+        cacheRatio,
+        priceInput: m.priceInput,
+        priceOutput: m.priceOutput,
+      });
       return {
         modelId: m.id,
         name: m.name,
@@ -69,7 +77,7 @@ export class CostController {
     return {
       requested,
       alternatives,
-      assumptions: { alpha, cacheRatio, cacheDiscount: CACHE_DISCOUNT },
+      assumptions: { alpha, cacheRatio },
     };
   }
 }

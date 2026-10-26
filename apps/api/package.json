@@ -8,7 +8,7 @@
     "start": "node dist/main.js",
     "lint": "echo \"[api] no lint configured\"",
     "typecheck": "tsc --noEmit",
-    "test": "echo \"[api] no test\"",
+    "test": "tsx --test test/*.spec.ts",
     "prisma:validate": "prisma validate",
     "prisma:generate": "prisma generate",
     "db:seed": "tsx prisma/seed.ts"
