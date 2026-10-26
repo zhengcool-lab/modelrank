@@ -1,0 +1,45 @@
+# syntax=docker/dockerfile:1
+
+# ---------- base ----------
+FROM node:20-alpine AS base
+# Corepack provides the exact pnpm pinned in package.json ("packageManager").
+RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
+WORKDIR /app
+
+# ---------- deps: install all workspace deps from lockfile ----------
+FROM base AS deps
+# Copy every package manifest + lockfile so pnpm can resolve the workspace graph.
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml tsconfig.base.json turbo.json ./
+COPY apps/web/package.json ./apps/web/
+COPY apps/api/package.json ./apps/api/
+COPY packages/shared/package.json ./packages/shared/
+RUN pnpm install --frozen-lockfile
+
+# ---------- builder: build the Next.js standalone bundle ----------
+FROM base AS builder
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/apps/web/node_modules ./apps/web/node_modules
+COPY --from=deps /app/apps/api/node_modules ./apps/api/node_modules
+COPY --from=deps /app/packages/shared/node_modules ./packages/shared/node_modules
+# Copy the rest of the source.
+COPY . .
+# Standalone output lands in apps/web/.next/standalone (monorepo layout).
+RUN pnpm --filter @modelrank/web build
+
+# ---------- runner: minimal runtime image ----------
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+# Run as the non-root user that ships with the official image.
+USER node
+
+# In a pnpm/Turborepo monorepo the standalone bundle nests under apps/web/.
+COPY --from=builder --chown=node:node /app/apps/web/.next/standalone ./
+COPY --from=builder --chown=node:node /app/apps/web/.next/static ./apps/web/.next/static
+# public/ is optional in this skeleton; the COPY is a no-op safe guard if missing.
+COPY --from=builder --chown=node:node /app/apps/web/public ./apps/web/public
+
+EXPOSE 3000
+ENV PORT=3000 HOSTNAME=0.0.0.0
+CMD ["node", "apps/web/server.js"]
