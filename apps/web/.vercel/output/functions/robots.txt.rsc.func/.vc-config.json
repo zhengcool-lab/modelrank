@@ -76,8 +76,8 @@
     ".next/server/pages/_error.js": ".next/server/pages/_error.js",
     ".next/server/pages/_document.js": ".next/server/pages/_document.js",
     ".next/server/app/_not-found/page.js": ".next/server/app/_not-found/page.js",
-    ".next/server/chunks/183.js": ".next/server/chunks/183.js",
     ".next/server/chunks/221.js": ".next/server/chunks/221.js",
+    ".next/server/chunks/697.js": ".next/server/chunks/697.js",
     ".next/server/app/_not-found/page_client-reference-manifest.js": ".next/server/app/_not-found/page_client-reference-manifest.js"
   }
 }

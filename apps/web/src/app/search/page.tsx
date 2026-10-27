@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { UI_MODELS, UI_NEWS } from "@/lib/seed-data";
 import { NavHeader } from "@/components/nav-header";
 import { Footer } from "@/components/footer";
+import { ProductLogo } from "@/components/model-logo";
 
 function SearchInner() {
   const router = useRouter();
@@ -121,7 +122,8 @@ function SearchInner() {
                   textDecoration: "none",
                 }}
               >
-                <div style={{ flex: 1 }}>
+                <ProductLogo modelId={m.id} modelName={m.name} size={36} radius={8} />
+                <div style={{ flex: 1, marginLeft: 12 }}>
                   <div style={{ fontSize: 14, fontWeight: 600, color: "var(--mr-text)" }}>{m.name}</div>
                   <div style={{ fontSize: 12, color: "var(--mr-text-3)", marginTop: 2 }}>
                     {m.vendor} · {m.openSource ? "开源" : "闭源"}

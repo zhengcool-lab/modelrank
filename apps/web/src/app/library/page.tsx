@@ -6,6 +6,7 @@ import { UI_MODELS } from "@/lib/seed-data";
 import { NavHeader } from "@/components/nav-header";
 import { Footer } from "@/components/footer";
 import { TierBadge } from "@/components/badges";
+import { ProductLogo } from "@/components/model-logo";
 
 const VENDORS = ["全部", "OpenAI", "Anthropic", "Google", "深度求索", "阿里", "Meta", "Mistral", "腾讯", "阶跃星辰", "MiniMax", "零一万物", "智谱", "百川", "Microsoft"];
 const PAGE_SIZE = 10;
@@ -115,13 +116,18 @@ export default function LibraryPage() {
               }}
             >
               <div style={{ width: 70, flex: "none", fontSize: 13, fontWeight: 600, color: rankColor }}>{n}</div>
-              <div style={{ width: 320, flex: "none", fontSize: 14, fontWeight: 600, color: "var(--mr-text)" }}>
-                <Link href={`/detail/${m.id}`} style={{ color: "var(--mr-text)", textDecoration: "none" }}>
-                  {m.name}
-                </Link>{" "}
-                <span style={{ fontSize: 12, color: "var(--mr-text-3)", fontWeight: 400 }}>
-                  {m.vendor} · {m.openSource ? "开源" : "闭源"}
-                </span>
+              <div style={{ width: 320, flex: "none", display: "flex", alignItems: "center", gap: 10 }}>
+                <ProductLogo modelId={m.id} modelName={m.name} size={32} radius={6} />
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: "var(--mr-text)" }}>
+                    <Link href={`/detail/${m.id}`} style={{ color: "var(--mr-text)", textDecoration: "none" }}>
+                      {m.name}
+                    </Link>
+                  </div>
+                  <div style={{ fontSize: 12, color: "var(--mr-text-3)", fontWeight: 400 }}>
+                    {m.vendor} · {m.openSource ? "开源" : "闭源"}
+                  </div>
+                </div>
               </div>
               <div style={{ width: 180, flex: "none", fontSize: 13, color: "var(--mr-text)" }}>
                 {m.score.toFixed(1)} <span style={{ fontSize: 12, color: "var(--mr-text-3)" }}>±{m.ci.toFixed(1)}</span>

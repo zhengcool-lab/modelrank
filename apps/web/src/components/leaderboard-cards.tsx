@@ -5,6 +5,7 @@ import { Message } from "@arco-design/web-react";
 import type { UIModelRecord } from "@/lib/types";
 import { useCompare } from "@/context/compare";
 import { DeltaText, OpenTag, TierBadge } from "./badges";
+import { ProductLogo } from "./model-logo";
 
 function RankBadge({ n }: { n: number }) {
   const color =
@@ -98,6 +99,8 @@ export function LeaderboardCards({ models }: { models: UIModelRecord[] }) {
             </button>
 
             <RankBadge n={n} />
+
+            <ProductLogo modelId={m.id} modelName={m.name} size={36} radius={8} />
 
             <div style={{ flex: 1, minWidth: 0 }}>
               {/* row 1: name + tier */}

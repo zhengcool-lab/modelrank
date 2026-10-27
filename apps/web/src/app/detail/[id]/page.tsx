@@ -9,6 +9,7 @@ import { Footer } from "@/components/footer";
 import { DetailCharts } from "@/components/detail-charts";
 import { LeadForm } from "@/components/lead-form";
 import { DeltaText, OpenTag, TierBadge } from "@/components/badges";
+import { ProductLogo, VendorLogo } from "@/components/model-logo";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -56,22 +57,7 @@ export default async function DetailPage({ params }: Props) {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <span
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: 56,
-              height: 56,
-              borderRadius: 8,
-              background: "var(--mr-primary)",
-              color: "#fff",
-              fontSize: 20,
-              fontWeight: 600,
-            }}
-          >
-            {model.name.slice(0, 2).toUpperCase()}
-          </span>
+          <ProductLogo modelId={model.id} modelName={model.name} size={56} radius={10} />
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <span style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.4px", color: "var(--mr-text)" }}>
@@ -239,8 +225,11 @@ export default async function DetailPage({ params }: Props) {
         <div style={{ minWidth: 0 }}>
           <div className="mr-card" style={{ padding: "18px 20px" }}>
             <div style={{ fontSize: 13, fontWeight: 600, color: "var(--mr-text)" }}>厂商背景</div>
-            <div style={{ fontSize: 12, color: "var(--mr-text-2)", lineHeight: 1.7, marginTop: 8 }}>
-              {model.vendor} · 旗舰{model.openSource ? "开源" : "闭源"}模型线简介。
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 10 }}>
+              <VendorLogo vendor={model.vendor} size={40} radius={8} />
+              <div style={{ fontSize: 12, color: "var(--mr-text-2)", lineHeight: 1.6 }}>
+                {model.vendor} · 旗舰{model.openSource ? "开源" : "闭源"}模型线简介。
+              </div>
             </div>
           </div>
           <div className="mr-card" style={{ padding: "18px 20px", marginTop: 14 }}>

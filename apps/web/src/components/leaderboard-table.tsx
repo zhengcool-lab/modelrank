@@ -20,6 +20,7 @@ import {
   SourceTag,
   TierBadge,
 } from "./badges";
+import { ProductLogo } from "./model-logo";
 
 const columnHelper = createColumnHelper<UIModelRecord>();
 
@@ -161,24 +162,27 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
         cell: ({ row }) => {
           const m = row.original;
           return (
-            <div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: "var(--mr-text)" }}>
-                <Link
-                  href={`/detail/${m.id}`}
-                  style={{ color: "var(--mr-text)", textDecoration: "none" }}
-                >
-                  {m.name}
-                </Link>
-                <OpenTag openSource={m.openSource} />
-              </div>
-              <div style={{ fontSize: 12, color: "var(--mr-text-3)", marginTop: 2 }}>
-                {m.vendor} ·{" "}
-                <Link href={`/detail/${m.id}`} className="mr-link">
-                  查看详情
-                </Link>
-              </div>
-              <div style={{ fontSize: 12, color: "var(--mr-text-4)", marginTop: 2 }}>
-                {m.context} 上下文 · 更新于 {m.updatedAt}
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <ProductLogo modelId={m.id} modelName={m.name} size={36} radius={8} />
+              <div style={{ minWidth: 0 }}>
+                <div style={{ fontSize: 14, fontWeight: 600, color: "var(--mr-text)" }}>
+                  <Link
+                    href={`/detail/${m.id}`}
+                    style={{ color: "var(--mr-text)", textDecoration: "none" }}
+                  >
+                    {m.name}
+                  </Link>
+                  <OpenTag openSource={m.openSource} />
+                </div>
+                <div style={{ fontSize: 12, color: "var(--mr-text-3)", marginTop: 2 }}>
+                  {m.vendor} ·{" "}
+                  <Link href={`/detail/${m.id}`} className="mr-link">
+                    查看详情
+                  </Link>
+                </div>
+                <div style={{ fontSize: 12, color: "var(--mr-text-4)", marginTop: 2 }}>
+                  {m.context} 上下文 · 更新于 {m.updatedAt}
+                </div>
               </div>
             </div>
           );
