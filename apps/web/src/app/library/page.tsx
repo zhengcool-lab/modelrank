@@ -48,7 +48,7 @@ export default function LibraryPage() {
       <div style={{ padding: "24px 44px 0 44px" }}>
         <div style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.4px", color: "var(--mr-text)" }}>模型库</div>
         <div style={{ fontSize: 13, color: "var(--mr-text-2)", marginTop: 6 }}>
-          全量 128 个模型 · 按综合分排序 · 数据更新于 10-16 08:00 · 示例/mockup
+          全量 128 个模型 · 按综合分排序 · 数据更新于 10-16 08:00
         </div>
       </div>
 
@@ -152,7 +152,7 @@ export default function LibraryPage() {
           }}
         >
           <span style={{ fontSize: 12, color: "var(--mr-text-3)" }}>
-            示例/mockup · 第 {(page - 1) * PAGE_SIZE + (pageRows.length ? 1 : 0)}–
+            第 {(page - 1) * PAGE_SIZE + (pageRows.length ? 1 : 0)}–
             {(page - 1) * PAGE_SIZE + pageRows.length} 条 / 共 {rows.length} 个模型
           </span>
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>

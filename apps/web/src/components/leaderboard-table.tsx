@@ -24,18 +24,19 @@ import {
 
 const columnHelper = createColumnHelper<UIModelRecord>();
 
-function DimBar({ label, value }: { label: string; value: number }) {
+function MiniDim({ label, value }: { label: string; value: number }) {
   return (
-    <div style={{ width: 102 }}>
-      <div style={{ fontSize: 12, color: "var(--mr-text-3)" }}>
-        {label} {value}
+    <div style={{ width: 40 }}>
+      <div style={{ fontSize: 10, color: "var(--mr-text-3)" }}>{label}</div>
+      <div style={{ fontSize: 12, fontWeight: 600, color: "var(--mr-text-2)", marginTop: 1 }}>
+        {value}
       </div>
       <div
         style={{
           height: 4,
           background: "var(--mr-border-soft)",
           borderRadius: 2,
-          marginTop: 2,
+          marginTop: 3,
         }}
       >
         <div
@@ -186,19 +187,15 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
       }),
       columnHelper.display({
         id: "dims",
-        header: "能力（推理/代码/中文/多模态）",
+        header: "能力",
         cell: ({ row }) => {
           const d = row.original.dims;
           return (
-            <div>
-              <div style={{ display: "flex", gap: 8 }}>
-                <DimBar label="推理" value={d.reasoning} />
-                <DimBar label="代码" value={d.code} />
-              </div>
-              <div style={{ display: "flex", gap: 8, marginTop: 5 }}>
-                <DimBar label="中文" value={d.chinese} />
-                <DimBar label="多模态" value={d.multimodal} />
-              </div>
+            <div style={{ display: "flex", gap: 6 }}>
+              <MiniDim label="推理" value={d.reasoning} />
+              <MiniDim label="代码" value={d.code} />
+              <MiniDim label="中文" value={d.chinese} />
+              <MiniDim label="多模态" value={d.multimodal} />
             </div>
           );
         },
@@ -280,14 +277,14 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
 
   const widths: Record<string, number> = {
     select: 40,
-    rank: 76,
-    model: 280,
-    dims: 230,
-    score: 140,
-    price: 180,
-    tier: 120,
-    source: 110,
-    trend: 96,
+    rank: 64,
+    model: 260,
+    dims: 180,
+    score: 120,
+    price: 160,
+    tier: 90,
+    source: 80,
+    trend: 80,
   };
 
   const headerGroups = table.getHeaderGroups();
@@ -296,7 +293,7 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
   return (
     <div
       className="mr-card"
-      style={{ margin: "14px 44px 0 44px", overflow: "hidden" }}
+      style={{ margin: "14px 44px 0 44px", overflowX: "auto", overflowY: "hidden" }}
     >
       {/* header row */}
       {headerGroups.map((hg) => (
@@ -343,7 +340,7 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
           style={{
             display: "flex",
             alignItems: "center",
-            height: 76,
+            height: 64,
             padding: "0 20px",
             borderBottom:
               i === rows.length - 1
@@ -378,7 +375,7 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
         }}
       >
         <span style={{ fontSize: 12, color: "var(--mr-text-3)" }}>
-          示例/mockup 数据 · 共 128 个模型
+          共 128 个模型
         </span>
         <Link href="/library" className="mr-btn-primary">
           查看完整榜单

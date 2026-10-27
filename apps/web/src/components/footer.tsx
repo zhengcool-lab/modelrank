@@ -30,7 +30,7 @@ export function Footer() {
         </Link>
       </div>
       <div style={{ fontSize: 12, color: "var(--mr-text-3)" }}>
-        © 2026 ModelRank 模型榜 · 示例/mockup 数据，不构成采购建议
+        © 2026 ModelRank 模型榜 · 不构成采购建议
       </div>
     </div>
   );

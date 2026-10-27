@@ -25,7 +25,7 @@ export default function MethodologyPage() {
       <div style={{ padding: "24px 44px 0 44px" }}>
         <div style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.4px", color: "var(--mr-text)" }}>评分方法论</div>
         <div style={{ fontSize: 13, color: "var(--mr-text-2)", marginTop: 6 }}>
-          公开基准聚合加权 v0.9 · 指数平滑周环比 · 透明可申诉 · 示例/mockup
+          公开基准聚合加权 v0.9 · 指数平滑周环比 · 透明可申诉
         </div>
       </div>
 
@@ -49,7 +49,7 @@ export default function MethodologyPage() {
             </div>
             <div style={{ fontSize: 12, color: "var(--mr-text-3)", lineHeight: 1.8, marginTop: 10 }}>
               · α = 0.25 指数平滑周环比，避免单周波动；<br />
-              · 盲测加权 v1 暂缓，待样本量 ≥ 3000 后启用（示例/mockup）。
+              · 盲测加权 v1 暂缓，待样本量 ≥ 3000 后启用。
             </div>
           </div>
 

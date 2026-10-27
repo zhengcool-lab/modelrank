@@ -65,7 +65,7 @@ export function LeadForm() {
     <div className="mr-card" style={{ padding: "18px 20px", marginTop: 14 }}>
       <div style={{ fontSize: 13, fontWeight: 600, color: "var(--mr-text)" }}>企业咨询留资</div>
       <div style={{ fontSize: 11, color: "var(--mr-text-3)", marginTop: 2 }}>
-        留下需求，商务将在 1 个工作日内联系 · 示例/mockup
+        留下需求，商务将在 1 个工作日内联系
       </div>
       <form onSubmit={onSubmit} style={{ marginTop: 10 }}>
         <input

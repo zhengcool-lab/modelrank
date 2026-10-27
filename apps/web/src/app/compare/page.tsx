@@ -11,9 +11,9 @@ import { useCompare } from "@/context/compare";
 import { DeltaText, TierBadge } from "@/components/badges";
 
 const BUDGET_SEGMENTS = [
-  { id: 0, label: "¥0–100", pick: "deepseek-r1", note: "月成本 ≈ ¥47（按 3000 万输入 token 估算 · 示例/mockup）" },
-  { id: 1, label: "¥100–500", pick: "gpt-5", note: "月成本 ≈ ¥320（按 3000 万输入 token 估算 · 示例/mockup）" },
-  { id: 2, label: "¥500+", pick: "claude-opus-4-5", note: "月成本 ≈ ¥3,810（按 3000 万输入 token 估算 · 示例/mockup）" },
+  { id: 0, label: "¥0–100", pick: "deepseek-r1", note: "月成本 ≈ ¥47（按 3000 万输入 token 估算）" },
+  { id: 1, label: "¥100–500", pick: "gpt-5", note: "月成本 ≈ ¥320（按 3000 万输入 token 估算）" },
+  { id: 2, label: "¥500+", pick: "claude-opus-4-5", note: "月成本 ≈ ¥3,810（按 3000 万输入 token 估算）" },
 ] as const;
 
 function DimBars({ dims }: { dims: { reasoning: number; code: number; chinese: number; multimodal: number } }) {
@@ -82,7 +82,7 @@ function CompareInner() {
             color: "var(--mr-text-2)",
           }}
         >
-          空选择态：尚未选择模型——<Link href="/" className="mr-link">从首页勾选</Link> 2–4 个模型后，此处出现对比横表 · 示例/mockup
+          空选择态：尚未选择模型——<Link href="/" className="mr-link">从首页勾选</Link> 2–4 个模型后，此处出现对比横表
         </div>
       )}
 
@@ -132,7 +132,7 @@ function CompareInner() {
             }}
           />
           <div style={{ fontSize: 12, color: "var(--mr-text-2)", marginTop: 10 }}>
-            按预算自动计算推荐模型与月用量（示例/mockup）。
+            按预算自动计算推荐模型与月用量。
           </div>
           <button type="button" onClick={onRecalc} className="mr-btn-orange" style={{ width: "100%", marginTop: 16 }}>
             重新计算
@@ -255,7 +255,7 @@ function CompareInner() {
             综合评分 {strongest.score.toFixed(1)}
           </div>
           <div style={{ fontSize: 12, color: "rgba(255,255,255,0.65)", marginTop: 10 }}>
-            连续 8 周榜首 · 示例/mockup
+            连续 8 周榜首
           </div>
         </div>
         <div className="mr-card" style={{ flex: "1 1 220px", padding: "18px 20px" }}>

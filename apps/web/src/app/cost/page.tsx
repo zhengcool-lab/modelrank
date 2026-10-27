@@ -61,7 +61,7 @@ function CostInner() {
       <div style={{ padding: "24px 44px 0 44px" }}>
         <div style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.4px", color: "var(--mr-text)" }}>成本计算器</div>
         <div style={{ fontSize: 13, color: "var(--mr-text-2)", marginTop: 6 }}>
-          按月用量与输入/输出比例，估算月度 API 成本 · 示例/mockup
+          按月用量与输入/输出比例，估算月度 API 成本
         </div>
       </div>
 
@@ -158,7 +158,7 @@ function CostInner() {
             })}
           </div>
           <div style={{ fontSize: 12, color: "var(--mr-text-3)", marginTop: 6 }}>
-            默认 30%（行业 20–40% 中值）· 示例/mockup
+            默认 30%（行业 20–40% 中值）
           </div>
         </div>
 
@@ -236,7 +236,7 @@ function CostInner() {
           月成本 = 总token × α × 输入价 × (1 − 缓存命中率) + 总token × (1 − α) × 输出价
         </div>
         <div style={{ fontSize: 12, color: "var(--mr-text-3)", marginTop: 6 }}>
-          其中「总token」单位为百万 token（M）；α 为输入占比，默认 0.25；缓存命中率默认 30%。示例/mockup。
+          其中「总token」单位为百万 token（M）；α 为输入占比，默认 0.25；缓存命中率默认 30%。
         </div>
       </div>
     </>

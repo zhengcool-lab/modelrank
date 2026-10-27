@@ -6,7 +6,7 @@ import { Providers } from "./providers";
 export const metadata: Metadata = {
   metadataBase: new URL("https://modelrank.zheng-cool.workers.dev"),
   title: "ModelRank 模型榜",
-  description: "ModelRank — 大模型能力排行榜 · 示例/mockup",
+  description: "ModelRank — 大模型能力排行榜，覆盖价格、性能与性价比。",
   openGraph: {
     title: "ModelRank 模型榜",
     description: "公开基准聚合加权的大模型能力排行榜，覆盖价格、性能与性价比。",

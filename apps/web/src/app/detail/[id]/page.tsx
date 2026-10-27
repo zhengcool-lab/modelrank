@@ -42,7 +42,7 @@ export default async function DetailPage({ params }: Props) {
         <span style={{ color: "var(--mr-text-4)", margin: "0 6px" }}>/</span>
         <Link href="/library" className="mr-link">{model.vendor}</Link>
         <span style={{ color: "var(--mr-text-4)", margin: "0 6px" }}>/</span>
-        <span style={{ color: "var(--mr-text-2)" }}>{model.name} · 示例/mockup</span>
+        <span style={{ color: "var(--mr-text-2)" }}>{model.name}</span>
       </div>
 
       {/* header */}
@@ -127,7 +127,7 @@ export default async function DetailPage({ params }: Props) {
                 #{rank} / 128
               </div>
               <div style={{ fontSize: 12, color: "var(--mr-text-3)", marginTop: 2 }}>
-                ±{model.ci.toFixed(1)} 置信区间 · 示例/mockup
+                ±{model.ci.toFixed(1)} 置信区间
               </div>
             </div>
           </div>
@@ -139,7 +139,7 @@ export default async function DetailPage({ params }: Props) {
             </div>
             <DetailCharts model={model} />
             <div style={{ fontSize: 12, color: "var(--mr-text-3)", marginTop: 8 }}>
-              单位：综合分 · 每周采样 · 示例/mockup
+              单位：综合分 · 每周采样
             </div>
           </div>
 
@@ -209,7 +209,7 @@ export default async function DetailPage({ params }: Props) {
           <div className="mr-card" style={{ padding: "18px 20px", marginTop: 16 }}>
             <div style={{ fontSize: 13, fontWeight: 600, color: "var(--mr-text)" }}>相关新闻</div>
             {relatedNews.length === 0 && (
-              <div style={{ fontSize: 12, color: "var(--mr-text-3)", marginTop: 10 }}>暂无相关新闻 · 示例/mockup</div>
+              <div style={{ fontSize: 12, color: "var(--mr-text-3)", marginTop: 10 }}>暂无相关新闻</div>
             )}
             {relatedNews.map((n) => (
               <a
@@ -244,7 +244,7 @@ export default async function DetailPage({ params }: Props) {
           <div className="mr-card" style={{ padding: "18px 20px" }}>
             <div style={{ fontSize: 13, fontWeight: 600, color: "var(--mr-text)" }}>厂商背景</div>
             <div style={{ fontSize: 12, color: "var(--mr-text-2)", lineHeight: 1.7, marginTop: 8 }}>
-              {model.vendor} · 旗舰{model.openSource ? "开源" : "闭源"}模型线 · 示例/mockup 简介。
+              {model.vendor} · 旗舰{model.openSource ? "开源" : "闭源"}模型线简介。
             </div>
           </div>
           <div className="mr-card" style={{ padding: "18px 20px", marginTop: 14 }}>
