@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+export const runtime = "edge";
+
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getUIModel, UI_MODELS, UI_NEWS } from "@/lib/seed-data";

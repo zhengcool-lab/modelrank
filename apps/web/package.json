@@ -8,8 +8,8 @@
     "start": "next start -p 3000",
     "lint": "echo \"[web] eslint deferred to B agent\"",
     "typecheck": "tsc --noEmit",
-    "preview:cf": "opennextjs-cloudflare build && wrangler dev",
-    "deploy": "opennextjs-cloudflare build && wrangler deploy"
+    "preview:cf": "next build && npx @cloudflare/next-on-pages && wrangler pages dev .vercel/output/static",
+    "deploy": "next build && npx @cloudflare/next-on-pages && wrangler pages deploy .vercel/output/static --project-name=modelrank"
   },
   "dependencies": {
     "@arco-design/web-react": "^2.66.18",
@@ -25,11 +25,13 @@
     "tailwindcss": "^4.0.0"
   },
   "devDependencies": {
+    "@cloudflare/next-on-pages": "^1.13.16",
     "@opennextjs/cloudflare": "^1.0.0",
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "typescript": "^5.6.3",
+    "vercel": "47.0.4",
     "wrangler": "^4.148.0"
   }
 }

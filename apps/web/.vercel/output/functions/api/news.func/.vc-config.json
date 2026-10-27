@@ -1,0 +1,18 @@
+{
+  "runtime": "edge",
+  "name": "api/news",
+  "deploymentTarget": "v8-worker",
+  "entrypoint": "index.js",
+  "assets": [],
+  "framework": {
+    "slug": "nextjs",
+    "version": "15.5.28"
+  },
+  "environment": {
+    "__NEXT_BUILD_ID": "z4EeXehfUvLMgy3uUJcvN",
+    "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "rIaFqPaB5Qm/ZG2rWb8IfG4usq6y9PQrkq+yQbKgmg8=",
+    "__NEXT_PREVIEW_MODE_ID": "a39ddd73284961be138c383bac0f98dd",
+    "__NEXT_PREVIEW_MODE_SIGNING_KEY": "006f9b7a7d8ae1a8968795510f602fe06ca4a38dcdadfb62549e19850839820a",
+    "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "195ca557a1fe92229caafe0806fadf475210d13e726e1867a8767df227466156"
+  }
+}

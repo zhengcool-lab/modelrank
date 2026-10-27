@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+export const runtime = "edge";
+
 import { listAllModels } from "@/lib/repo";
 import {
   calculateMonthlyCost,
