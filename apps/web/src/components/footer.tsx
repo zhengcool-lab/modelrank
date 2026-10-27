@@ -3,14 +3,8 @@ import Link from "next/link";
 export function Footer() {
   return (
     <div
-      style={{
-        margin: "22px 44px 0 44px",
-        paddingTop: 16,
-        borderTop: "1px solid var(--mr-border)",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
+      className="mr-mx flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3"
+      style={{ marginTop: 22, paddingTop: 16, borderTop: "1px solid var(--mr-border)" }}
     >
       <div style={{ fontSize: 12, color: "var(--mr-text-3)" }}>
         <Link href="/methodology" style={{ color: "var(--mr-text-3)", textDecoration: "none" }}>

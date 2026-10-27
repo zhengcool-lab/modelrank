@@ -58,14 +58,14 @@ function CostInner() {
 
   return (
     <>
-      <div style={{ padding: "24px 44px 0 44px" }}>
+      <div className="mr-pad-x" style={{ paddingTop: 24 }}>
         <div style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.4px", color: "var(--mr-text)" }}>成本计算器</div>
         <div style={{ fontSize: 13, color: "var(--mr-text-2)", marginTop: 6 }}>
           按月用量与输入/输出比例，估算月度 API 成本
         </div>
       </div>
 
-      <div style={{ display: "flex", gap: 20, margin: "18px 44px 0 44px", flexWrap: "wrap" }}>
+      <div className="mr-mx" style={{ display: "flex", gap: 20, flexWrap: "wrap", marginTop: 18 }}>
         {/* left params */}
         <div className="mr-card" style={{ flex: "1 1 320px", padding: "20px 22px" }}>
           <div style={{ fontSize: 13, fontWeight: 600, color: "var(--mr-text)" }}>选择模型</div>
@@ -230,7 +230,7 @@ function CostInner() {
       </div>
 
       {/* formula card */}
-      <div className="mr-card" style={{ margin: "16px 44px 0 44px", padding: "16px 22px" }}>
+      <div className="mr-card mr-mx" style={{ marginTop: 16, padding: "16px 22px" }}>
         <div style={{ fontSize: 13, fontWeight: 600, color: "var(--mr-text)" }}>计算公式</div>
         <div style={{ fontSize: 13, color: "var(--mr-text-2)", marginTop: 8 }}>
           月成本 = 总token × α × 输入价 × (1 − 缓存命中率) + 总token × (1 − α) × 输出价
@@ -248,14 +248,14 @@ export default function CostPage() {
     <div>
       <NavHeader />
 
-      <div style={{ padding: "14px 44px 0 44px", fontSize: 12, color: "var(--mr-text-3)" }}>
+      <div className="mr-pad-x" style={{ paddingTop: 14, fontSize: 12, color: "var(--mr-text-3)" }}>
         <Link href="/" className="mr-link">模型榜</Link>
         <span style={{ color: "var(--mr-text-4)", margin: "0 6px" }}>/</span>
         <span style={{ color: "var(--mr-text-2)" }}>成本计算器</span>
       </div>
 
       {/* useSearchParams 必须包在 Suspense 边界内 */}
-      <Suspense fallback={<div style={{ padding: "24px 44px" }}>加载中…</div>}>
+      <Suspense fallback={<div className="mr-pad-x" style={{ paddingTop: 24 }}>加载中…</div>}>
         <CostInner />
       </Suspense>
 

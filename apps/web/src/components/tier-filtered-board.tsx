@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { UI_MODELS } from "@/lib/seed-data";
 import type { Tier } from "@/lib/types";
 import { LeaderboardTable } from "@/components/leaderboard-table";
+import { LeaderboardCards } from "@/components/leaderboard-cards";
 
 const TIERS: Tier[] = ["S", "A", "B", "C"];
 
@@ -34,7 +35,7 @@ export function TierFilteredBoard() {
   return (
     <>
       {/* 性价比档多选 */}
-      <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 44px 0 44px" }}>
+      <div className="mr-pad-x" style={{ display: "flex", alignItems: "center", gap: 8, paddingTop: 10, flexWrap: "wrap" }}>
         <span style={{ fontSize: 12, color: "var(--mr-text-3)" }}>性价比档：</span>
         {TIERS.map((t) => {
           const active = selected.has(t);
@@ -67,7 +68,13 @@ export function TierFilteredBoard() {
         </span>
       </div>
 
-      <LeaderboardTable models={filtered} />
+      {/* desktop: table */}
+      <div className="hidden md:block">
+        <LeaderboardTable models={filtered} />
+      </div>
+
+      {/* mobile: card list */}
+      <LeaderboardCards models={filtered} />
     </>
   );
 }

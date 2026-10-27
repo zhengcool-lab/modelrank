@@ -48,7 +48,7 @@ function SearchInner() {
 
   return (
     <>
-      <div style={{ padding: "24px 44px 0 44px" }}>
+      <div className="mr-pad-x" style={{ paddingTop: 24 }}>
         <div style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.4px", color: "var(--mr-text)" }}>搜索</div>
         <div style={{ fontSize: 13, color: "var(--mr-text-2)", marginTop: 6 }}>
           按模型名、厂商、关键词全站检索
@@ -56,7 +56,7 @@ function SearchInner() {
       </div>
 
       {/* search box */}
-      <div style={{ display: "flex", gap: 10, margin: "18px 44px 0 44px" }}>
+      <div className="mr-mx" style={{ display: "flex", gap: 10, marginTop: 18 }}>
         <input
           autoFocus
           value={q}
@@ -86,8 +86,9 @@ function SearchInner() {
 
       {q.trim() === "" ? (
         <div
+          className="mr-mx"
           style={{
-            margin: "22px 44px 0 44px",
+            marginTop: 22,
             border: "1px dashed var(--mr-text-4)",
             borderRadius: 8,
             padding: 28,
@@ -103,10 +104,10 @@ function SearchInner() {
         </div>
       ) : (
         <>
-          <div style={{ fontSize: 14, fontWeight: 600, color: "var(--mr-text)", margin: "22px 44px 10px 44px" }}>
+          <div className="mr-mx" style={{ fontSize: 14, fontWeight: 600, color: "var(--mr-text)", marginTop: 22, marginBottom: 10 }}>
             模型（{modelHits.length}）
           </div>
-          <div className="mr-card" style={{ margin: "0 44px", overflow: "hidden" }}>
+          <div className="mr-card mr-mx" style={{ overflow: "hidden" }}>
             {modelHits.map((m) => (
               <Link
                 key={m.id}
@@ -139,10 +140,10 @@ function SearchInner() {
             )}
           </div>
 
-          <div style={{ fontSize: 14, fontWeight: 600, color: "var(--mr-text)", margin: "22px 44px 10px 44px" }}>
+          <div className="mr-mx" style={{ fontSize: 14, fontWeight: 600, color: "var(--mr-text)", marginTop: 22, marginBottom: 10 }}>
             新闻（{newsHits.length}）
           </div>
-          <div className="mr-card" style={{ margin: "0 44px", overflow: "hidden" }}>
+          <div className="mr-card mr-mx" style={{ overflow: "hidden" }}>
             {newsHits.map((n) => (
               <a
                 key={n.id}
@@ -184,14 +185,14 @@ export default function SearchPage() {
     <div>
       <NavHeader />
 
-      <div style={{ padding: "14px 44px 0 44px", fontSize: 12, color: "var(--mr-text-3)" }}>
+      <div className="mr-pad-x" style={{ paddingTop: 14, fontSize: 12, color: "var(--mr-text-3)" }}>
         <Link href="/" className="mr-link">模型榜</Link>
         <span style={{ color: "var(--mr-text-4)", margin: "0 6px" }}>/</span>
         <span style={{ color: "var(--mr-text-2)" }}>搜索</span>
       </div>
 
       {/* useSearchParams 必须包在 Suspense 边界内，否则 next build 会报错 */}
-      <Suspense fallback={<div style={{ padding: "24px 44px" }}>加载中…</div>}>
+      <Suspense fallback={<div className="mr-pad-x" style={{ paddingTop: 24 }}>加载中…</div>}>
         <SearchInner />
       </Suspense>
 

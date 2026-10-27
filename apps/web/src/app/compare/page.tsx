@@ -72,8 +72,10 @@ function CompareInner() {
     <>
       {models.length === 0 && (
         <div
+          className="mr-mx"
           style={{
-            margin: "0 44px 12px 44px",
+            marginTop: 0,
+            marginBottom: 12,
             background: "var(--mr-card-2)",
             border: "1px dashed var(--mr-text-4)",
             borderRadius: 8,
@@ -86,7 +88,7 @@ function CompareInner() {
         </div>
       )}
 
-      <div style={{ display: "flex", gap: 20, margin: "0 44px", flexWrap: "wrap" }}>
+      <div className="mr-mx" style={{ display: "flex", gap: 20, flexWrap: "wrap", marginTop: 0 }}>
         {/* budget card */}
         <div className="mr-card" style={{ width: 340, flex: "1 1 280px", padding: 20 }}>
           <div style={{ fontSize: 15, fontWeight: 600, color: "var(--mr-text)", marginBottom: 14 }}>月预算</div>
@@ -242,7 +244,7 @@ function CompareInner() {
       </div>
 
       {/* conclusion cards */}
-      <div style={{ display: "flex", gap: 16, margin: "18px 44px 0 44px", flexWrap: "wrap" }}>
+      <div className="mr-mx" style={{ display: "flex", gap: 16, flexWrap: "wrap", marginTop: 18 }}>
         <div style={{ flex: "1 1 220px", background: "var(--mr-primary)", borderRadius: 8, padding: "18px 20px" }}>
           <div style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.85)" }}>综合最强</div>
           <Link
@@ -307,13 +309,13 @@ export default function ComparePage() {
     <div>
       <NavHeader />
 
-      <div style={{ padding: "14px 44px 0 44px", fontSize: 12, color: "var(--mr-text-3)" }}>
+      <div className="mr-pad-x" style={{ paddingTop: 14, fontSize: 12, color: "var(--mr-text-3)" }}>
         <Link href="/" className="mr-link">模型榜</Link>
         <span style={{ color: "var(--mr-text-4)", margin: "0 6px" }}>/</span>
         <span style={{ color: "var(--mr-text-2)" }}>对比器</span>
       </div>
 
-      <div style={{ padding: "24px 44px 16px 44px" }}>
+      <div className="mr-pad-x" style={{ paddingTop: 24, paddingBottom: 16 }}>
         <div style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.4px", color: "var(--mr-text)" }}>
           模型对比
         </div>

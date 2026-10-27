@@ -37,7 +37,7 @@ export default async function DetailPage({ params }: Props) {
       <NavHeader />
 
       {/* breadcrumb */}
-      <div style={{ padding: "20px 44px 0 44px", fontSize: 12, color: "var(--mr-text-3)" }}>
+      <div className="mr-pad-x" style={{ paddingTop: 20, fontSize: 12, color: "var(--mr-text-3)" }}>
         <Link href="/" className="mr-link">模型榜</Link>
         <span style={{ color: "var(--mr-text-4)", margin: "0 6px" }}>/</span>
         <Link href="/library" className="mr-link">{model.vendor}</Link>
@@ -47,11 +47,12 @@ export default async function DetailPage({ params }: Props) {
 
       {/* header */}
       <div
+        className="mr-pad-x"
         style={{
           display: "flex",
           alignItems: "flex-end",
           justifyContent: "space-between",
-          padding: "14px 44px 0 44px",
+          paddingTop: 14,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
@@ -98,17 +99,12 @@ export default async function DetailPage({ params }: Props) {
       </div>
 
       {/* main：移动端单列，桌面端主内容 2fr + 侧栏 1fr */}
-      <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-5 mx-11 mt-5">
+      <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-5 mx-4 mt-4 md:mx-11 md:mt-5">
         <div style={{ minWidth: 0 }}>
           {/* overview card */}
           <div
-            className="mr-card"
-            style={{
-              padding: "18px 20px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
+            className="mr-card flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+            style={{ padding: "18px 20px" }}
           >
             <div>
               <div style={{ fontSize: 12, fontWeight: 600, color: "var(--mr-text-3)" }}>
@@ -121,7 +117,7 @@ export default async function DetailPage({ params }: Props) {
                 <DeltaText model={model} />
               </div>
             </div>
-            <div style={{ textAlign: "right" }}>
+            <div className="sm:text-right">
               <div style={{ fontSize: 12, fontWeight: 600, color: "var(--mr-text-3)" }}>综合排名</div>
               <div style={{ fontSize: 26, fontWeight: 600, color: rankColor, marginTop: 4 }}>
                 #{rank} / 128
@@ -147,7 +143,7 @@ export default async function DetailPage({ params }: Props) {
           <div style={{ display: "flex", gap: 16, marginTop: 16, flexWrap: "wrap" }}>
             <div className="mr-card" style={{ flex: "1 1 260px", padding: "18px 20px" }}>
               <div style={{ fontSize: 13, fontWeight: 600, color: "var(--mr-text)" }}>价格（API 按量）</div>
-              <div style={{ display: "flex", gap: 24, marginTop: 12, flexWrap: "wrap" }}>
+              <div className="flex flex-wrap gap-4 sm:gap-6" style={{ marginTop: 12 }}>
                 <div>
                   <div style={{ fontSize: 12, color: "var(--mr-text-3)" }}>输入</div>
                   <div style={{ fontSize: 20, fontWeight: 600, color: "var(--mr-text)" }}>

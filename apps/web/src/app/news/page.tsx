@@ -20,13 +20,13 @@ export default function NewsPage() {
     <div>
       <NavHeader />
 
-      <div style={{ padding: "14px 44px 0 44px", fontSize: 12, color: "var(--mr-text-3)" }}>
+      <div className="mr-pad-x" style={{ paddingTop: 14, fontSize: 12, color: "var(--mr-text-3)" }}>
         <Link href="/" className="mr-link">模型榜</Link>
         <span style={{ color: "var(--mr-text-4)", margin: "0 6px" }}>/</span>
         <span style={{ color: "var(--mr-text-2)" }}>大模型新闻</span>
       </div>
 
-      <div style={{ padding: "24px 44px 0 44px" }}>
+      <div className="mr-pad-x" style={{ paddingTop: 24 }}>
         <div style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.4px", color: "var(--mr-text)" }}>大模型新闻</div>
         <div style={{ fontSize: 13, color: "var(--mr-text-2)", marginTop: 6 }}>
           发布 · 评测 · 融资 · 政策 · 价格
@@ -34,7 +34,7 @@ export default function NewsPage() {
       </div>
 
       {/* category segmented */}
-      <div style={{ display: "inline-flex", background: "var(--mr-card-2)", borderRadius: 4, padding: 3, margin: "16px 44px 0 44px" }}>
+      <div className="mr-mx" style={{ display: "inline-flex", background: "var(--mr-card-2)", borderRadius: 4, padding: 3, marginTop: 16 }}>
         {CATS.map((c) => (
           <button
             key={c}
@@ -57,7 +57,7 @@ export default function NewsPage() {
       </div>
 
       {/* cards */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 16, margin: "16px 44px 0 44px" }}>
+      <div className="mr-mx" style={{ display: "flex", flexWrap: "wrap", gap: 16, marginTop: 16 }}>
         {rows.map((n) => (
           <a
             key={n.id}
@@ -65,8 +65,8 @@ export default function NewsPage() {
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              width: 434,
-              flex: "none",
+              flex: "1 1 100%",
+              maxWidth: 434,
               background: "var(--mr-card)",
               border: "1px solid var(--mr-border)",
               borderRadius: 8,

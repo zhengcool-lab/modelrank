@@ -90,12 +90,12 @@ export function DetailCharts({ model }: { model: UIModelRecord }) {
   );
 
   return (
-    <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
-      <div style={{ flex: 1 }}>
-        <EChart option={lineOption} height={140} />
+    <div className="flex flex-col md:flex-row gap-3 md:gap-4 md:items-center">
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <EChart option={lineOption} height={200} />
       </div>
-      <div style={{ width: 150, flex: "none" }}>
-        <EChart option={radarOption} height={150} />
+      <div className="w-full md:w-[150px] md:flex-none">
+        <EChart option={radarOption} height={220} />
       </div>
     </div>
   );

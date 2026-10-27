@@ -18,36 +18,35 @@ import {
   OpenTag,
   PriceLevelTag,
   SourceTag,
-  Sparkline,
   TierBadge,
 } from "./badges";
 
 const columnHelper = createColumnHelper<UIModelRecord>();
 
-function MiniDim({ label, value }: { label: string; value: number }) {
+/** 2×2 能力维度网格：推理/代码 上排，中文/多模态 下排，纯数字无 bar */
+function DimsGrid({ dims }: { dims: { reasoning: number; code: number; chinese: number; multimodal: number } }) {
+  const items = [
+    { label: "推理", value: dims.reasoning },
+    { label: "代码", value: dims.code },
+    { label: "中文", value: dims.chinese },
+    { label: "多模态", value: dims.multimodal },
+  ];
   return (
-    <div style={{ width: 40 }}>
-      <div style={{ fontSize: 10, color: "var(--mr-text-3)" }}>{label}</div>
-      <div style={{ fontSize: 12, fontWeight: 600, color: "var(--mr-text-2)", marginTop: 1 }}>
-        {value}
-      </div>
-      <div
-        style={{
-          height: 4,
-          background: "var(--mr-border-soft)",
-          borderRadius: 2,
-          marginTop: 3,
-        }}
-      >
-        <div
-          style={{
-            width: `${value}%`,
-            height: 4,
-            background: "var(--mr-primary)",
-            borderRadius: 2,
-          }}
-        />
-      </div>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(2, auto)",
+        columnGap: 14,
+        rowGap: 4,
+        width: "fit-content",
+      }}
+    >
+      {items.map((it) => (
+        <div key={it.label} style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
+          <span style={{ fontSize: 10, color: "var(--mr-text-4)" }}>{it.label}</span>
+          <span style={{ fontSize: 13, fontWeight: 600, color: "var(--mr-text-2)" }}>{it.value}</span>
+        </div>
+      ))}
     </div>
   );
 }
@@ -187,18 +186,15 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
       }),
       columnHelper.display({
         id: "dims",
-        header: "能力",
-        cell: ({ row }) => {
-          const d = row.original.dims;
-          return (
-            <div style={{ display: "flex", gap: 6 }}>
-              <MiniDim label="推理" value={d.reasoning} />
-              <MiniDim label="代码" value={d.code} />
-              <MiniDim label="中文" value={d.chinese} />
-              <MiniDim label="多模态" value={d.multimodal} />
+        header: () => (
+          <div>
+            <div>能力</div>
+            <div style={{ fontSize: 10, fontWeight: 400, color: "var(--mr-text-4)", marginTop: 1 }}>
+              推理·代码·中文·多模态
             </div>
-          );
-        },
+          </div>
+        ),
+        cell: ({ row }) => <DimsGrid dims={row.original.dims} />,
       }),
       columnHelper.accessor("score", {
         id: "score",
@@ -257,11 +253,6 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
         header: "来源",
         cell: ({ row }) => <SourceTag source={row.original.source} />,
       }),
-      columnHelper.display({
-        id: "trend",
-        header: "趋势",
-        cell: ({ row }) => <Sparkline model={row.original} />,
-      }),
     ],
     [models, selected, has, toggle, max, sorting]
   );
@@ -278,13 +269,12 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
   const widths: Record<string, number> = {
     select: 40,
     rank: 64,
-    model: 260,
-    dims: 180,
+    model: 280,
+    dims: 140,
     score: 120,
     price: 160,
-    tier: 90,
+    tier: 80,
     source: 80,
-    trend: 80,
   };
 
   const headerGroups = table.getHeaderGroups();
@@ -292,8 +282,8 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
 
   return (
     <div
-      className="mr-card"
-      style={{ margin: "14px 44px 0 44px", overflowX: "auto", overflowY: "hidden" }}
+      className="mr-card mr-mx"
+      style={{ marginTop: 14, overflowX: "auto", overflowY: "hidden" }}
     >
       {/* header row */}
       {headerGroups.map((hg) => (

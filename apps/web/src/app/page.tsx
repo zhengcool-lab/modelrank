@@ -14,12 +14,8 @@ export default function Home() {
 
       {/* title */}
       <div
-        style={{
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-between",
-          padding: "32px 44px 0 44px",
-        }}
+        className="mr-pad-x flex flex-col sm:flex-row sm:items-start sm:justify-between"
+        style={{ paddingTop: 32 }}
       >
         <div>
           <div style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.2px", color: "var(--mr-text)" }}>
@@ -53,7 +49,7 @@ export default function Home() {
       <CompareBar />
 
       {/* news strip */}
-      <div style={{ margin: "32px 44px 0 44px" }}>
+      <div className="mr-mx" style={{ marginTop: 32 }}>
         <div
           style={{
             display: "flex",
@@ -67,7 +63,7 @@ export default function Home() {
             查看全部 →
           </Link>
         </div>
-        <div style={{ display: "flex", gap: 14 }}>
+        <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
           {news.map((n) => (
             <a
               key={n.id}

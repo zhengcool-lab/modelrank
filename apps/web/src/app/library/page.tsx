@@ -39,13 +39,13 @@ export default function LibraryPage() {
     <div>
       <NavHeader />
 
-      <div style={{ padding: "14px 44px 0 44px", fontSize: 12, color: "var(--mr-text-3)" }}>
+      <div className="mr-pad-x" style={{ paddingTop: 14, fontSize: 12, color: "var(--mr-text-3)" }}>
         <Link href="/" className="mr-link">模型榜</Link>
         <span style={{ color: "var(--mr-text-4)", margin: "0 6px" }}>/</span>
         <span style={{ color: "var(--mr-text-2)" }}>模型库</span>
       </div>
 
-      <div style={{ padding: "24px 44px 0 44px" }}>
+      <div className="mr-pad-x" style={{ paddingTop: 24 }}>
         <div style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.4px", color: "var(--mr-text)" }}>模型库</div>
         <div style={{ fontSize: 13, color: "var(--mr-text-2)", marginTop: 6 }}>
           全量 128 个模型 · 按综合分排序 · 数据更新于 10-16 08:00
@@ -53,7 +53,7 @@ export default function LibraryPage() {
       </div>
 
       {/* vendor filter tags */}
-      <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "14px 44px 0 44px" }}>
+      <div className="mr-pad-x" style={{ display: "flex", alignItems: "center", gap: 8, paddingTop: 14, flexWrap: "wrap" }}>
         <span style={{ fontSize: 12, color: "var(--mr-text-3)", marginRight: 4 }}>厂商分组：</span>
         {VENDORS.map((v) => {
           const active = vendor === v;
@@ -81,7 +81,7 @@ export default function LibraryPage() {
       </div>
 
       {/* table */}
-      <div className="mr-card" style={{ margin: "14px 44px 0 44px", overflow: "hidden" }}>
+      <div className="mr-card mr-mx" style={{ marginTop: 14, overflowX: "auto" }}>
         <div
           style={{
             display: "flex",

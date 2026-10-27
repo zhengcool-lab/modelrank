@@ -134,6 +134,30 @@ body {
   text-decoration: none;
 }
 
+/* Responsive horizontal padding: 16px on mobile, 44px on desktop (md ≥ 768px) */
+.mr-pad-x {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+@media (min-width: 768px) {
+  .mr-pad-x {
+    padding-left: 44px;
+    padding-right: 44px;
+  }
+}
+
+/* Responsive horizontal margin: 16px on mobile, 44px on desktop */
+.mr-mx {
+  margin-left: 16px;
+  margin-right: 16px;
+}
+@media (min-width: 768px) {
+  .mr-mx {
+    margin-left: 44px;
+    margin-right: 44px;
+  }
+}
+
 /* Arco dark-mode overrides for the few components we use */
 .arco-input-wrapper,
 .arco-input {
