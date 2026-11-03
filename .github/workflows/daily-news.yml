@@ -1,0 +1,67 @@
+# 云端每日新闻自动更新（可选，比本地定时更可靠——电脑关机也会跑）
+# 启用步骤：
+#   1. 仓库 Settings → Secrets and variables → Actions 添加：
+#      - CLOUDFLARE_API_TOKEN（Cloudflare 后台 → My Profile → API Tokens → Create，
+#        权限选 Cloudflare Pages: Edit，资源选你的 Pages 项目）
+#      - CLOUDFLARE_ACCOUNT_ID（Cloudflare 后台首页右下角 Account ID）
+#   2. push 本文件到 main 分支后，每天 UTC 00:30（北京时间 08:30）自动执行；
+#      也可在 Actions 页手动 Run workflow 立即触发一次。
+name: daily-news
+
+on:
+  schedule:
+    - cron: "30 0 * * *" # UTC 00:30 = 北京 08:30
+  workflow_dispatch:
+
+concurrency:
+  group: daily-news
+  cancel-in-progress: true
+
+jobs:
+  update-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 抓取真实新闻
+        working-directory: data-pipeline
+        run: |
+          pip install -r requirements.txt
+          python -m pipeline run --dry-run
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 生成前端数据并提交
+        run: |
+          cd apps/web
+          node scripts/update-news.mjs
+          cd ../..
+          git config user.name "modelrank-bot"
+          git config user.email "bot@modelrank.local"
+          git add apps/web/src/lib/news-data.ts
+          if git diff --cached --quiet; then
+            echo "新闻无变化，跳过提交"
+          else
+            git commit -m "chore(news): daily auto update $(date +%F)"
+            git push
+          fi
+
+      - name: 构建并部署 Cloudflare Pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        working-directory: apps/web
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build
+          pnpm exec next-on-pages
+          pnpm exec wrangler pages deploy .vercel/output/static --project-name=modelrank

@@ -1,13 +1,19 @@
-import type { ModelSource, PriceLevel, Tier, UIModelRecord } from "@/lib/types";
+import type { ModelSource, Tier, UIModelRecord } from "@/lib/types";
 
-/** 性价比评级徽章：S 主色实底白字 / A #4C7BD9 / B 灰实底 / C 灰底字 */
+/**
+ * 性价比评级徽章：S 主色实底白字 / A 蓝实底白字 / B 半透明灰底描边 / C 浅灰底描边。
+ * A 级底色在 --mr-a-badge(#4c7bd9) 上白字对比度仅 ~4.1:1，未达 AA 4.5:1，
+ * 故用 color-mix 压深一档（随 token 自动适配深浅色主题）。
+ * B/C 用 color-mix 半透明灰 + 内描边，深浅色下都不发飘、不呈"白方块"。
+ */
 export function TierBadge({ tier }: { tier: Tier }) {
   const style: React.CSSProperties = {
     display: "inline-block",
     fontSize: 12,
     fontWeight: 600,
     padding: "3px 12px",
-    borderRadius: 2,
+    borderRadius: 4,
+    lineHeight: 1.4,
   };
   if (tier === "S")
     return (
@@ -15,20 +21,45 @@ export function TierBadge({ tier }: { tier: Tier }) {
     );
   if (tier === "A")
     return (
-      <span style={{ ...style, background: "var(--mr-a-badge)", color: "#fff" }}>A</span>
+      <span
+        style={{
+          ...style,
+          background: "color-mix(in srgb, var(--mr-a-badge) 82%, #000)",
+          color: "#fff",
+        }}
+      >
+        A
+      </span>
     );
   if (tier === "B")
     return (
-      <span style={{ ...style, background: "var(--mr-text-3)", color: "#fff" }}>B</span>
+      <span
+        style={{
+          ...style,
+          background: "color-mix(in srgb, var(--mr-text-3) 26%, transparent)",
+          color: "var(--mr-text-2)",
+          boxShadow:
+            "inset 0 0 0 1px color-mix(in srgb, var(--mr-text-3) 38%, transparent)",
+        }}
+      >
+        B
+      </span>
     );
   return (
-    <span style={{ ...style, background: "var(--mr-card-2)", color: "var(--mr-text-2)" }}>
+    <span
+      style={{
+        ...style,
+        background: "var(--mr-card-2)",
+        color: "var(--mr-text-3)",
+        boxShadow: "inset 0 0 0 1px var(--mr-border)",
+      }}
+    >
       C
     </span>
   );
 }
 
-/** 开源/闭源 tag */
+/** 开源/闭源 tag（间距由调用方用 gap 控制） */
 export function OpenTag({ openSource }: { openSource: boolean }) {
   return (
     <span
@@ -38,8 +69,8 @@ export function OpenTag({ openSource }: { openSource: boolean }) {
         color: openSource ? "var(--mr-up)" : "var(--mr-primary)",
         background: openSource ? "var(--mr-up-bg)" : "var(--mr-primary-bg)",
         padding: "0 6px",
-        borderRadius: 2,
-        marginLeft: 4,
+        borderRadius: 4,
+        lineHeight: 1.6,
       }}
     >
       {openSource ? "开源" : "闭源"}
@@ -63,30 +94,7 @@ export function SourceTag({ source }: { source: ModelSource }) {
         color: s.color,
         background: s.bg,
         padding: "2px 8px",
-        borderRadius: 2,
-      }}
-    >
-      {s.label}
-    </span>
-  );
-}
-
-/** 价格档位 tag */
-export function PriceLevelTag({ level }: { level: PriceLevel }) {
-  const map = {
-    high: { label: "高", color: "var(--mr-warn-text)", bg: "var(--mr-warn-bg)" },
-    mid: { label: "中", color: "var(--mr-text-2)", bg: "var(--mr-card-2)" },
-    low: { label: "低", color: "var(--mr-up)", bg: "var(--mr-up-bg)" },
-  } as const;
-  const s = map[level];
-  return (
-    <span
-      style={{
-        fontSize: 12,
-        color: s.color,
-        background: s.bg,
-        padding: "1px 6px",
-        borderRadius: 2,
+        borderRadius: 4,
       }}
     >
       {s.label}

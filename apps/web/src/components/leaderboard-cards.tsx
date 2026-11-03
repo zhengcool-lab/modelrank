@@ -24,7 +24,7 @@ function RankBadge({ n }: { n: number }) {
         justifyContent: "center",
         width: 32,
         height: 32,
-        borderRadius: 6,
+        borderRadius: 8,
         background: n <= 3 ? color : "var(--mr-card-2)",
         color: n <= 3 ? "#fff" : "var(--mr-text-3)",
         fontSize: 14,
@@ -64,7 +64,7 @@ export function LeaderboardCards({ models }: { models: UIModelRecord[] }) {
   const { selected, toggle, has, max } = useCompare();
 
   return (
-    <div className="md:hidden" style={{ padding: "14px 16px 0 16px", display: "flex", flexDirection: "column", gap: 10 }}>
+    <div className="md:hidden flex flex-col" style={{ padding: "14px 16px 0 16px", gap: 10 }}>
       {models.map((m) => {
         const n = models.filter((x) => x.score > m.score).length + 1;
         const checked = has(m.id);
@@ -103,26 +103,28 @@ export function LeaderboardCards({ models }: { models: UIModelRecord[] }) {
             <ProductLogo modelId={m.id} modelName={m.name} size={36} radius={8} />
 
             <div style={{ flex: 1, minWidth: 0 }}>
-              {/* row 1: name + tier */}
-              <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-                <Link
-                  href={`/detail/${m.id}`}
-                  style={{
-                    fontSize: 15,
-                    fontWeight: 600,
-                    color: "var(--mr-text)",
-                    textDecoration: "none",
-                  }}
-                >
-                  {m.name}
-                </Link>
+              {/* row 1: model name */}
+              <Link
+                href={`/detail/${m.id}`}
+                style={{
+                  fontSize: 15,
+                  fontWeight: 600,
+                  color: "var(--mr-text)",
+                  textDecoration: "none",
+                }}
+              >
+                {m.name}
+              </Link>
+
+              {/* row 2: tags 固定独立一行，不随名字长度浮动 */}
+              <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 4 }}>
                 <OpenTag openSource={m.openSource} />
                 <TierBadge tier={m.tier} />
               </div>
 
-              {/* row 2: vendor */}
-              <div style={{ fontSize: 12, color: "var(--mr-text-3)", marginTop: 3 }}>
-                {m.vendor} · {m.context} 上下文
+              {/* row 3: vendor */}
+              <div style={{ fontSize: 12, color: "var(--mr-text-3)", marginTop: 5 }}>
+                {m.vendor} · {m.context === "--" ? "上下文待核" : `${m.context} 上下文`}
               </div>
 
               {/* row 3: score + price */}
@@ -134,7 +136,7 @@ export function LeaderboardCards({ models }: { models: UIModelRecord[] }) {
                   <DeltaText model={m} />
                 </div>
                 <div style={{ fontSize: 12, color: "var(--mr-text-2)", textAlign: "right" }}>
-                  ¥{m.priceInput}/¥{m.priceOutput}
+                  {m.priceInput > 0 ? `¥${m.priceInput}/¥${m.priceOutput}` : "待核对"}
                 </div>
               </div>
             </div>

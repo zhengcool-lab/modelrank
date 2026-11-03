@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-/** 厂商中文名 → 厂商 logo 文件 slug */
+/** 厂商名（中文/英文） → 厂商 logo 文件 slug */
 const VENDOR_SLUG: Record<string, string> = {
   OpenAI: "openai",
   Anthropic: "anthropic",
@@ -11,20 +11,94 @@ const VENDOR_SLUG: Record<string, string> = {
   DeepSeek: "deepseek",
   阿里: "alibaba",
   阿里通义: "alibaba",
+  Alibaba: "alibaba",
   字节跳动: "bytedance",
   Meta: "meta",
   月之暗面: "moonshot",
+  Moonshot: "moonshot",
   Mistral: "mistral",
   "Mistral AI": "mistral",
   腾讯: "tencent",
+  Tencent: "tencent",
   百度: "baidu",
   阶跃星辰: "stepfun",
+  StepFun: "stepfun",
   MiniMax: "minimax",
   美团: "meituan",
   零一万物: "yi",
   智谱: "zhipu",
+  Zhipu: "zhipu",
   Microsoft: "microsoft",
   百川: "baichuan",
+  NVIDIA: "nvidia",
+  Cohere: "cohere",
+};
+
+/**
+ * 厂商 logo 文件扩展名映射。
+ * 直接按实际文件加载，避免先请求不存在的 .png 触发 404 裂图后再回退。
+ */
+const VENDOR_EXT: Record<string, "png" | "svg"> = {
+  alibaba: "png",
+  anthropic: "png",
+  baichuan: "png",
+  baidu: "png",
+  bytedance: "png",
+  deepseek: "svg",
+  google: "svg",
+  meituan: "png",
+  meta: "svg",
+  microsoft: "png",
+  minimax: "png",
+  mistral: "svg",
+  moonshot: "png",
+  openai: "svg",
+  stepfun: "svg",
+  tencent: "png",
+  yi: "png",
+  zhipu: "png",
+  nvidia: "svg",
+  cohere: "png",
+};
+
+/**
+ * 模型 id → 产品 logo 家族文件名（public/product-logos/ 下）。
+ * AI 模型经常迭代版本号（gpt-6-astra → gpt-6-luna 等），同一家族复用同一图标，
+ * 避免每个版本号都拷贝一份 png；未映射的 id 走默认 {modelId}.png/.svg 加载。
+ */
+const MODEL_LOGO: Record<string, string> = {
+  "gemini-4-carbon": "gemini.png",
+  "gemini-4-argon": "gemini.png",
+  "gemini-3-8-flash": "gemini.png",
+  "gemini-3-5-flash-lite": "gemini.png",
+  "claude-opus-5-5": "claude.png",
+  "claude-sonnet-5-5": "claude.png",
+  "claude-fable-5-1": "claude.png",
+  "claude-haiku-5-5": "claude.png",
+  "gpt-6-astra": "openai.png",
+  "gpt-6-1-sol": "openai.png",
+  "gpt-6-1-terra": "openai.png",
+  "gpt-6-luna": "openai.png",
+  "kimi-k3-1-pro": "kimi.png",
+  "qwen3-8-max": "qwen.png",
+  "qwen3-8-27b": "qwen.png",
+  "deepseek-v4-1-flash-1017": "deepseek.png",
+  "deepseek-v4-pro-0813": "deepseek.png",
+  "glm-5-3": "glm.png",
+  "glm-5-3-flash": "glm.png",
+  "minimax-m3-1-flash": "minimax.png",
+  "minimax-m3": "minimax.png",
+  "step-5-preview": "step.png",
+  "ling-3-1-flash-1019": "hunyuan.png",
+  "inkling-small": "hunyuan.png",
+  inkling: "hunyuan.png",
+  "mistral-large-4": "mistral.png",
+  "mistral-small-4": "mistral.png",
+  "nemotron-3-5-super-vl": "nvidia.svg",
+  "nemotron-3-ultra": "nvidia.svg",
+  "nemotron-3-5-lightning": "nvidia.svg",
+  "nemotron-3-nano-4b": "nvidia.svg",
+  "command-a": "cohere.png",
 };
 
 export function vendorSlug(vendor: string): string | null {
@@ -46,9 +120,15 @@ export function ProductLogo({
   radius?: number;
 }) {
   const [error, setError] = useState(false);
-  const src = `/product-logos/${modelId}.png`;
-  const fallbackSvg = `/product-logos/${modelId}.svg`;
+  const mapped = MODEL_LOGO[modelId];
   const [useSvg, setUseSvg] = useState(false);
+
+  // 未映射的模型：尝试 {modelId}.png → {modelId}.svg → 首字母方块
+  const src = mapped
+    ? `/product-logos/${mapped}`
+    : useSvg
+      ? `/product-logos/${modelId}.svg`
+      : `/product-logos/${modelId}.png`;
 
   if (error) {
     return (
@@ -73,33 +153,48 @@ export function ProductLogo({
   }
 
   return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={useSvg ? fallbackSvg : src}
-      alt={modelName}
-      width={size}
-      height={size}
-      onError={() => {
-        if (!useSvg) {
-          setUseSvg(true);
-        } else {
-          setError(true);
-        }
-      }}
+    <span
       style={{
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
         width: size,
         height: size,
-        borderRadius: radius,
-        objectFit: "contain",
         flex: "none",
-        background: "transparent",
+        /* 瓷片化：白底 + 发丝边框，深色卡片上不再是突兀的裸白底方块 */
+        background: "#fff",
+        border: "1px solid var(--mr-border)",
+        borderRadius: radius,
+        boxSizing: "border-box",
+        padding: Math.max(2, size * 0.09),
       }}
-    />
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt={modelName}
+        onError={() => {
+          if (mapped) {
+            // 家族映射明确指定了文件，加载失败直接回退方块
+            setError(true);
+          } else if (!useSvg) {
+            setUseSvg(true);
+          } else {
+            setError(true);
+          }
+        }}
+        style={{
+          width: size * 0.62,
+          height: size * 0.62,
+          objectFit: "contain",
+        }}
+      />
+    </span>
   );
 }
 
 /**
- * 厂商 logo：从 /vendor-logos/{slug}.png 加载，失败回退厂商文字首字母。
+ * 厂商 logo：按 VENDOR_EXT 映射直接加载正确扩展名，失败回退另一种，再失败回退厂商文字首字母。
  */
 export function VendorLogo({
   vendor,
@@ -112,6 +207,7 @@ export function VendorLogo({
 }) {
   const [error, setError] = useState(false);
   const slug = vendorSlug(vendor);
+  const [triedExt, setTriedExt] = useState<"png" | "svg" | null>(null);
 
   if (!slug || error) {
     return (
@@ -135,28 +231,44 @@ export function VendorLogo({
     );
   }
 
+  const primaryExt = VENDOR_EXT[slug] ?? "png";
+  const ext = triedExt ?? primaryExt;
+  const fallbackExt = primaryExt === "png" ? "svg" : "png";
+
   return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={`/vendor-logos/${slug}.png`}
-      onError={(e) => {
-        const img = e.currentTarget;
-        if (!img.src.endsWith(".svg")) {
-          img.src = `/vendor-logos/${slug}.svg`;
-        } else {
-          setError(true);
-        }
-      }}
-      alt={vendor}
-      width={size}
-      height={size}
+    <span
       style={{
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
         width: size,
         height: size,
-        borderRadius: radius,
-        objectFit: "contain",
         flex: "none",
+        /* 瓷片化：白底 + 发丝边框，深色卡片上不再是突兀的裸白底方块 */
+        background: "#fff",
+        border: "1px solid var(--mr-border)",
+        borderRadius: radius,
+        boxSizing: "border-box",
+        padding: Math.max(2, size * 0.1),
       }}
-    />
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={`/vendor-logos/${slug}.${ext}`}
+        onError={() => {
+          if (triedExt !== fallbackExt) {
+            setTriedExt(fallbackExt);
+          } else {
+            setError(true);
+          }
+        }}
+        alt={vendor}
+        style={{
+          width: size * 0.66,
+          height: size * 0.66,
+          objectFit: "contain",
+        }}
+      />
+    </span>
   );
 }

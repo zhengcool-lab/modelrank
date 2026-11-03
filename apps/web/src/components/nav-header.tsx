@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ThemeToggle } from "./theme-toggle";
 
 const NAV_ITEMS = [
@@ -21,68 +21,98 @@ export function NavHeader() {
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
+  // 路由变化时自动收起移动端面板
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
+  // 面板打开时锁定 body 滚动
+  useEffect(() => {
+    if (menuOpen) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = prev;
+      };
+    }
+  }, [menuOpen]);
+
+  // Esc 关闭面板
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [menuOpen]);
+
   return (
     <header
       style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        height: 64,
-        padding: "0 16px",
         background: "var(--mr-card)",
         borderBottom: "1px solid var(--mr-border)",
-        boxSizing: "border-box",
         position: "sticky",
         top: 0,
         zIndex: 40,
       }}
-      className="md:px-[44px]"
     >
-      {/* left: logo */}
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <Link href="/" style={{ textDecoration: "none" }}>
-          <span
-            style={{
-              fontSize: 20,
-              fontWeight: 600,
-              letterSpacing: "-0.3px",
-              color: "var(--mr-text)",
-            }}
-          >
-            ModelRank
-          </span>
-        </Link>
-        <span
-          style={{
-            fontSize: 12,
-            fontWeight: 600,
-            color: "var(--mr-primary)",
-            marginLeft: 10,
-            padding: "1px 8px",
-            borderRadius: 2,
-            background: "var(--mr-primary-bg)",
-          }}
-        >
-          模型榜
-        </span>
-      </div>
-
-      {/* right: desktop nav (hidden on mobile) */}
       <div
-        className="hidden md:flex"
+        className="flex items-center justify-between px-4 md:px-[44px]"
         style={{
-          alignItems: "center",
-          gap: 2,
+          maxWidth: 1200,
+          margin: "0 auto",
+          width: "100%",
           height: 64,
           boxSizing: "border-box",
         }}
       >
+        {/* left: logo */}
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Link href="/" style={{ textDecoration: "none" }}>
+            <span
+              style={{
+                fontSize: 20,
+                fontWeight: 600,
+                letterSpacing: "-0.3px",
+                color: "var(--mr-text)",
+              }}
+            >
+              ModelRank
+            </span>
+          </Link>
+          <span
+            style={{
+              fontSize: 12,
+              fontWeight: 600,
+              color: "var(--mr-primary)",
+              marginLeft: 10,
+              padding: "1px 8px",
+              borderRadius: 4,
+              background: "var(--mr-primary-bg)",
+            }}
+          >
+            模型榜
+          </span>
+        </div>
+
+        {/* right: desktop nav (hidden on mobile) */}
+        <div
+          className="hidden md:flex"
+          style={{
+            alignItems: "center",
+            gap: 2,
+            height: 64,
+            boxSizing: "border-box",
+          }}
+        >
         {NAV_ITEMS.map((item) => {
           const active = isActive(item.href);
           return (
             <Link
               key={item.href}
               href={item.href}
+              aria-current={active ? "page" : undefined}
               style={{
                 fontSize: 13,
                 fontWeight: active ? 600 : 400,
@@ -98,6 +128,7 @@ export function NavHeader() {
         })}
         <Link
           href="/search"
+          aria-current={pathname.startsWith("/search") ? "page" : undefined}
           style={{
             fontSize: 13,
             color: pathname.startsWith("/search")
@@ -113,7 +144,7 @@ export function NavHeader() {
             textDecoration: "none",
           }}
         >
-          🔍 搜索
+          搜索
         </Link>
         <ThemeToggle />
       </div>
@@ -123,8 +154,9 @@ export function NavHeader() {
         <ThemeToggle />
         <button
           type="button"
-          aria-label="打开菜单"
+          aria-label={menuOpen ? "关闭菜单" : "打开菜单"}
           aria-expanded={menuOpen}
+          aria-controls="mobile-menu"
           onClick={() => setMenuOpen((v) => !v)}
           style={{
             display: "flex",
@@ -148,10 +180,14 @@ export function NavHeader() {
           </svg>
         </button>
       </div>
+      </div>
 
       {/* mobile dropdown panel */}
       {menuOpen && (
         <div
+          id="mobile-menu"
+          role="navigation"
+          aria-label="移动端导航"
           style={{
             position: "absolute",
             top: 64,
@@ -170,6 +206,7 @@ export function NavHeader() {
                 key={item.href}
                 href={item.href}
                 onClick={() => setMenuOpen(false)}
+                aria-current={active ? "page" : undefined}
                 style={{
                   display: "block",
                   fontSize: 14,
@@ -187,6 +224,7 @@ export function NavHeader() {
           <Link
             href="/search"
             onClick={() => setMenuOpen(false)}
+            aria-current={pathname.startsWith("/search") ? "page" : undefined}
             style={{
               display: "block",
               fontSize: 14,
@@ -198,7 +236,7 @@ export function NavHeader() {
               textDecoration: "none",
             }}
           >
-            🔍 搜索
+            搜索
           </Link>
         </div>
       )}

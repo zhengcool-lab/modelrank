@@ -46,16 +46,20 @@ export default function DataSourcesPage() {
     <div>
       <NavHeader />
 
-      <div style={{ padding: "24px 44px 0 44px", maxWidth: 820 }}>
-        <div style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.4px", color: "var(--mr-text)" }}>
+      <div className="mr-container">
+      <div className="mr-pad-x" style={{ paddingTop: 24, maxWidth: 760, margin: "0 auto" }}>
+        <h1 style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.4px", color: "var(--mr-text)", margin: 0 }}>
           数据来源
-        </div>
+        </h1>
         <div style={{ fontSize: 13, color: "var(--mr-text-2)", marginTop: 6 }}>
           所有榜单分数均可追溯到下列公开来源
         </div>
 
-        <div className="mr-card" style={{ padding: "22px 24px", marginTop: 18 }}>
-          <div style={{ fontSize: 15, fontWeight: 600, color: "var(--mr-text)" }}>Benchmark 基准</div>
+        <div className="mr-card" style={{ padding: "22px 24px", marginTop: 18, overflowWrap: "break-word" }}>
+          <h2 style={{ fontSize: 15, fontWeight: 600, color: "var(--mr-text)", margin: 0 }}>Benchmark 基准</h2>
+          <div style={{ fontSize: 12, color: "var(--mr-text-3)", marginTop: 6 }}>
+            图例：<span style={{ color: "#c0392b" }}>● 高</span> = 污染风险高、<span style={{ color: "#9a6a00" }}>● 中</span>、<span style={{ color: "#2e7d4f" }}>● 低</span>
+          </div>
           <div style={{ marginTop: 12, display: "grid", gap: 10 }}>
             {SOURCES.map((s) => (
               <div
@@ -64,12 +68,13 @@ export default function DataSourcesPage() {
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
+                  gap: 12,
                   padding: "10px 12px",
                   border: "1px solid var(--mr-border)",
-                  borderRadius: 6,
+                  borderRadius: 8,
                 }}
               >
-                <div>
+                <div style={{ minWidth: 0, overflowWrap: "break-word" }}>
                   <a href={s.url} target="_blank" rel="noreferrer noopener" className="mr-link">
                     {s.name}
                   </a>
@@ -79,7 +84,9 @@ export default function DataSourcesPage() {
                 </div>
                 <div
                   style={{
+                    flexShrink: 0,
                     fontSize: 12,
+                    fontWeight: 600,
                     padding: "2px 8px",
                     borderRadius: 4,
                     background:
@@ -88,7 +95,12 @@ export default function DataSourcesPage() {
                         : s.污染风险 === "中"
                           ? "rgba(217,150,30,0.12)"
                           : "rgba(50,160,90,0.12)",
-                    color: "var(--mr-text-2)",
+                    color:
+                      s.污染风险 === "高"
+                        ? "#c0392b"
+                        : s.污染风险 === "中"
+                          ? "#9a6a00"
+                          : "#2e7d4f",
                   }}
                 >
                   污染风险：{s.污染风险}
@@ -98,21 +110,19 @@ export default function DataSourcesPage() {
           </div>
         </div>
 
-        <div className="mr-card" style={{ padding: "22px 24px", marginTop: 14 }}>
-          <div style={{ fontSize: 15, fontWeight: 600, color: "var(--mr-text)" }}>价格与产品信息</div>
+        <div className="mr-card" style={{ padding: "22px 24px", marginTop: 14, overflowWrap: "break-word" }}>
+          <h2 style={{ fontSize: 15, fontWeight: 600, color: "var(--mr-text)", margin: 0 }}>价格与产品信息</h2>
           <p style={{ marginTop: 10, fontSize: 14, color: "var(--mr-text-2)", lineHeight: 1.8 }}>
             页面展示的输入/输出 token 价格、上下文窗口、吞吐速率均来自各厂商官网公开 API 文档
-            （OpenAI、Anthropic、Google、DeepSeek、阿里通义、Meta、Mistral AI），采集后在本仓库
-            <code style={{ margin: "0 4px", padding: "2px 6px", borderRadius: 3, background: "var(--mr-border)" }}>
-              apps/web/src/lib/seed-data.ts
-            </code>
-            中维护。价格更新日期见每个模型详情页。
+            （OpenAI、Anthropic、Google、DeepSeek、阿里通义、Meta、Mistral AI），采集后由内部数据仓库统一维护。
+            价格更新日期见每个模型详情页。
           </p>
           <p style={{ marginTop: 10, fontSize: 14, color: "var(--mr-text-2)", lineHeight: 1.8 }}>
             方法论与加权口径见 <Link href="/methodology" className="mr-link">方法论页</Link>。
             如发现数据错误或过期，欢迎通过详情页底部"企业咨询留资"反馈，我们会在 1 周内核实更新。
           </p>
         </div>
+      </div>
       </div>
 
       <Footer />

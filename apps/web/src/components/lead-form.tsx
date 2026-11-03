@@ -1,123 +1,93 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { UI_MODELS } from "@/lib/seed-data";
+import { ProductLogo } from "./model-logo";
+import { TierBadge } from "./badges";
 
-type LeadDraft = {
-  name: string;
-  email: string;
-  company: string;
-  need: string;
-};
-
-const inputStyle: React.CSSProperties = {
-  width: "100%",
-  height: 32,
-  padding: "0 10px",
-  border: "1px solid var(--mr-border)",
-  borderRadius: 4,
-  fontSize: 12,
-  boxSizing: "border-box",
-  outline: "none",
-  background: "var(--mr-card)",
-  color: "var(--mr-text)",
-};
-
-const textareaStyle: React.CSSProperties = {
-  ...inputStyle,
-  height: "auto",
-  minHeight: 64,
-  padding: "8px 10px",
-  resize: "vertical",
-  fontFamily: "inherit",
-  lineHeight: 1.5,
-};
-
-export function LeadForm() {
-  const [draft, setDraft] = useState<LeadDraft>({ name: "", email: "", company: "", need: "" });
-  const [submitted, setSubmitted] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
-  }, []);
-
-  const update = (key: keyof LeadDraft) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-    setDraft((d) => ({ ...d, [key]: e.target.value }));
-
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // 纯本地 mock：不调用任何 /api/*，仅 console.log
-    console.log("[lead-form] 本地提交（mock，未接后端）", {
-      ...draft,
-      submittedAt: new Date().toISOString(),
-    });
-    setSubmitted(true);
-    if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => {
-      setSubmitted(false);
-      setDraft({ name: "", email: "", company: "", need: "" });
-    }, 3000);
-  };
+/**
+ * 详情页右栏：同厂商其他模型列表（替代原"企业咨询留资"表单）。
+ * 按 vendor 过滤 UI_MODELS、排除当前模型；无同厂模型时给一个空状态引导。
+ */
+export function SameVendorModels({
+  vendor,
+  currentId,
+}: {
+  vendor: string;
+  currentId: string;
+}) {
+  const siblings = UI_MODELS.filter((m) => m.vendor === vendor && m.id !== currentId).slice(0, 5);
 
   return (
     <div className="mr-card" style={{ padding: "18px 20px", marginTop: 14 }}>
-      <div style={{ fontSize: 13, fontWeight: 600, color: "var(--mr-text)" }}>企业咨询留资</div>
-      <div style={{ fontSize: 11, color: "var(--mr-text-3)", marginTop: 2 }}>
-        留下需求，商务将在 1 个工作日内联系
+      <div style={{ fontSize: 13, fontWeight: 600, color: "var(--mr-text)" }}>
+        {vendor} 其他模型
       </div>
-      <form onSubmit={onSubmit} style={{ marginTop: 10 }}>
-        <input
-          placeholder="姓名"
-          value={draft.name}
-          onChange={update("name")}
-          style={inputStyle}
-          required
-        />
-        <input
-          placeholder="工作邮箱"
-          type="email"
-          value={draft.email}
-          onChange={update("email")}
-          style={{ ...inputStyle, marginTop: 8 }}
-          required
-        />
-        <input
-          placeholder="公司"
-          value={draft.company}
-          onChange={update("company")}
-          style={{ ...inputStyle, marginTop: 8 }}
-        />
-        <textarea
-          placeholder="需求描述（预计月用量、合规要求、接入方式等）"
-          rows={3}
-          value={draft.need}
-          onChange={update("need")}
-          style={{ ...textareaStyle, marginTop: 8 }}
-        />
-        <button
-          type="submit"
-          disabled={submitted}
-          style={{
-            display: "block",
-            width: "100%",
-            textAlign: "center",
-            marginTop: 10,
-            fontSize: 13,
-            fontWeight: 600,
-            color: "#fff",
-            background: submitted ? "var(--mr-up)" : "var(--mr-primary)",
-            height: 32,
-            lineHeight: "32px",
-            borderRadius: 4,
-            border: "none",
-            cursor: submitted ? "default" : "pointer",
-          }}
-        >
-          {submitted ? "已提交 ✓" : "提交咨询"}
-        </button>
-      </form>
+      {siblings.length === 0 ? (
+        <div>
+          <div style={{ fontSize: 12, color: "var(--mr-text-3)", marginTop: 10, lineHeight: 1.6 }}>
+            该厂商暂无其他已收录模型，后续会随榜单更新补充。
+          </div>
+          <Link
+            href="/library"
+            className="mr-link"
+            style={{ display: "inline-block", marginTop: 8, fontSize: 12, fontWeight: 600 }}
+          >
+            浏览完整榜单 →
+          </Link>
+        </div>
+      ) : (
+        <div style={{ marginTop: 8, display: "flex", flexDirection: "column" }}>
+          {siblings.map((m) => (
+            <Link
+              key={m.id}
+              href={`/detail/${m.id}`}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                padding: "9px 0",
+                borderBottom: "1px solid var(--mr-border-soft)",
+                textDecoration: "none",
+              }}
+            >
+              <ProductLogo modelId={m.id} modelName={m.name} size={28} radius={6} />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 600,
+                    color: "var(--mr-text)",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {m.name}
+                </div>
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: "var(--mr-text-3)",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    marginTop: 1,
+                  }}
+                >
+                  {m.blurb}
+                </div>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 3 }}>
+                <span style={{ fontSize: 14, fontWeight: 600, color: "var(--mr-text)" }}>
+                  {m.score.toFixed(1)}
+                </span>
+                <TierBadge tier={m.tier} />
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -22,7 +22,7 @@ export function DetailCharts({ model }: { model: UIModelRecord }) {
         type: "category",
         data: weeks,
         axisLine: { lineStyle: { color: gridLine } },
-        axisLabel: { color: axisText, fontSize: 10 },
+        axisLabel: { color: axisText, fontSize: 12 },
         axisTick: { show: false },
       },
       yAxis: {
@@ -30,7 +30,7 @@ export function DetailCharts({ model }: { model: UIModelRecord }) {
         min: (v: { min: number }) => Math.floor(v.min - 1),
         max: (v: { max: number }) => Math.ceil(v.max + 1),
         splitLine: { lineStyle: { color: gridLine } },
-        axisLabel: { color: axisText, fontSize: 10 },
+        axisLabel: { color: axisText, fontSize: 12 },
       },
       series: [
         {
@@ -58,8 +58,8 @@ export function DetailCharts({ model }: { model: UIModelRecord }) {
           { name: "中文", max: 100 },
           { name: "多模态", max: 100 },
         ],
-        radius: 62,
-        center: ["50%", "52%"],
+        radius: 96,
+        center: ["50%", "55%"],
         axisName: { color: axisText, fontSize: 11 },
         splitLine: { lineStyle: { color: gridLine } },
         splitArea: { show: false },
@@ -71,11 +71,11 @@ export function DetailCharts({ model }: { model: UIModelRecord }) {
           data: [
             {
               value: [
-                model.dims.reasoning,
-                model.dims.code,
-                model.dims.math,
-                model.dims.chinese,
-                model.dims.multimodal,
+                model.dims?.reasoning ?? 0,
+                model.dims?.code ?? 0,
+                model.dims?.math ?? 0,
+                model.dims?.chinese ?? 0,
+                model.dims?.multimodal ?? 0,
               ],
               name: model.name,
               lineStyle: { color: primary, width: 2 },
@@ -90,12 +90,13 @@ export function DetailCharts({ model }: { model: UIModelRecord }) {
   );
 
   return (
-    <div className="flex flex-col md:flex-row gap-3 md:gap-4 md:items-center">
+    <div className="flex flex-col gap-3">
       <div style={{ flex: 1, minWidth: 0 }}>
         <EChart option={lineOption} height={200} />
       </div>
-      <div className="w-full md:w-[150px] md:flex-none">
-        <EChart option={radarOption} height={220} />
+      {/* 桌面端同样上下堆叠，避免雷达图右侧标签被卡片裁切 */}
+      <div className="w-full">
+        <EChart option={radarOption} height={280} />
       </div>
     </div>
   );

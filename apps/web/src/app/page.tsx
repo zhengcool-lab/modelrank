@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { UI_NEWS } from "@/lib/seed-data";
+import { UI_MODELS } from "@/lib/seed-data";
+import { UI_NEWS } from "@/lib/news-data";
 import { NavHeader } from "@/components/nav-header";
 import { Footer } from "@/components/footer";
 import { CompareBar } from "@/components/compare-bar";
@@ -7,22 +8,25 @@ import { TierFilteredBoard } from "@/components/tier-filtered-board";
 
 export default function Home() {
   const news = UI_NEWS.slice(0, 3);
+  const total = UI_MODELS.length;
+  const lastUpdated = UI_MODELS.map((m) => m.priceUpdatedAt).sort().pop() ?? "";
 
   return (
     <div>
       <NavHeader />
 
+      <div className="mr-container">
       {/* title */}
       <div
         className="mr-pad-x flex flex-col sm:flex-row sm:items-start sm:justify-between"
         style={{ paddingTop: 32 }}
       >
         <div>
-          <div style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.2px", color: "var(--mr-text)" }}>
+          <div style={{ fontSize: 32, fontWeight: 700, letterSpacing: "-0.5px", color: "var(--mr-text)", lineHeight: 1.2 }}>
             大模型能力排行榜
           </div>
           <div style={{ fontSize: 13, color: "var(--mr-text-3)", marginTop: 6 }}>
-            公开基准聚合加权（0–100）· 数据更新于 10-16 08:00 · 已收录 128 个模型 · 口径见
+            评分来源：Artificial Analysis 智能指数（第三方公开评测 0–100）· 更新于 2026-11-01 · 已收录 {total} 个模型 · 口径见
             <Link href="/methodology" className="mr-link" style={{ marginLeft: 4 }}>
               方法论
             </Link>
@@ -38,7 +42,7 @@ export default function Home() {
             whiteSpace: "nowrap",
           }}
         >
-          📈 订阅变动提醒
+          订阅变动提醒
         </a>
       </div>
 
@@ -86,13 +90,13 @@ export default function Home() {
                     color: "var(--mr-primary)",
                     background: "var(--mr-primary-bg)",
                     padding: "1px 8px",
-                    borderRadius: 2,
+                    borderRadius: 4,
                     marginRight: 6,
                   }}
                 >
                   {n.category}
                 </span>
-                <span style={{ background: "var(--mr-card-2)", padding: "1px 8px", borderRadius: 2 }}>
+                <span style={{ background: "var(--mr-card-2)", padding: "1px 8px", borderRadius: 4 }}>
                   AI 摘要
                 </span>
               </div>
@@ -105,6 +109,7 @@ export default function Home() {
             </a>
           ))}
         </div>
+      </div>
       </div>
 
       <Footer />

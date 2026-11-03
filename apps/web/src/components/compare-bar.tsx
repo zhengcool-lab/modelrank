@@ -15,8 +15,9 @@ export function CompareBar() {
 
   return (
     <div
+      className="mr-mx"
       style={{
-        margin: "14px 44px 0 44px",
+        marginTop: 14,
         background: "var(--mr-card)",
         border: "1px solid var(--mr-border)",
         borderRadius: 8,

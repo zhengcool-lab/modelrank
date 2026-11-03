@@ -16,7 +16,6 @@ import { useCompare } from "@/context/compare";
 import {
   DeltaText,
   OpenTag,
-  PriceLevelTag,
   SourceTag,
   TierBadge,
 } from "./badges";
@@ -24,11 +23,19 @@ import { ProductLogo } from "./model-logo";
 
 const columnHelper = createColumnHelper<UIModelRecord>();
 
-/** 2×2 能力维度网格：推理/代码 上排，中文/多模态 下排，纯数字无 bar */
-function DimsGrid({ dims }: { dims: { reasoning: number; code: number; chinese: number; multimodal: number } }) {
+/** 能力维度网格：推理/代码/数学 上排，中文/多模态 下排（与详情雷达 5 维严格同名同义） */
+function DimsGrid({ dims }: { dims?: { reasoning: number; code: number; math: number; chinese: number; multimodal: number } }) {
+  if (!dims) {
+    return (
+      <span style={{ fontSize: 12, color: "var(--mr-text-4)" }}>
+        维度评测中
+      </span>
+    );
+  }
   const items = [
     { label: "推理", value: dims.reasoning },
     { label: "代码", value: dims.code },
+    { label: "数学", value: dims.math },
     { label: "中文", value: dims.chinese },
     { label: "多模态", value: dims.multimodal },
   ];
@@ -36,15 +43,15 @@ function DimsGrid({ dims }: { dims: { reasoning: number; code: number; chinese: 
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: "repeat(2, auto)",
-        columnGap: 14,
+        gridTemplateColumns: "repeat(3, auto)",
+        columnGap: 8,
         rowGap: 4,
         width: "fit-content",
       }}
     >
       {items.map((it) => (
-        <div key={it.label} style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
-          <span style={{ fontSize: 10, color: "var(--mr-text-4)" }}>{it.label}</span>
+        <div key={it.label} style={{ display: "flex", alignItems: "baseline", gap: 3 }}>
+          <span style={{ fontSize: 12, color: "var(--mr-text-4)" }}>{it.label}</span>
           <span style={{ fontSize: 13, fontWeight: 600, color: "var(--mr-text-2)" }}>{it.value}</span>
         </div>
       ))}
@@ -62,7 +69,7 @@ function CheckBox({ checked }: { checked: boolean }) {
         width: 16,
         height: 16,
         border: `1.5px solid ${checked ? "var(--mr-primary)" : "var(--mr-text-4)"}`,
-        borderRadius: 2,
+        borderRadius: 4,
         background: checked ? "var(--mr-primary)" : "var(--mr-card)",
         color: "#fff",
         fontSize: 12,
@@ -165,23 +172,25 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <ProductLogo modelId={m.id} modelName={m.name} size={36} radius={8} />
               <div style={{ minWidth: 0 }}>
-                <div style={{ fontSize: 14, fontWeight: 600, color: "var(--mr-text)" }}>
-                  <Link
-                    href={`/detail/${m.id}`}
-                    style={{ color: "var(--mr-text)", textDecoration: "none" }}
-                  >
-                    {m.name}
-                  </Link>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span style={{ fontSize: 14, fontWeight: 600, color: "var(--mr-text)" }}>
+                    <Link
+                      href={`/detail/${m.id}`}
+                      style={{ color: "var(--mr-text)", textDecoration: "none" }}
+                    >
+                      {m.name}
+                    </Link>
+                  </span>
                   <OpenTag openSource={m.openSource} />
                 </div>
-                <div style={{ fontSize: 12, color: "var(--mr-text-3)", marginTop: 2 }}>
+                <div style={{ fontSize: 12, color: "var(--mr-text-3)", marginTop: 4 }}>
                   {m.vendor} ·{" "}
                   <Link href={`/detail/${m.id}`} className="mr-link">
                     查看详情
                   </Link>
                 </div>
                 <div style={{ fontSize: 12, color: "var(--mr-text-4)", marginTop: 2 }}>
-                  {m.context} 上下文 · 更新于 {m.updatedAt}
+                  {m.context === "--" ? "上下文待核" : `${m.context} 上下文`} · 更新于 {m.updatedAt}
                 </div>
               </div>
             </div>
@@ -193,8 +202,8 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
         header: () => (
           <div>
             <div>能力</div>
-            <div style={{ fontSize: 10, fontWeight: 400, color: "var(--mr-text-4)", marginTop: 1 }}>
-              推理·代码·中文·多模态
+            <div style={{ fontSize: 12, fontWeight: 400, color: "var(--mr-text-4)", marginTop: 1 }}>
+              推理·代码·数学·中文·多模态
             </div>
           </div>
         ),
@@ -223,7 +232,7 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
                 <DeltaText model={m} />
               </div>
               <div style={{ fontSize: 12, color: "var(--mr-text-4)", marginTop: 2 }}>
-                ±{m.ci.toFixed(1)}（CI）
+                {m.ci > 0 ? `±${m.ci.toFixed(1)}（CI）` : "—"}
               </div>
             </div>
           );
@@ -235,14 +244,9 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
         cell: ({ row }) => {
           const m = row.original;
           return (
-            <div>
-              <div style={{ fontSize: 13, color: "var(--mr-text-2)" }}>
-                输入 ¥{m.priceInput} · 输出 ¥{m.priceOutput}
-                {m.priceEstimated ? "（估算）" : ""}
-              </div>
-              <div style={{ marginTop: 3 }}>
-                <PriceLevelTag level={m.priceLevel} />
-              </div>
+            <div style={{ fontSize: 13, color: "var(--mr-text-2)" }}>
+              {m.priceInput > 0 ? `输入 ¥${m.priceInput} · 输出 ¥${m.priceOutput}` : "待核对"}
+              {m.priceEstimated ? "（估算）" : ""}
             </div>
           );
         },
@@ -274,7 +278,7 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
     select: 40,
     rank: 64,
     model: 280,
-    dims: 140,
+    dims: 150,
     score: 120,
     price: 160,
     tier: 80,
@@ -296,8 +300,7 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
           style={{
             display: "flex",
             alignItems: "center",
-            height: 44,
-            padding: "0 20px",
+            padding: "12px 20px 14px",
             background: "var(--mr-card-2)",
             borderBottom: "1px solid var(--mr-border)",
             boxSizing: "border-box",
@@ -327,15 +330,22 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
           })}
         </div>
       ))}
-      {/* body rows */}
+      {/* body rows：奇偶斑马纹 + hover 品牌浅蓝 */}
+      <style>{`
+        .lb-row:nth-child(even) { background: var(--mr-card-2); }
+        .lb-row { transition: background 0.15s ease; }
+        .lb-row:hover { background: var(--mr-primary-bg); }
+      `}</style>
+      <div>
       {rows.map((row, i) => (
         <div
           key={row.id}
+          className="lb-row"
           style={{
             display: "flex",
             alignItems: "center",
-            height: 64,
-            padding: "0 20px",
+            minHeight: 76,
+            padding: "12px 20px",
             borderBottom:
               i === rows.length - 1
                 ? "none"
@@ -356,6 +366,7 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
           ))}
         </div>
       ))}
+      </div>
       {/* footer */}
       <div
         style={{
@@ -369,7 +380,7 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
         }}
       >
         <span style={{ fontSize: 12, color: "var(--mr-text-3)" }}>
-          共 128 个模型
+          共 {models.length} 个模型
         </span>
         <Link href="/library" className="mr-btn-primary">
           查看完整榜单
