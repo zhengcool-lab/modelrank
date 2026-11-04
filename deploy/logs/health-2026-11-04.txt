@@ -1,0 +1,30 @@
+=== ModelRank 健康巡检 2026-11-04 12:24:15 ===
+目标: https://modelrank-1br.pages.dev
+
+--- 页面可达性 ---
+✅ GET / → HTTP 200
+✅ GET /detail/gpt-6-astra → HTTP 200
+✅ GET /detail/gemini-4-carbon → HTTP 200
+✅ GET /news → HTTP 200
+✅ GET /compare → HTTP 200
+✅ GET /cost → HTTP 200
+--- 关键资源 ---
+✅ GET /product-logos/openai.png → HTTP 200
+✅ GET /product-logos/claude.png → HTTP 200
+✅ GET /product-logos/gemini.png → HTTP 200
+✅ GET /product-logos/deepseek.png → HTTP 200
+✅ GET /product-logos/qwen.png → HTTP 200
+✅ GET /product-logos/hunyuan.png → HTTP 200
+✅ GET /vendor-logos/openai.svg → HTTP 200
+✅ GET /vendor-logos/nvidia.svg → HTTP 200
+✅ GET /sitemap.xml → HTTP 200
+✅ GET /robots.txt → HTTP 200
+--- 数据完整性 ---
+✅ UI_MODELS 模型数量 = 33（实际 33）
+✅ priceLevel 存在 high 级（实际 10 个，非 0 说明价格分级真实）
+✅ priceEstimated=true 标注 ≤ 33（实际 33，属诚实占位标注，非错误）
+✅ news-data.ts 新闻条数 ≥ 10（实际 24）
+--- 性能预算 ---
+✅ 首页 HTML 体积 < 400000 字节（实际 201718）
+
+=== 巡检结果：通过 21 / 失败 0 ===

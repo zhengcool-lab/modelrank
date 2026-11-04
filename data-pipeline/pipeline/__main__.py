@@ -105,7 +105,13 @@ def run(dry_run: bool, write_db: bool) -> int:
 
     if dry_run:
         _write_json(OUT_DIR / "models.json", merged_models)
-        _write_json(OUT_DIR / "news.json", news_res["news"])
+        # 保留 is_mock 标记，供前端生成器判断是否覆盖真实数据（防 mock 混入）
+        _write_json(OUT_DIR / "news.json", {
+            "source": news_res["source"],
+            "news": news_res["news"],
+            "is_mock": news_res["is_mock"],
+            "error": news_res.get("error"),
+        })
         print(f"dry-run: wrote {OUT_DIR/'models.json'} and {OUT_DIR/'news.json'}")
         print("review the JSON, then re-run with --write-db to push to Postgres.")
         return 0
@@ -116,7 +122,12 @@ def run(dry_run: bool, write_db: bool) -> int:
         # the news table. For now we still write the local JSON so the
         # operator can inspect what *would* have been written.
         _write_json(OUT_DIR / "models.json", merged_models)
-        _write_json(OUT_DIR / "news.json", news_res["news"])
+        _write_json(OUT_DIR / "news.json", {
+            "source": news_res["source"],
+            "news": news_res["news"],
+            "is_mock": news_res["is_mock"],
+            "error": news_res.get("error"),
+        })
         print("--write-db is NOT implemented yet; wrote local JSON only.")
         return 0
 

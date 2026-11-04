@@ -118,6 +118,8 @@ def fetch() -> dict[str, Any]:
                 name=r["name"],
                 score=r["intelligence_index"],
                 context_length=_ctx_to_int(r["context"]),
+                cost_per_task_usd=r["cost_per_task_usd"],
+                latency_s=r["latency_s"],
                 source_url=r["source_url"],
             )
             for r in rows

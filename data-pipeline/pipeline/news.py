@@ -205,6 +205,22 @@ def _parse_feed(xml_text: str, source_label: str) -> list[dict[str, Any]]:
     return out
 
 
+def _load_history() -> list[dict[str, Any]]:
+    """读取上次落盘的 out/news.json（兼容数组/对象结构），返回历史新闻。"""
+    try:
+        import json
+        from pathlib import Path
+        p = Path(__file__).resolve().parent.parent / "out" / "news.json"
+        if not p.exists():
+            return []
+        data = json.loads(p.read_text(encoding="utf-8"))
+        if isinstance(data, list):
+            return data
+        return data.get("news", [])
+    except Exception:
+        return []
+
+
 def fetch() -> dict[str, Any]:
     collected: list[dict[str, Any]] = []
     errors: list[str] = []
@@ -239,4 +255,23 @@ def fetch() -> dict[str, Any]:
         if n.get("category") not in ALLOWED_CATEGORIES:
             n["category"] = "发布"
         deduped.append(n)
-    return {"source": "news", "news": deduped[:30], "is_mock": False, "error": None}
+    # 历史合并：把上次落盘的历史新闻追加回来（防止单源覆盖丢失），
+    # 按时间降序、按标题去重，保留上限 60 条。
+    history = _load_history()
+    merged = deduped + [h for h in history if h.get("title")]
+    merged.sort(key=lambda n: n.get("time", ""), reverse=True)
+    final: list[dict[str, Any]] = []
+    seen_titles: set[str] = set()
+    seen_ids: set[str] = set()
+    for n in merged:
+        key = re.sub(r"[^a-z0-9\u4e00-\u9fff]", "", n["title"].lower())
+        if not key or key in seen_titles:
+            continue
+        seen_titles.add(key)
+        nid = n.get("id") or ""
+        if nid in seen_ids or not str(nid).startswith("n-"):
+            nid = f"n-{n.get('source') or 'news'}-dup-{len(final) + 1}"
+        seen_ids.add(nid)
+        n["id"] = nid
+        final.append(n)
+    return {"source": "news", "news": final[:60], "is_mock": False, "error": None}

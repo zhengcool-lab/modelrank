@@ -6,7 +6,9 @@
 - 只收主流厂商（排除 Other）
 - 按基座去重：模型名去掉 "(变体)" 后同基座只保留智能指数最高的一个
 - score = 智能指数原值；delta=null；trend=flat；ci=0
-- dims 省略（AA 无五维，前端已降级）；价格 0 + priceEstimated=true（token 价待官方核对）
+- dims 省略（AA 无五维，前端已降级）；价格优先取管道合并后的真实 token 价
+  （price_input/output_per_mtok），无真实价时 0 + priceEstimated=true
+- 输出无图标模型清单（新增 id 未覆盖 MODEL_LOGO 时打印，供巡检任务补映射）
 - tier 按指数分级；priceLevel 按每任务成本分级
 - 运行：.venv/bin/python scripts/gen-ui-models.py > /tmp/ui_models_new.txt
 """
@@ -18,6 +20,8 @@ import sys
 
 MODELS_JSON = "out/models.json"
 AA_PREFIX = "https://artificialanalysis"
+# 前端 MODEL_LOGO 映射文件（用于检测新增模型是否缺图标）
+MODEL_LOGO_TS = "apps/web/src/components/model-logo.tsx"
 MAJOR_VENDORS = {
     "OpenAI", "Anthropic", "Google", "DeepSeek", "Alibaba", "Moonshot",
     "xAI", "Zhipu", "StepFun", "MiniMax", "Tencent", "Mistral", "NVIDIA", "Cohere",
@@ -40,6 +44,24 @@ def slugify(name: str) -> str:
 
 def is_open(name: str) -> bool:
     return any(p.lower() in name.lower() for p in OPEN_PATTERNS)
+
+
+def mapped_logo_ids() -> set[str]:
+    """读取 model-logo.tsx 中 MODEL_LOGO 已覆盖的模型 id 集合。"""
+    import os
+    for root in ("..", ".", os.path.dirname(__file__) + "/../.."):
+        p = os.path.join(root, MODEL_LOGO_TS)
+        if os.path.exists(p):
+            try:
+                text = open(p, encoding="utf-8").read()
+                m = re.search(r"const MODEL_LOGO[^=]*=\s*\{([^}]*)\}", text, re.S)
+                if not m:
+                    return set()
+                keys = re.findall(r'^\s*(?:"([^"]+)"|\'([^\']+)\'|([A-Za-z0-9_-]+))\s*:', m.group(1), re.M)
+                return set(a or b or c for a, b, c in keys)
+            except Exception:
+                return set()
+    return set()
 
 
 def fetch_date() -> str:
@@ -76,6 +98,17 @@ def main() -> None:
     picked = sorted(best.values(), key=lambda m: -m["score"])
     print(f"// picked {len(picked)} models from AA real rows", file=sys.stderr)
 
+    # 无图标检测：新增模型 id 若未覆盖 MODEL_LOGO，输出清单供巡检任务补映射
+    mapped = mapped_logo_ids()
+    missing = []
+    for m in picked:
+        mid = slugify(base_of(m["name"]))
+        if mid not in mapped:
+            missing.append(mid)
+    if missing:
+        print(f"// ⚠️ {len(missing)} 个模型缺 MODEL_LOGO 图标映射: {', '.join(missing)}", file=sys.stderr)
+        print("// 巡检任务需为这些 id 补充 model-logo.tsx 映射（或家族图标）", file=sys.stderr)
+
     fd = fetch_date()
     md = fd[5:]  # MM-DD
     lines = ["export const UI_MODELS: UIModelRecord[] = ["]
@@ -93,6 +126,10 @@ def main() -> None:
         price_level = "high" if cost is not None and cost >= 5 else ("mid" if cost is not None and cost >= 1 else "low")
         tier = "S" if ii >= 50 else ("A" if ii >= 40 else ("B" if ii >= 25 else "C"))
         ctx = m.get("context") or "--"
+        # 真实 token 价格：优先取管道合并后的 price_input/output_per_mtok（vendors 真实/官方页抓取）
+        p_in = m.get("price_input_per_mtok")
+        p_out = m.get("price_output_per_mtok")
+        has_price = isinstance(p_in, (int, float)) and p_in > 0
         lines.append("  {")
         lines.append(f'    id: "{slugify(base)}",')
         lines.append(f'    name: "{base}",')
@@ -102,9 +139,15 @@ def main() -> None:
         lines.append("    delta: null,")
         lines.append('    trend: "flat",')
         lines.append("    ci: 0,")
-        lines.append("    priceInput: 0,")
-        lines.append("    priceOutput: 0,")
-        lines.append("    priceEstimated: true,")
+        if has_price:
+            p_out_v = p_out if isinstance(p_out, (int, float)) and p_out > 0 else p_in
+            lines.append(f"    priceInput: {p_in:.2f},")
+            lines.append(f"    priceOutput: {p_out_v:.2f},")
+            lines.append("    priceEstimated: false,")
+        else:
+            lines.append("    priceInput: 0,")
+            lines.append("    priceOutput: 0,")
+            lines.append("    priceEstimated: true,")
         lines.append(f'    priceLevel: "{price_level}",')
         lines.append(f'    tier: "{tier}",')
         lines.append('    source: "thirdparty",')

@@ -71,6 +71,8 @@ def blank_model(**overrides: Any) -> dict[str, Any]:
         "price_output_per_mtok": None,
         "throughput_tps": None,
         "context_length": None,
+        "cost_per_task_usd": None,
+        "latency_s": None,
         "source_url": None,
         "captured_at": now_iso(),
     }
