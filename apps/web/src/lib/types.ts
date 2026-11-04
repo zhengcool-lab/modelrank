@@ -53,7 +53,7 @@ export interface UIModelRecord {
     chinese: number;
     multimodal: number;
   };
-  /** ¥ / 百万 tokens */
+  /** USD / 百万 tokens（AA 真实单价） */
   priceInput: number;
   priceOutput: number;
   /** 价格为估算（非官方） */
@@ -61,6 +61,8 @@ export interface UIModelRecord {
   priceLevel: PriceLevel;
   tier: Tier;
   source: ModelSource;
+  /** per-model 数据源链接（AA 模型专属详情页，真实可溯源） */
+  website?: string;
   context: string;
   speedTokPerS: number;
   /** AA 每任务成本（USD，真实抓取）；null = 无数据 */

@@ -444,7 +444,7 @@ function SearchInner() {
                       综合 <b>{m.score.toFixed(1)}</b>
                     </div>
                     <div className="sr-side" style={{ color: "var(--mr-text-2)" }}>
-                      {m.priceInput > 0 ? `输入 ${m.priceInput} / 输出 ${m.priceOutput}` : "价格待核对"}
+                      {m.priceInput > 0 ? `输入 $${m.priceInput} / 输出 $${m.priceOutput}` : "价格待核对"}
                     </div>
                   </Link>
                 ))}

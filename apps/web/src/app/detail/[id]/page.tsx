@@ -182,21 +182,21 @@ export default async function DetailPage({ params }: Props) {
                 <div>
                   <div style={{ fontSize: 12, color: "var(--mr-text-3)" }}>输入</div>
                   <div style={{ fontSize: 20, fontWeight: 600, color: "var(--mr-text)" }}>
-                    {model.priceInput > 0 ? `¥${model.priceInput}` : "待核对"}
+                    {model.priceInput > 0 ? `$${model.priceInput}` : "待核对"}
                     <span style={{ fontSize: 12, fontWeight: 400, color: "var(--mr-text-2)" }}>/M tok</span>
                   </div>
                 </div>
                 <div>
                   <div style={{ fontSize: 12, color: "var(--mr-text-3)" }}>输出</div>
                   <div style={{ fontSize: 20, fontWeight: 600, color: "var(--mr-text)" }}>
-                    {model.priceOutput > 0 ? `¥${model.priceOutput}` : "待核对"}
+                    {model.priceOutput > 0 ? `$${model.priceOutput}` : "待核对"}
                     <span style={{ fontSize: 12, fontWeight: 400, color: "var(--mr-text-2)" }}>/M tok</span>
                   </div>
                 </div>
                 <div>
                   <div style={{ fontSize: 12, color: "var(--mr-text-3)" }}>同类中位数</div>
                   <div style={{ fontSize: 20, fontWeight: 600, color: "var(--mr-text-2)" }}>
-                    ¥{priceMedian.input} / ¥{priceMedian.output}
+                    ${priceMedian.input} / ${priceMedian.output}
                   </div>
                 </div>
               </div>

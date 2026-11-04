@@ -278,13 +278,13 @@ function CostInner() {
               fontVariant: "tabular-nums",
             }}
           >
-            {hasInput ? `¥${fmt(result)}` : "—"}
+            {hasInput ? `$${fmt(result)}` : "—"}
           </div>
           {hasInput ? (
             <div style={{ fontSize: 12, color: "rgba(255,255,255,0.85)", lineHeight: 1.9, marginTop: 14, fontVariant: "tabular-nums" }}>
-              输入 {fmt(inputTokM)}M × ¥{model.priceInput}/M × (1 − {cachePct}%) ≈ ¥{fmt(inputCost)}
+              输入 {fmt(inputTokM)}M × ${model.priceInput}/M × (1 − {cachePct}%) ≈ ${fmt(inputCost)}
               <br />
-              输出 {fmt(outputTokM)}M × ¥{model.priceOutput}/M ≈ ¥{fmt(outputCost)}
+              输出 {fmt(outputTokM)}M × ${model.priceOutput}/M ≈ ${fmt(outputCost)}
             </div>
           ) : (
             <div style={{ fontSize: 12, color: "rgba(255,255,255,0.7)", lineHeight: 1.9, marginTop: 14 }}>
@@ -324,7 +324,7 @@ function CostInner() {
             ↗ 用该模型发起对比
           </button>
 
-          {/* 推荐区：可点击小卡片；空输入时隐藏避免显示 ≈¥0/月 */}
+          {/* 推荐区：可点击小卡片；空输入时隐藏避免显示 ≈$0/月 */}
           {hasInput && (
             <>
               <div style={{ height: 1, background: "rgba(255,255,255,0.2)", margin: "16px 0 12px 0" }} />
@@ -352,7 +352,7 @@ function CostInner() {
                   }}
                 >
                   <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{o.name}</span>
-                  <span style={{ flex: "none", whiteSpace: "nowrap", fontVariant: "tabular-nums" }}>≈¥{fmt(o.cost)}/月</span>
+                  <span style={{ flex: "none", whiteSpace: "nowrap", fontVariant: "tabular-nums" }}>≈${fmt(o.cost)}/月</span>
                 </button>
               ))}
             </>

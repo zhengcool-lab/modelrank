@@ -357,7 +357,7 @@ export default function LibraryPage() {
           <div style={{ width: 70, flex: "none", fontSize: 12, fontWeight: 600, color: "var(--mr-text-3)" }}>排名</div>
           <div style={{ width: 320, flex: "none", fontSize: 12, fontWeight: 600, color: "var(--mr-text-3)" }}>模型</div>
           <div style={{ width: 160, flex: "none", fontSize: 12, fontWeight: 600, color: "var(--mr-text-3)", textAlign: "right" }}>评分（±CI）</div>
-          <div style={{ width: 200, flex: "none", fontSize: 12, fontWeight: 600, color: "var(--mr-text-3)", textAlign: "right" }}>价格 输入/输出（¥/M）</div>
+          <div style={{ width: 200, flex: "none", fontSize: 12, fontWeight: 600, color: "var(--mr-text-3)", textAlign: "right" }}>价格 输入/输出（$/M）</div>
           <div style={{ width: 110, flex: "none", fontSize: 12, fontWeight: 600, color: "var(--mr-text-3)" }}>性价比</div>
           <div style={{ flex: 1, fontSize: 12, fontWeight: 600, color: "var(--mr-text-3)", textAlign: "right" }}>操作</div>
         </div>
@@ -395,7 +395,7 @@ export default function LibraryPage() {
                 {m.score.toFixed(1)} <span style={{ fontSize: 12, color: "var(--mr-text-3)" }}>±{m.ci.toFixed(1)}</span>
               </div>
               <div style={{ width: 200, flex: "none", fontSize: 13, color: "var(--mr-text-2)", textAlign: "right", fontVariantNumeric: "tabular-nums" }}>
-                {m.priceInput > 0 ? `${m.priceInput} / ${m.priceOutput}${m.priceEstimated ? "（估算）" : ""}` : "待核对"}
+                {m.priceInput > 0 ? `$${m.priceInput} / $${m.priceOutput}${m.priceEstimated ? "（估算）" : ""}` : "待核对"}
               </div>
               <div style={{ width: 110, flex: "none", paddingLeft: 12 }}>
                 <TierChip tier={m.tier} />
@@ -448,7 +448,7 @@ export default function LibraryPage() {
                   <span style={{ color: "var(--mr-text-3)" }}> ±{m.ci.toFixed(1)}</span>
                 </span>
                 <span>
-                  价格 <strong style={{ color: "var(--mr-text)" }}>{m.priceInput > 0 ? `${m.priceInput} / ${m.priceOutput}` : "待核对"}</strong>
+                  价格 <strong style={{ color: "var(--mr-text)" }}>{m.priceInput > 0 ? `$${m.priceInput} / $${m.priceOutput}` : "待核对"}</strong>
                 </span>
               </div>
               <div style={{ marginTop: 10, textAlign: "right" }}>

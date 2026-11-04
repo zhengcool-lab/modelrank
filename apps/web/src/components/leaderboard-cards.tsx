@@ -136,7 +136,7 @@ export function LeaderboardCards({ models }: { models: UIModelRecord[] }) {
                   <DeltaText model={m} />
                 </div>
                 <div style={{ fontSize: 12, color: "var(--mr-text-2)", textAlign: "right" }}>
-                  {m.priceInput > 0 ? `¥${m.priceInput}/¥${m.priceOutput}` : "待核对"}
+                  {m.priceInput > 0 ? `$${m.priceInput}/$${m.priceOutput}` : "待核对"}
                 </div>
               </div>
             </div>

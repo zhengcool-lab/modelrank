@@ -179,6 +179,9 @@ def main() -> None:
         lines.append(f'    priceLevel: "{price_level}",')
         lines.append(f'    tier: "{tier}",')
         lines.append('    source: "thirdparty",')
+        # per-model 数据源链接：AA 模型专属详情页（fetcher 已把 source_url 升级为详情页 URL）
+        src_url = m.get("source_url") or ""
+        lines.append(f'    website: "{src_url}",' if src_url.startswith("https://") else "    website: undefined,")
         lines.append(f'    context: "{ctx}",')
         lines.append("    speedTokPerS: 0,")
         cost_str = "null" if cost_task is None else f"{cost_task:.2f}"

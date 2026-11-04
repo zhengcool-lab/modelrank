@@ -57,7 +57,7 @@ export function getModelSpecs(model: UIModelRecord): SpecRow[] {
   // 价格（输入 / 输出，每 M tokens）
   rows.push({
     label: "API 价格",
-    value: model.priceInput > 0 ? `¥${model.priceInput} / ¥${model.priceOutput} 每 M tokens` : "待核对（官方定价）",
+    value: model.priceInput > 0 ? `$${model.priceInput} / $${model.priceOutput} 每 M tokens` : "待核对（官方定价）",
   });
 
   // 更新日期（优先价格更新日期，回退数据更新日期）

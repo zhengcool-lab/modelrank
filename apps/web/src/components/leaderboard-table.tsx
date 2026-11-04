@@ -246,7 +246,7 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
           const m = row.original;
           return (
             <div style={{ fontSize: 13, color: "var(--mr-text-2)" }}>
-              {m.priceInput > 0 ? `输入 ¥${m.priceInput} · 输出 ¥${m.priceOutput}` : "待核对"}
+              {m.priceInput > 0 ? `输入 $${m.priceInput} · 输出 $${m.priceOutput}` : "待核对"}
               {m.priceEstimated ? "（估算）" : ""}
             </div>
           );
@@ -267,20 +267,36 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
         header: "官网",
         cell: ({ row }) => {
           const url = OFFICIAL_SITES[row.original.vendor];
-          if (!url) {
+          const modelUrl = row.original.website;
+          if (!url && !modelUrl) {
             return (
               <span style={{ fontSize: 12, color: "var(--mr-text-3)" }}>暂无数据</span>
             );
           }
           return (
-            <a
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ fontSize: 12, color: "var(--mr-primary)", textDecoration: "none" }}
-            >
-              {displayDomain(url)} ↗
-            </a>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 8, whiteSpace: "nowrap" }}>
+              {url && (
+                <a
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ fontSize: 12, color: "var(--mr-primary)", textDecoration: "none" }}
+                >
+                  {displayDomain(url)} ↗
+                </a>
+              )}
+              {modelUrl && (
+                <a
+                  href={modelUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="该模型在 Artificial Analysis 的独立评测页（per-model 数据源）"
+                  style={{ fontSize: 12, color: "var(--mr-text-3)", textDecoration: "none" }}
+                >
+                  模型页 ↗
+                </a>
+              )}
+            </span>
           );
         },
       }),
