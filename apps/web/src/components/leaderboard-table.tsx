@@ -12,6 +12,7 @@ import {
   type SortingState,
 } from "@tanstack/react-table";
 import type { UIModelRecord } from "@/lib/types";
+import { OFFICIAL_SITES, displayDomain } from "@/lib/official-sites";
 import { useCompare } from "@/context/compare";
 import {
   DeltaText,
@@ -27,8 +28,8 @@ const columnHelper = createColumnHelper<UIModelRecord>();
 function DimsGrid({ dims }: { dims?: { reasoning: number; code: number; math: number; chinese: number; multimodal: number } }) {
   if (!dims) {
     return (
-      <span style={{ fontSize: 12, color: "var(--mr-text-4)" }}>
-        维度评测中
+      <span style={{ fontSize: 12, color: "var(--mr-text-3)" }}>
+        暂无该项评测
       </span>
     );
   }
@@ -231,8 +232,8 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
                 </span>{" "}
                 <DeltaText model={m} />
               </div>
-              <div style={{ fontSize: 12, color: "var(--mr-text-4)", marginTop: 2 }}>
-                {m.ci > 0 ? `±${m.ci.toFixed(1)}（CI）` : "—"}
+              <div style={{ fontSize: 12, color: "var(--mr-text-3)", marginTop: 2 }}>
+                {m.ci > 0 ? `±${m.ci.toFixed(1)}（CI）` : "暂无置信区间"}
               </div>
             </div>
           );
@@ -261,6 +262,28 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
         header: "来源",
         cell: ({ row }) => <SourceTag source={row.original.source} />,
       }),
+      columnHelper.display({
+        id: "site",
+        header: "官网",
+        cell: ({ row }) => {
+          const url = OFFICIAL_SITES[row.original.vendor];
+          if (!url) {
+            return (
+              <span style={{ fontSize: 12, color: "var(--mr-text-3)" }}>暂无数据</span>
+            );
+          }
+          return (
+            <a
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ fontSize: 12, color: "var(--mr-primary)", textDecoration: "none" }}
+            >
+              {displayDomain(url)} ↗
+            </a>
+          );
+        },
+      }),
     ],
     [models, selected, has, toggle, max, sorting]
   );
@@ -283,6 +306,7 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
     price: 160,
     tier: 80,
     source: 80,
+    site: 140,
   };
 
   const headerGroups = table.getHeaderGroups();

@@ -129,7 +129,7 @@ export default async function DetailPage({ params }: Props) {
                     value: `#${rank} / ${UI_MODELS.length}`,
                     color: rankColor,
                   },
-                  { label: "置信区间", value: model.ci > 0 ? `±${model.ci.toFixed(1)}` : "—", color: "var(--mr-text)" },
+                  { label: "置信区间", value: model.ci > 0 ? `±${model.ci.toFixed(1)}` : "暂无置信区间", color: "var(--mr-text)" },
                   { label: "周环比", valueEl: <DeltaText model={model} /> },
                   { label: "收录时间", value: model.updatedAt, color: "var(--mr-text)" },
                 ].map((row) => (

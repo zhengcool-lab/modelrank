@@ -106,7 +106,9 @@ export function SourceTag({ source }: { source: ModelSource }) {
 export function DeltaText({ model }: { model: UIModelRecord }) {
   if (model.trend === "flat" || model.delta === null)
     return (
-      <span style={{ fontSize: 12, fontWeight: 600, color: "var(--mr-text-4)" }}>—</span>
+      <span style={{ fontSize: 12, fontWeight: 400, color: "var(--mr-text-3)" }}>
+        暂无涨跌
+      </span>
     );
   const up = model.trend === "up";
   return (

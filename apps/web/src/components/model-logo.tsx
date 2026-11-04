@@ -99,6 +99,7 @@ const MODEL_LOGO: Record<string, string> = {
   "nemotron-3-5-lightning": "nvidia.svg",
   "nemotron-3-nano-4b": "nvidia.svg",
   "command-a": "cohere.png",
+  "grok-4-7": "grok.png",
 };
 
 export function vendorSlug(vendor: string): string | null {
