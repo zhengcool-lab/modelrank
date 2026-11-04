@@ -73,10 +73,10 @@ export function LeaderboardCards({ models }: { models: UIModelRecord[] }) {
             key={m.id}
             className="mr-card"
             style={{
-              padding: "14px 16px",
+              padding: "12px 14px",
               display: "flex",
-              gap: 12,
-              alignItems: "flex-start",
+              gap: 10,
+              alignItems: "center",
               position: "relative",
             }}
           >
@@ -93,7 +93,7 @@ export function LeaderboardCards({ models }: { models: UIModelRecord[] }) {
                 }
                 toggle(m.id);
               }}
-              style={{ background: "none", border: "none", cursor: "pointer", padding: 0, marginTop: 4 }}
+              style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
             >
               <CheckBox checked={checked} />
             </button>
@@ -102,42 +102,67 @@ export function LeaderboardCards({ models }: { models: UIModelRecord[] }) {
 
             <ProductLogo modelId={m.id} modelName={m.name} size={36} radius={8} />
 
+            {/* 紧凑双行布局：行1 = 名字+评分+涨跌（右对齐），行2 = 标签+厂商+价格（左右铺满） */}
             <div style={{ flex: 1, minWidth: 0 }}>
-              {/* row 1: model name */}
-              <Link
-                href={`/detail/${m.id}`}
-                style={{
-                  fontSize: 15,
-                  fontWeight: 600,
-                  color: "var(--mr-text)",
-                  textDecoration: "none",
-                }}
-              >
-                {m.name}
-              </Link>
+              {/* row 1: model name + score + delta */}
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <Link
+                  href={`/detail/${m.id}`}
+                  style={{
+                    flex: 1,
+                    minWidth: 0,
+                    fontSize: 15,
+                    fontWeight: 600,
+                    color: "var(--mr-text)",
+                    textDecoration: "none",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {m.name}
+                </Link>
+                <span
+                  style={{
+                    flex: "none",
+                    fontSize: 22,
+                    fontWeight: 700,
+                    color: "var(--mr-text)",
+                    lineHeight: 1,
+                  }}
+                >
+                  {m.score.toFixed(1)}
+                </span>
+                <DeltaText model={m} />
+              </div>
 
-              {/* row 2: tags 固定独立一行，不随名字长度浮动 */}
-              <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 4 }}>
+              {/* row 2: tags + vendor + price */}
+              <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6 }}>
                 <OpenTag openSource={m.openSource} />
                 <TierBadge tier={m.tier} />
-              </div>
-
-              {/* row 3: vendor */}
-              <div style={{ fontSize: 12, color: "var(--mr-text-3)", marginTop: 5 }}>
-                {m.vendor} · {m.context === "--" ? "上下文待核" : `${m.context} 上下文`}
-              </div>
-
-              {/* row 3: score + price */}
-              <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginTop: 8 }}>
-                <div>
-                  <span style={{ fontSize: 22, fontWeight: 700, color: "var(--mr-text)" }}>
-                    {m.score.toFixed(1)}
-                  </span>{" "}
-                  <DeltaText model={m} />
-                </div>
-                <div style={{ fontSize: 12, color: "var(--mr-text-2)", textAlign: "right" }}>
+                <span
+                  style={{
+                    flex: 1,
+                    minWidth: 0,
+                    fontSize: 12,
+                    color: "var(--mr-text-3)",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {m.vendor} · {m.context === "--" ? "上下文待核" : `${m.context} 上下文`}
+                </span>
+                <span
+                  style={{
+                    flex: "none",
+                    fontSize: 13,
+                    color: "var(--mr-text-2)",
+                    textAlign: "right",
+                  }}
+                >
                   {m.priceInput > 0 ? `$${m.priceInput}/$${m.priceOutput}` : "待核对"}
-                </div>
+                </span>
               </div>
             </div>
           </div>
