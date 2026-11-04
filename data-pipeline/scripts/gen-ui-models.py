@@ -145,7 +145,9 @@ def main() -> None:
         vendor = m["vendor"]
         name = m["name"]
         base = base_of(name)
-        open_source = is_open(name)
+        # 开源标记：优先用 AA 详情页真实数据（open_source），缺失时用名字匹配兜底
+        real_open = m.get("open_source")
+        open_source = real_open if isinstance(real_open, bool) else is_open(name)
         cost_raw = m.get("cost_per_task_usd") or "--"
         try:
             cost = float(str(cost_raw).replace("$", ""))

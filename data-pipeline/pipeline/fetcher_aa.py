@@ -205,6 +205,14 @@ def _fetch_detail(slug: str) -> dict[str, Any]:
         out["price_input_per_mtok"] = float(inp.group(1))
     if outp:
         out["price_output_per_mtok"] = float(outp.group(1))
+    # 开源标记：AA 详情页结构化 FAQ "Is <model> open source?" → Yes/No
+    # （真实数据源，替代前端按模型名猜测）
+    os_m = re.search(
+        r'"name":"Is [^"]*open source\?","acceptedAnswer":\{"@type":"Answer","text":"([^"]+)"',
+        text,
+    )
+    if os_m:
+        out["open_source"] = os_m.group(1).startswith("Yes")
     return out
 
 
@@ -285,6 +293,9 @@ def fetch() -> dict[str, Any]:
                         filled += 1
                     if d.get("price_output_per_mtok") is not None:
                         r["price_output_per_mtok"] = d["price_output_per_mtok"]
+                    # 开源标记（真实数据，AA 详情页 FAQ）
+                    if d.get("open_source") is not None:
+                        r["open_source"] = d["open_source"]
                     # per-model 源链接升级（详情页专属 URL）
                     if d.get("source_url"):
                         r["source_url"] = d["source_url"]
@@ -311,6 +322,7 @@ def fetch() -> dict[str, Any]:
                 source_url=r["source_url"],
                 price_input_per_mtok=r.get("price_input_per_mtok"),
                 price_output_per_mtok=r.get("price_output_per_mtok"),
+                open_source=r.get("open_source"),
                 dims=r.get("dims"),
             )
             for r in rows
