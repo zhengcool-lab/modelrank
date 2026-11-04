@@ -80,6 +80,31 @@ def fetch_date() -> str:
     return "2026-11-01"
 
 
+def fmt_ctx(ctx_raw) -> str:
+    """把 context_length（int tokens）格式化为 '262K' / '1M'；无数据返回 '--'。"""
+    try:
+        n = int(ctx_raw)
+    except (TypeError, ValueError):
+        return "--"
+    if n >= 1_000_000:
+        m = n / 1_000_000
+        return f"{m:.0f}M" if m % 1 == 0 else f"{m:.1f}M"
+    if n >= 1000:
+        return f"{n // 1000}K"
+    return str(n)
+
+
+def parse_num(raw) -> float | None:
+    """解析 AA 数值（可能是 '$7.76'、'6.99'、'--'），失败返回 None。"""
+    if raw is None:
+        return None
+    try:
+        v = float(str(raw).replace("$", "").replace(",", "").strip())
+        return v
+    except ValueError:
+        return None
+
+
 def main() -> None:
     data = json.load(open(MODELS_JSON, encoding="utf-8"))
     models = data if isinstance(data, list) else data.get("models", [])
@@ -125,7 +150,10 @@ def main() -> None:
             cost = None
         price_level = "high" if cost is not None and cost >= 5 else ("mid" if cost is not None and cost >= 1 else "low")
         tier = "S" if ii >= 50 else ("A" if ii >= 40 else ("B" if ii >= 25 else "C"))
-        ctx = m.get("context") or "--"
+        ctx = fmt_ctx(m.get("context_length"))
+        # 真实数值字段（AA 每任务成本 / 中位延迟）；null 表示无数据，前端诚实显示"暂无"
+        cost_task = parse_num(m.get("cost_per_task_usd"))
+        latency = parse_num(m.get("latency_s"))
         # 真实 token 价格：优先取管道合并后的 price_input/output_per_mtok（vendors 真实/官方页抓取）
         p_in = m.get("price_input_per_mtok")
         p_out = m.get("price_output_per_mtok")
@@ -153,6 +181,10 @@ def main() -> None:
         lines.append('    source: "thirdparty",')
         lines.append(f'    context: "{ctx}",')
         lines.append("    speedTokPerS: 0,")
+        cost_str = "null" if cost_task is None else f"{cost_task:.2f}"
+        lat_str = "null" if latency is None else f"{latency:.2f}"
+        lines.append(f"    costPerTask: {cost_str},")
+        lines.append(f"    latencyS: {lat_str},")
         lines.append(f'    updatedAt: "{md}",')
         lines.append(f'    priceUpdatedAt: "{fd}",')
         lines.append("    trendHistory: [],")

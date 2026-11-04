@@ -5,14 +5,18 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { InputNumber } from "@arco-design/web-react";
 import { estimateMonthlyCost } from "@/lib/cost-formula";
-import { SEED_MODELS, UI_MODELS } from "@/lib/seed-data";
+import { UI_MODELS } from "@/lib/seed-data";
 import { formatDate } from "@/lib/derived-data";
 import { useCompare } from "@/context/compare";
 import { NavHeader } from "@/components/nav-header";
 import { Footer } from "@/components/footer";
 
-// 成本计算器可选模型 = SEED_MODELS 全部 8 个（展示名与价格从 UI_MODELS 取）
-const COST_MODEL_IDS = SEED_MODELS.map((m) => m.id);
+// 成本计算器可选模型 = UI_MODELS 中已有真实 token 单价（输入或输出价 > 0）的模型。
+// 注意：SEED_MODELS 是原型期手写模型（gpt-5 等），其 id 与真实榜单 UI_MODELS 不一致，
+// 直接用它做 find 会在运行时崩（TypeError: undefined.name）。价格接入前列表为空并显示诚实空态。
+const COST_MODELS = UI_MODELS.filter(
+  (m) => (m.priceInput ?? 0) > 0 || (m.priceOutput ?? 0) > 0
+);
 const CACHE_OPTIONS = [0, 0.3, 0.6] as const;
 
 // 全站统一金额/数字格式化：四舍五入 + zh-CN 千分位，标题/明细/推荐三处共用
@@ -23,10 +27,12 @@ function CostInner() {
   const sp = useSearchParams();
   const { toggle, has } = useCompare();
 
-  // 初始选中模型优先取 URL ?model=，校验失败再回退到第一个模型
+  // 初始选中模型优先取 URL ?model=，校验失败再回退到第一个可选模型
   const initialFromUrl = sp.get("model");
-  const [modelId, setModelId] = useState<string>(
-    initialFromUrl && UI_MODELS.some((m) => m.id === initialFromUrl) ? initialFromUrl : COST_MODEL_IDS[0]
+  const [modelId, setModelId] = useState<string | undefined>(
+    initialFromUrl && UI_MODELS.some((m) => m.id === initialFromUrl)
+      ? initialFromUrl
+      : COST_MODELS[0]?.id
   );
   const [totalWan, setTotalWan] = useState<number | null>(4000); // 万 token；null 表示未输入
   const [alpha, setAlpha] = useState(0.25);
@@ -57,8 +63,8 @@ function CostInner() {
   const cachePct = Math.round(cache * 100);
 
   // 同预算可考虑：按与当前结果的成本差绝对值升序取前 2（纯展示排序，公式/价格不变）
-  // 推荐范围约束在可选的 8 个模型内，避免推荐到按钮组外导致选中态断裂
-  const others = UI_MODELS.filter((m) => m.id !== modelId && COST_MODEL_IDS.includes(m.id))
+  // 推荐范围约束在可选的模型内，避免推荐到按钮组外导致选中态断裂
+  const others = UI_MODELS.filter((m) => m.id !== modelId && COST_MODELS.some((c) => c.id === m.id))
     .map((o) => ({
       ...o,
       cost: estimateMonthlyCost({
@@ -77,6 +83,30 @@ function CostInner() {
     if (!has(model.id)) toggle(model.id);
     router.push("/compare");
   };
+
+  // 无真实 token 单价时显示诚实空态（不渲染 0 价假结果，也不因旧模型 id 崩溃）
+  if (COST_MODELS.length === 0) {
+    return (
+      <>
+        <div className="mr-pad-x" style={{ paddingTop: 24 }}>
+          <div style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.4px", color: "var(--mr-text)" }}>成本计算器</div>
+          <div style={{ fontSize: 13, color: "var(--mr-text-2)", marginTop: 6 }}>
+            按月用量与输入/输出比例，估算月度 API 成本
+          </div>
+        </div>
+        <div className="mr-card mr-mx" style={{ padding: "20px 22px", marginTop: 18, maxWidth: 640 }}>
+          <div style={{ fontSize: 14, fontWeight: 600, color: "var(--mr-text)" }}>暂无可计算的模型价格</div>
+          <div style={{ fontSize: 13, color: "var(--mr-text-2)", marginTop: 8, lineHeight: 1.7 }}>
+            榜单数据来自 Artificial Analysis 的每任务成本，尚未接入各模型官方 token 单价（输入/输出每百万 tokens）。
+            为避免用估算价或 0 价误导，成本计算器暂时停用；真实 token 单价接入后会自动恢复。
+          </div>
+          <div style={{ fontSize: 12, color: "var(--mr-text-3)", marginTop: 8 }}>
+            模型榜单、价格分级（high/mid/low）与对比功能不受影响，可正常使用。
+          </div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -97,16 +127,15 @@ function CostInner() {
             className="grid grid-cols-2 md:grid-cols-4 gap-1.5"
             style={{ background: "var(--mr-card-2)", borderRadius: 4, padding: 3, marginTop: 10 }}
           >
-            {COST_MODEL_IDS.map((id) => {
-              const m = UI_MODELS.find((x) => x.id === id)!;
-              const active = modelId === id;
+            {COST_MODELS.map((m) => {
+              const active = modelId === m.id;
               return (
                 <button
-                  key={id}
+                  key={m.id}
                   type="button"
                   role="radio"
                   aria-checked={active}
-                  onClick={() => setModelId(id)}
+                  onClick={() => setModelId(m.id)}
                   style={{
                     height: 32,
                     fontSize: 13,

@@ -63,6 +63,10 @@ export interface UIModelRecord {
   source: ModelSource;
   context: string;
   speedTokPerS: number;
+  /** AA 每任务成本（USD，真实抓取）；null = 无数据 */
+  costPerTask: number | null;
+  /** AA 中位响应延迟（秒，真实抓取）；null = 无数据 */
+  latencyS: number | null;
   /** 数据更新日期（MM-DD 展示用） */
   updatedAt: string;
   /** 价格最后核对日期（ISO date，YYYY-MM-DD） */
