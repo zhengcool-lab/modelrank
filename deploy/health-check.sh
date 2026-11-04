@@ -41,11 +41,37 @@ for path in "/" "/detail/gpt-6-astra" "/detail/gemini-4-carbon" "/news" "/compar
   ck "GET $path → HTTP ${code}" "[ \"${code}\" = \"200\" ]"
 done
 
-# ---- 2. 关键资源 ----
+# ---- 2. 关键资源（动态对齐 MODEL_LOGO/VENDOR_SLUG 映射，新增模型自动纳入巡检） ----
 echo "--- 关键资源 ---" | tee -a "$OUT"
-for res in "/product-logos/openai.png" "/product-logos/claude.png" "/product-logos/gemini.png" \
-           "/product-logos/deepseek.png" "/product-logos/qwen.png" "/product-logos/hunyuan.png" \
-           "/vendor-logos/openai.svg" "/vendor-logos/nvidia.svg" "/sitemap.xml" "/robots.txt"; do
+# product-logos：从 model-logo.tsx 的 MODEL_LOGO 映射提取文件名（去重）
+PRODUCT_LOGO_LIST=$(python3 -c "
+import re
+t=open('$REPO/apps/web/src/components/model-logo.tsx',encoding='utf-8').read()
+m=re.search(r'const MODEL_LOGO.*?\n\};',t,re.S)
+names=sorted(set(re.findall(r': \"([^\"\.]+)\.(png|svg)\"',m.group(0))))
+for n,e in names:
+    print(n+'.'+e)
+" 2>/dev/null)
+# vendor-logos：VENDOR_SLUG 值 + VENDOR_EXT 扩展名
+VENDOR_LOGO_LIST=$(python3 -c "
+import re
+t=open('$REPO/apps/web/src/components/model-logo.tsx',encoding='utf-8').read()
+sb=re.search(r'const VENDOR_SLUG.*?\n\};',t,re.S)
+slugs=sorted(set(re.findall(r': \"([a-z0-9]+)\",',sb.group(0))))
+eb=re.search(r'const VENDOR_EXT.*?\n\};',t,re.S)
+ext=dict(re.findall(r'^  ([a-z0-9]+): \"(png|svg)\",',eb.group(0),re.M))
+for s in slugs:
+    print(s+'.'+ext.get(s,'svg'))
+" 2>/dev/null)
+for f in $PRODUCT_LOGO_LIST; do
+  code=$(curl -s -o /dev/null -w "%{http_code}" -m 15 "$BASE/product-logos/$f" 2>/dev/null)
+  ck "GET /product-logos/$f → HTTP ${code}" "[ \"${code}\" = \"200\" ]"
+done
+for f in $VENDOR_LOGO_LIST; do
+  code=$(curl -s -o /dev/null -w "%{http_code}" -m 15 "$BASE/vendor-logos/$f" 2>/dev/null)
+  ck "GET /vendor-logos/$f → HTTP ${code}" "[ \"${code}\" = \"200\" ]"
+done
+for res in "/sitemap.xml" "/robots.txt"; do
   code=$(curl -s -o /dev/null -w "%{http_code}" -m 15 "$BASE$res" 2>/dev/null)
   ck "GET $res → HTTP ${code}" "[ \"${code}\" = \"200\" ]"
 done
