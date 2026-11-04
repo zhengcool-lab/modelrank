@@ -24,8 +24,18 @@ import { ProductLogo } from "./model-logo";
 
 const columnHelper = createColumnHelper<UIModelRecord>();
 
-/** 能力维度网格：推理/代码/数学 上排，中文/多模态 下排（与详情雷达 5 维严格同名同义） */
-function DimsGrid({ dims }: { dims?: { reasoning: number; code: number; math: number; chinese: number; multimodal: number } }) {
+/** 能力五维网格：财务/战略/法律/工程/经济（AA Capability Indexes 真实指数分，0–100） */
+function DimsGrid({
+  dims,
+}: {
+  dims?: {
+    financeAndAccounting?: number;
+    strategyAndOps?: number;
+    legal?: number;
+    engineering?: number;
+    economics?: number;
+  };
+}) {
   if (!dims) {
     return (
       <span style={{ fontSize: 12, color: "var(--mr-text-3)" }}>
@@ -34,11 +44,11 @@ function DimsGrid({ dims }: { dims?: { reasoning: number; code: number; math: nu
     );
   }
   const items = [
-    { label: "推理", value: dims.reasoning },
-    { label: "代码", value: dims.code },
-    { label: "数学", value: dims.math },
-    { label: "中文", value: dims.chinese },
-    { label: "多模态", value: dims.multimodal },
+    { label: "财务", value: dims.financeAndAccounting },
+    { label: "战略", value: dims.strategyAndOps },
+    { label: "法律", value: dims.legal },
+    { label: "工程", value: dims.engineering },
+    { label: "经济", value: dims.economics },
   ];
   return (
     <div
@@ -53,7 +63,9 @@ function DimsGrid({ dims }: { dims?: { reasoning: number; code: number; math: nu
       {items.map((it) => (
         <div key={it.label} style={{ display: "flex", alignItems: "baseline", gap: 3 }}>
           <span style={{ fontSize: 12, color: "var(--mr-text-4)" }}>{it.label}</span>
-          <span style={{ fontSize: 13, fontWeight: 600, color: "var(--mr-text-2)" }}>{it.value}</span>
+          <span style={{ fontSize: 13, fontWeight: 600, color: "var(--mr-text-2)" }}>
+            {it.value != null ? it.value.toFixed(1) : "--"}
+          </span>
         </div>
       ))}
     </div>

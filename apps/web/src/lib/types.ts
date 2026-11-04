@@ -45,13 +45,13 @@ export interface UIModelRecord {
   trend: TrendDir;
   /** 95% 置信区间半宽 */
   ci: number;
-  /** 子维度（第三方评测可能缺失） */
+  /** 能力五维（Artificial Analysis Capability Indexes 真实数据，0–100 指数分） */
   dims?: {
-    reasoning: number;
-    code: number;
-    math: number;
-    chinese: number;
-    multimodal: number;
+    financeAndAccounting?: number;
+    strategyAndOps?: number;
+    legal?: number;
+    engineering?: number;
+    economics?: number;
   };
   /** USD / 百万 tokens（AA 真实单价） */
   priceInput: number;

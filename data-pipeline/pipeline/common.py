@@ -73,6 +73,7 @@ def blank_model(**overrides: Any) -> dict[str, Any]:
         "context_length": None,
         "cost_per_task_usd": None,
         "latency_s": None,
+        "dims": None,
         "source_url": None,
         "captured_at": now_iso(),
     }

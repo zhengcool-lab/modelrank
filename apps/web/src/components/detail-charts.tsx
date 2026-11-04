@@ -52,11 +52,11 @@ export function DetailCharts({ model }: { model: UIModelRecord }) {
     () => ({
       radar: {
         indicator: [
-          { name: "推理", max: 100 },
-          { name: "代码", max: 100 },
-          { name: "数学", max: 100 },
-          { name: "中文", max: 100 },
-          { name: "多模态", max: 100 },
+          { name: "财务", max: 100 },
+          { name: "战略", max: 100 },
+          { name: "法律", max: 100 },
+          { name: "工程", max: 100 },
+          { name: "经济", max: 100 },
         ],
         radius: 96,
         center: ["50%", "55%"],
@@ -71,11 +71,11 @@ export function DetailCharts({ model }: { model: UIModelRecord }) {
           data: [
             {
               value: [
-                model.dims?.reasoning ?? 0,
-                model.dims?.code ?? 0,
-                model.dims?.math ?? 0,
-                model.dims?.chinese ?? 0,
-                model.dims?.multimodal ?? 0,
+                model.dims?.financeAndAccounting ?? 0,
+                model.dims?.strategyAndOps ?? 0,
+                model.dims?.legal ?? 0,
+                model.dims?.engineering ?? 0,
+                model.dims?.economics ?? 0,
               ],
               name: model.name,
               lineStyle: { color: primary, width: 2 },

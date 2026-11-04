@@ -11,13 +11,16 @@ import { useCompare } from "@/context/compare";
 import { DeltaText, TierBadge } from "@/components/badges";
 import { ProductLogo } from "@/components/model-logo";
 
-// —— 真实数据维度定义（AA 可抓字段；无数据时诚实显示"暂无"） ——
-// 能力子维度：AA 无五维数据（dims 缺失），有则展示进度条，无则整行提示
-const DIM_ROWS: { key: "reasoning" | "code" | "chinese" | "multimodal"; label: string }[] = [
-  { key: "reasoning", label: "推理" },
-  { key: "code", label: "代码" },
-  { key: "chinese", label: "中文" },
-  { key: "multimodal", label: "多模态" },
+// —— 真实数据维度定义（AA Capability Indexes 可抓字段；无数据时诚实显示"暂无"） ——
+const DIM_ROWS: {
+  key: "financeAndAccounting" | "strategyAndOps" | "legal" | "engineering" | "economics";
+  label: string;
+}[] = [
+  { key: "financeAndAccounting", label: "财务" },
+  { key: "strategyAndOps", label: "战略" },
+  { key: "legal", label: "法律" },
+  { key: "engineering", label: "工程" },
+  { key: "economics", label: "经济" },
 ];
 
 function contextToK(c: string): number {

@@ -6,7 +6,10 @@
 - 只收主流厂商（排除 Other）
 - 按基座去重：模型名去掉 "(变体)" 后同基座只保留智能指数最高的一个
 - score = 智能指数原值；delta=null；trend=flat；ci=0
-- dims 省略（AA 无五维，前端已降级）；价格优先取管道合并后的真实 token 价
+- dims 五维（AA Capability Indexes 真实数据）：fetcher_aa 已解密 AA 全量数据文件，
+  按 slug 回填 dims（financeAndAccounting/strategyAndOps/legal/engineering/economics，
+  0-100 指数分）；无数据的模型不输出 dims 字段，前端诚实显示"暂无该项评测"。
+  价格优先取管道合并后的真实 token 价
   （price_input/output_per_mtok），无真实价时 0 + priceEstimated=true
 - 输出无图标模型清单（新增 id 未覆盖 MODEL_LOGO 时打印，供巡检任务补映射）
 - tier 按指数分级；priceLevel 按每任务成本分级
@@ -167,6 +170,15 @@ def main() -> None:
         lines.append("    delta: null,")
         lines.append('    trend: "flat",')
         lines.append("    ci: 0,")
+        # 能力五维真实数据（AA Capability Indexes，0-100 指数分）
+        dims = m.get("dims") or {}
+        dim_fields = ["financeAndAccounting", "strategyAndOps", "legal", "engineering", "economics"]
+        dim_vals = {k: dims[k] for k in dim_fields if isinstance(dims.get(k), (int, float))}
+        if dim_vals:
+            lines.append("    dims: {")
+            for k, v in dim_vals.items():
+                lines.append(f"      {k}: {round(v, 1)},")
+            lines.append("    },")
         if has_price:
             p_out_v = p_out if isinstance(p_out, (int, float)) and p_out > 0 else p_in
             lines.append(f"    priceInput: {p_in:.2f},")

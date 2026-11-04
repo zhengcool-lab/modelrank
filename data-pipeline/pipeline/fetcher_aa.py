@@ -9,13 +9,122 @@
   （"$X per 1M input tokens" / "$Y per 1M output tokens"）回填
   price_input_per_mtok / price_output_per_mtok，并把 source_url 升级为该模型
   专属详情页 URL（per-model 可溯源链接）。
+- 能力五维增强（2026-11-04，真实数据）：AA 详情页 SSR 内嵌加密数据清单
+  （manifest，含 AES-GCM 密钥）。抓任意模型详情页提取 manifest → 下载加密
+  data/*.txt → AES-GCM(key, IV=SHA-256(key)[0:12]) 解密 → gzip 解压 → JSON，
+  内含全部 ~700 模型的能力指数（capabilities 五维：financeAndAccounting /
+  strategyAndOps / legal / engineering / economics，0-100 分数）。按 slug
+  回填到各行为 dims 字段，实现"能力五维真实数据"（替代原型期的"暂无该项评测"）。
 - 成功返回 is_mock=false；仅当网络失败或解析不到任何行时回退 mock 并标记 is_mock=true
   （前端生成器会拒绝覆盖真实数据）
 
 说明：智能指数（Intelligence Index）为 0-100 绝对能力分，天然适配 ModelRank 的
-0-100 综合分框架；数据来自 AA 公开榜单，可溯源。
+0-100 综合分框架；数据来自 AA 公开榜单，可溯源。能力五维来自 AA Capability
+Indexes（Finance & Accounting / Strategy & Ops / Legal / Engineering / Economics），
+同为 0-100 指数分。
 """
 from __future__ import annotations
+
+import gzip
+import hashlib
+import json
+import logging
+import re
+from concurrent.futures import ThreadPoolExecutor
+from typing import Any
+
+from Crypto.Cipher import AES
+
+from .common import blank_model, now_iso
+
+log = logging.getLogger("pipeline.aa")
+
+URL = "https://artificialanalysis.ai/leaderboards/models"
+DETAIL_BASE = "https://artificialanalysis.ai/models/"
+DATA_BASE = "https://artificialanalysis.ai/data/"
+# 只对主流厂商 + 有智能指数的行抓详情页（避免对 280 行全量抓取）
+DETAIL_VENDORS = {
+    "OpenAI", "Anthropic", "Google", "DeepSeek", "Alibaba", "Moonshot",
+    "xAI", "Zhipu", "StepFun", "MiniMax", "Tencent", "Mistral", "NVIDIA", "Cohere",
+}
+
+# AA capability 五维字段（0-100 指数分）。前端展示顺序即此列表。
+CAP_DIMS = [
+    "financeAndAccounting",
+    "strategyAndOps",
+    "legal",
+    "engineering",
+    "economics",
+]
+
+
+def _fetch_capability_index() -> dict[str, dict[str, Any]]:
+    """抓 AA 详情页 SSR 中的 manifest → 下载加密数据 → 解密 → 按 slug 返回能力五维。
+
+    解密算法（从站点 JS 逆向确认，2026-11-04 验证）：
+      1. manifest = {"path": "/data/<hash>.txt", "key": "<64-hex>"}
+      2. data 文件 = AES-GCM 密文（tag 在末尾 16 字节）
+         - key   = hex 解码的 32 字节
+         - IV    = SHA-256(key)[0:12]
+      3. 解密后为 gzip 压缩的 JSON：{"models": [ {slug, capabilities, ...}, ... ]}
+
+    返回 { slug: {"dims": {...五维...}} }；任何环节失败返回 {}（不致命，不影响主流程）。
+    """
+    try:
+        import urllib.request
+
+        # 1) 抓任意模型详情页（页面级 manifest 全局存在；用 gemini-4-carbon 兜底）
+        probe_slug = "gemini-4-carbon"
+        req = urllib.request.Request(
+            DETAIL_BASE + probe_slug, headers={"User-Agent": "Mozilla/5.0"}
+        )
+        with urllib.request.urlopen(req, timeout=40) as resp:
+            html = resp.read().decode("utf-8", errors="ignore")
+
+        # 2) 提取 initialModels 的 manifest（SSR RSC payload 内为转义 JSON）。
+        #    详情页有两个 manifest：initialModels（全量 ~700 模型，含 capabilities）
+        #    与页面级视图 manifest（单个模型面板数据，解密后是 list 不可用）。
+        #    manifest key 会轮换，必须与同一请求中的 path 配对使用。
+        m = re.search(
+            r'initialModels\\",\\"manifest\\":\{\\"path\\":\\"/data/([a-f0-9]+\.txt)\\",\\"key\\":\\"([a-f0-9]+)\\"\}',
+            html,
+        )
+        if not m:
+            log.warning("AA capability: manifest not found in detail HTML")
+            return {}
+        data_path, key_hex = m.group(1), m.group(2)
+
+        # 3) 下载加密数据
+        req = urllib.request.Request(
+            DATA_BASE + data_path, headers={"User-Agent": "Mozilla/5.0"}
+        )
+        with urllib.request.urlopen(req, timeout=60) as resp:
+            blob = resp.read()
+
+        # 4) AES-GCM 解密 + gzip 解压
+        key = bytes.fromhex(key_hex)
+        iv = hashlib.sha256(key).digest()[:12]
+        cipher = AES.new(key, AES.MODE_GCM, nonce=iv)
+        plain = gzip.decompress(cipher.decrypt_and_verify(blob[:-16], blob[-16:]))
+        obj = json.loads(plain.decode("utf-8"))
+
+        # 5) 按 slug 提取能力五维
+        out: dict[str, dict[str, Any]] = {}
+        n_cap = 0
+        for model in obj.get("models", []):
+            slug = model.get("slug")
+            caps = model.get("capabilities") or {}
+            dims = {k: caps[k] for k in CAP_DIMS if isinstance(caps.get(k), (int, float))}
+            if slug and dims:
+                out[slug] = {"dims": dims}
+                n_cap += 1
+        log.info("AA capability: decrypted %s models, %s with dims (manifest %s)",
+                 len(obj.get("models", [])), n_cap, data_path)
+        return out
+    except Exception as e:  # noqa: BLE001
+        log.warning("AA capability fetch failed: %s", e)
+        return {}
+
 
 import json
 import logging
@@ -181,6 +290,16 @@ def fetch() -> dict[str, Any]:
                         r["source_url"] = d["source_url"]
             log.info("AA detail fill: %d rows with real token prices", filled)
 
+        # 能力五维增强：解密 AA 全量数据文件，按 slug 回填 dims（失败不致命）
+        cap_map = _fetch_capability_index()
+        dims_filled = 0
+        for r in rows:
+            slug = r.get("slug")
+            if slug and slug in cap_map:
+                r["dims"] = cap_map[slug]["dims"]
+                dims_filled += 1
+        log.info("AA capability fill: %d rows with real 5-dim scores", dims_filled)
+
         models = [
             blank_model(
                 vendor=_vendor_of(r["name"]),
@@ -192,6 +311,7 @@ def fetch() -> dict[str, Any]:
                 source_url=r["source_url"],
                 price_input_per_mtok=r.get("price_input_per_mtok"),
                 price_output_per_mtok=r.get("price_output_per_mtok"),
+                dims=r.get("dims"),
             )
             for r in rows
         ]
