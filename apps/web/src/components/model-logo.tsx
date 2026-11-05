@@ -80,6 +80,15 @@ const MODEL_LOGO: Record<string, string> = {
   "gpt-6-1-terra": "openai.png",
   "gpt-6-luna": "openai.png",
   "kimi-k3-1-pro": "kimi.png",
+  "kimi-k3": "kimi.png",
+  "kimi-k3-low": "kimi.png",
+  "kimi-k2": "kimi-k2.png",
+  "kimi-k2-5": "kimi-k2.png",
+  "kimi-k2-6": "kimi-k2.png",
+  "kimi-k2-7-code": "kimi-k2.png",
+  "kimi-k2-thinking": "kimi-k2.png",
+  "kimi-k2-0905": "kimi-k2.png",
+  "kimi-linear-48b-a3b-instruct": "kimi.png",
   "qwen3-8-max": "qwen.png",
   "qwen3-8-27b": "qwen.png",
   "deepseek-v4-1-flash-1017": "deepseek.png",
@@ -94,6 +103,7 @@ const MODEL_LOGO: Record<string, string> = {
   inkling: "hunyuan.png",
   "mistral-large-4": "mistral.png",
   "mistral-small-4": "mistral.png",
+  "mistral-medium-3-5": "mistral.png",
   "nemotron-3-5-super-vl": "nvidia.svg",
   "nemotron-3-ultra": "nvidia.svg",
   "nemotron-3-5-lightning": "nvidia.svg",
@@ -114,24 +124,28 @@ export function ProductLogo({
   modelName,
   size = 32,
   radius = 8,
+  strict = false,
 }: {
   modelId: string;
   modelName: string;
   size?: number;
   radius?: number;
+  /** 严格模式：无映射时直接用首字母方块，不猜测 {modelId}.png（避免 404 破图） */
+  strict?: boolean;
 }) {
   const [error, setError] = useState(false);
   const mapped = MODEL_LOGO[modelId];
   const [useSvg, setUseSvg] = useState(false);
 
-  // 未映射的模型：尝试 {modelId}.png → {modelId}.svg → 首字母方块
+  // 未映射的模型：strict 模式直接回退字母方块；否则尝试 {modelId}.png → {modelId}.svg
   const src = mapped
     ? `/product-logos/${mapped}`
     : useSvg
       ? `/product-logos/${modelId}.svg`
       : `/product-logos/${modelId}.png`;
+  const showFallback = error || (strict && !mapped);
 
-  if (error) {
+  if (showFallback) {
     return (
       <span
         style={{

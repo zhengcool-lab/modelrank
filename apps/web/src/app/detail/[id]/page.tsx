@@ -16,6 +16,34 @@ import { DetailCharts } from "@/components/detail-charts";
 import { SameVendorModels } from "@/components/lead-form";
 import { DeltaText, OpenTag, TierBadge } from "@/components/badges";
 import { ProductLogo, VendorLogo } from "@/components/model-logo";
+import type { UIModelRecord } from "@/lib/types";
+
+/**
+ * 新闻时间：ISO 串 → "MM-DD HH:mm"（保留原始时区偏移下的本地时刻，不输出裸 ISO）。
+ */
+function fmtNewsTime(iso: string): string {
+  const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/);
+  if (m) return `${m[2]}-${m[3]} ${m[4]}:${m[5]}`;
+  return iso;
+}
+/**
+ * 厂商背景：以 AA 收录库的真实开源/闭源构成为主（避免用单个模型的开闭源给整个厂商定性），
+ * 已有厂商背景长文作为补充段落。
+ */
+function vendorComposition(model: UIModelRecord): string {
+  const s = model.vendorStats;
+  const bg = getVendorBackground(model.vendor);
+  if (s && s.total > 0) {
+    const own = model.openSource ? "开源权重模型" : "闭源模型";
+    let dist: string;
+    if (s.open === 0) dist = "全部为闭源模型";
+    else if (s.closed === 0) dist = "全部为开源权重模型";
+    else dist = `其中 ${s.open} 个开源权重、${s.closed} 个闭源`;
+    const base = `${model.vendor} 在 Artificial Analysis 收录库中共 ${s.total} 个模型，${dist}；本页 ${model.name} 为${own}。`;
+    return bg ? `${base}\n${bg}` : base;
+  }
+  return bg ?? `${model.vendor} 的厂商背景暂无公开来源。`;
+}
 
 /** 地区可用性：以各厂商官方支持地区列表为准（OpenAI 官方未开放中国大陆/香港/澳门） */
 const VENDOR_REGIONS: Record<string, { ok: string[]; blocked: string[] }> = {
@@ -104,52 +132,57 @@ export default async function DetailPage({ params }: Props) {
       {/* main：移动端单列，桌面端主内容 2fr + 侧栏 1fr */}
       <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-5 mt-4 md:mt-5 mr-pad-x">
         <div style={{ minWidth: 0 }}>
-          {/* overview card：左大评分 / 右竖排指标 / 下方通栏简介，层次分明 */}
-          <div className="mr-card" style={{ padding: "18px 20px" }}>
+          {/* overview card：评分 + 2×2 指标网格（移动端不再留大片空白），下方通栏简介 */}
+          <div className="mr-card" style={{ padding: "16px 18px" }}>
             <div
-              className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-8"
+              style={{
+                display: "flex",
+                alignItems: "flex-end",
+                justifyContent: "space-between",
+                gap: "12px 20px",
+                flexWrap: "wrap",
+              }}
             >
               {/* 左：大数字评分 */}
               <div style={{ flex: "0 0 auto" }}>
                 <div style={{ fontSize: 12, fontWeight: 600, color: "var(--mr-text-3)" }}>
                   评分（Artificial Analysis 智能指数 0–100）
                 </div>
-                <div style={{ marginTop: 8, display: "flex", alignItems: "baseline", gap: 8 }}>
-                  <span style={{ fontSize: 46, fontWeight: 700, lineHeight: 1, color: "var(--mr-text)" }}>
+                <div style={{ marginTop: 6, display: "flex", alignItems: "baseline", gap: 8 }}>
+                  <span style={{ fontSize: 42, fontWeight: 700, lineHeight: 1, color: "var(--mr-text)" }}>
                     {model.score.toFixed(1)}
                   </span>
                   <DeltaText model={model} />
                 </div>
               </div>
-              {/* 右：竖排关键指标 */}
-              <div style={{ flex: "1 1 220px", minWidth: 200, display: "flex", flexDirection: "column", gap: 8 }}>
+              {/* 右：2 列 × 2 行紧凑指标网格 */}
+              <div
+                className="grid grid-cols-2 sm:grid-cols-4"
+                style={{ flex: "1 1 300px", gap: "10px 18px", maxWidth: 520 }}
+              >
                 {[
                   {
                     label: "综合排名",
                     value: `#${rank} / ${UI_MODELS.length}`,
                     color: rankColor,
                   },
-                  { label: "置信区间", value: model.ci > 0 ? `±${model.ci.toFixed(1)}` : "暂无置信区间", color: "var(--mr-text)" },
+                  { label: "置信区间", value: model.ci > 0 ? `±${model.ci.toFixed(1)}` : "暂无", color: "var(--mr-text)" },
                   { label: "周环比", valueEl: <DeltaText model={model} /> },
                   { label: "收录时间", value: model.updatedAt, color: "var(--mr-text)" },
                 ].map((row) => (
-                  <div
-                    key={row.label}
-                    style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}
-                  >
-                    <span style={{ fontSize: 12, color: "var(--mr-text-3)" }}>{row.label}</span>
+                  <div key={row.label} style={{ minWidth: 0 }}>
+                    <div style={{ fontSize: 11, color: "var(--mr-text-3)" }}>{row.label}</div>
                     {row.valueEl ?? (
-                      <span style={{ fontSize: 13, fontWeight: 600, color: row.color }}>{row.value}</span>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: row.color, marginTop: 2 }}>{row.value}</div>
                     )}
                   </div>
                 ))}
               </div>
             </div>
             {/* 下方通栏简介 */}
-            <div style={{ fontSize: 13, color: "var(--mr-text-2)", lineHeight: 1.7, marginTop: 14 }}>
-              {model.vendor} 出品的{model.openSource ? "开源" : "闭源"}模型：
-              {model.blurb}，支持 {model.context} 上下文窗口，
-              是当前榜单中{rank <= 3 ? "头部" : "主流"}代表模型之一。
+            <div style={{ fontSize: 13, color: "var(--mr-text-2)", lineHeight: 1.7, marginTop: 12 }}>
+              {model.vendor} 出品的{model.openSource ? "开源权重" : "闭源"}模型：{model.blurb}，支持 {model.context} 上下文窗口
+              {model.params ? `，参数量 ${model.params}` : ""}，是当前榜单中{rank <= 3 ? "头部" : "主流"}代表模型之一。
             </div>
           </div>
 
@@ -165,10 +198,12 @@ export default async function DetailPage({ params }: Props) {
               }}
             >
               <div style={{ fontSize: 13, fontWeight: 600, color: "var(--mr-text)" }}>
-                评分趋势（近 12 周）· 能力雷达
+                {model.trendHistory.length >= 2
+                  ? "评分趋势（近 12 周）· 能力雷达"
+                  : "评测细分（AA 官方子项）· 能力雷达"}
               </div>
               <div style={{ fontSize: 12, color: "var(--mr-text-3)", whiteSpace: "nowrap" }}>
-                单位：综合分 · 每周采样
+                {model.trendHistory.length >= 2 ? "单位：综合分 · 每周采样" : "单位：百分比 / 分数"}
               </div>
             </div>
             <DetailCharts model={model} />
@@ -217,10 +252,21 @@ export default async function DetailPage({ params }: Props) {
                 {getModelSpecs(model).map((row) => (
                   <div
                     key={row.label}
-                    style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}
+                    style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}
                   >
-                    <span style={{ fontSize: 12, color: "var(--mr-text-3)" }}>{row.label}</span>
-                    <span style={{ fontSize: 13, fontWeight: 600, color: "var(--mr-text)" }}>{row.value}</span>
+                    <span style={{ fontSize: 12, color: "var(--mr-text-3)", flex: "0 0 auto" }}>{row.label}</span>
+                    <span
+                      style={{
+                        fontSize: 13,
+                        fontWeight: 600,
+                        color: "var(--mr-text)",
+                        textAlign: "right",
+                        minWidth: 0,
+                        overflowWrap: "anywhere",
+                      }}
+                    >
+                      {row.value}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -283,7 +329,7 @@ export default async function DetailPage({ params }: Props) {
                 <div>
                   <div style={{ fontSize: 13, fontWeight: 600, color: "var(--mr-text)" }}>{n.title}</div>
                   <div style={{ fontSize: 12, color: "var(--mr-text-3)", marginTop: 3 }}>
-                    {n.source} · {n.time}
+                    {n.source} · {fmtNewsTime(n.time)}
                   </div>
                 </div>
                 <span style={{ fontSize: 12, color: "var(--mr-primary)" }}>站外 ↗</span>
@@ -299,10 +345,27 @@ export default async function DetailPage({ params }: Props) {
             <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginTop: 10 }}>
               <VendorLogo vendor={model.vendor} size={40} radius={8} />
               <div style={{ fontSize: 12, color: "var(--mr-text-2)", lineHeight: 1.7 }}>
-                {getVendorBackground(model.vendor) ??
-                  `${model.vendor}，${model.openSource ? "开源" : "闭源"}模型线厂商，旗舰模型通过 API 与官方产品提供。`}
+                {vendorComposition(model)}
               </div>
             </div>
+            {model.vendorStats && (
+              <div style={{ marginTop: 10, display: "flex", flexWrap: "wrap", gap: 6 }}>
+                <span style={{ fontSize: 11, color: "var(--mr-text-2)", background: "var(--mr-card-2)", padding: "2px 8px", borderRadius: 4 }}>
+                  AA 收录 {model.vendorStats.total} 个
+                </span>
+                <span style={{ fontSize: 11, color: "var(--mr-text-2)", background: "var(--mr-card-2)", padding: "2px 8px", borderRadius: 4 }}>
+                  开源权重 {model.vendorStats.open}
+                </span>
+                <span style={{ fontSize: 11, color: "var(--mr-text-2)", background: "var(--mr-card-2)", padding: "2px 8px", borderRadius: 4 }}>
+                  闭源 {model.vendorStats.closed}
+                </span>
+                {model.vendorStats.rated > 0 && (
+                  <span style={{ fontSize: 11, color: "var(--mr-text-2)", background: "var(--mr-card-2)", padding: "2px 8px", borderRadius: 4 }}>
+                    已评测 {model.vendorStats.rated}
+                  </span>
+                )}
+              </div>
+            )}
           </div>
           <div className="mr-card" style={{ padding: "18px 20px", marginTop: 14 }}>
             <div style={{ fontSize: 13, fontWeight: 600, color: "var(--mr-text)" }}>地区可用性</div>
@@ -326,29 +389,19 @@ export default async function DetailPage({ params }: Props) {
                 ))}
               </div>
             ) : (
-              <div style={{ fontSize: 12, color: "var(--mr-text-2)", lineHeight: 1.7, marginTop: 8 }}>
-                中国大陆需合规代理接入 · 美国 / 欧洲可直连
+              <div style={{ fontSize: 12, color: "var(--mr-text-3)", lineHeight: 1.7, marginTop: 8 }}>
+                暂无公开的官方地区支持清单。实际可用性以厂商服务条款与 API 开通地区为准。
               </div>
             )}
           </div>
           <div className="mr-card" style={{ padding: "18px 20px", marginTop: 14 }}>
             <div style={{ fontSize: 13, fontWeight: 600, color: "var(--mr-text)" }}>合规资质</div>
-            <div style={{ marginTop: 8, display: "flex", flexWrap: "wrap", gap: 6 }}>
-              {["SOC 2", "ISO 27001"].map((s) => (
-                <span
-                  key={s}
-                  style={{ fontSize: 12, color: "var(--mr-up)", background: "var(--mr-up-bg)", padding: "2px 10px", borderRadius: 4 }}
-                >
-                  {s}
-                </span>
-              ))}
-              <span style={{ fontSize: 12, color: "var(--mr-text-3)", background: "var(--mr-card-2)", padding: "2px 10px", borderRadius: 4 }}>
-                暂未取得：算法备案
-              </span>
+            <div style={{ fontSize: 12, color: "var(--mr-text-3)", lineHeight: 1.7, marginTop: 8 }}>
+              本站未核验厂商的 SOC 2 / ISO 27001 / 算法备案等资质；采购或合规审查请以厂商官网与合同附件为准。
             </div>
           </div>
 
-          <SameVendorModels vendor={model.vendor} currentId={model.id} />
+          <SameVendorModels vendor={model.vendor} currentId={model.id} siblings={model.siblings} vendorStats={model.vendorStats} />
         </div>
       </div>
       </div>

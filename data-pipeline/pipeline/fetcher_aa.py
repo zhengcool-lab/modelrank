@@ -108,6 +108,38 @@ def _fetch_capability_index() -> dict[str, dict[str, Any]]:
         plain = gzip.decompress(cipher.decrypt_and_verify(blob[:-16], blob[-16:]))
         obj = json.loads(plain.decode("utf-8"))
 
+        # 4.5) 落盘 enrich（详情页要用的真实字段：发布日/参数量/许可证/模态/评测子项/厂商构成）
+        try:
+            import os
+            keep = [
+                "slug", "name", "shortName", "creator", "releaseDate", "knowledgeCutoffDate",
+                "parameters", "inferenceParametersActiveBillions", "isReasoning", "isOpenWeights",
+                "openSourceCategorization", "licenseName", "licenseUrl", "modelWeightsSourceUrl",
+                "contextWindowTokens", "intelligenceIndex", "intelligenceIndexEvaluations", "sizeClass",
+                "price1mInputTokens", "price1mOutputTokens",
+                "inputModalityText", "inputModalityImage", "inputModalitySpeech", "inputModalityVideo",
+                "outputModalityText", "outputModalityImage", "outputModalitySpeech", "outputModalityVideo",
+                "hle", "gpqa", "aime25", "terminalbenchHard", "scicode", "mmmuPro", "lcr", "mlcrOverall",
+                "omniscience", "gdpval", "critpt", "tau2", "ifbench", "livecodebench", "healthbench",
+                "deprecated",
+            ]
+            slim = []
+            for model in obj.get("models", []):
+                d = {k: model.get(k) for k in keep}
+                c = model.get("creator") or {}
+                d["creator"] = (
+                    {"slug": c.get("slug"), "name": c.get("name"), "country": c.get("country")}
+                    if isinstance(c, dict) else None
+                )
+                slim.append(d)
+            path_out = os.path.join("out", "aa_models_full.json")
+            os.makedirs("out", exist_ok=True)
+            with open(path_out, "w", encoding="utf-8") as f:
+                json.dump({"source": "artificialanalysis", "models": slim}, f, ensure_ascii=False)
+            log.info("AA enrich: wrote %s (%d models)", path_out, len(slim))
+        except Exception as e:  # noqa: BLE001
+            log.warning("AA enrich dump failed: %s", e)
+
         # 5) 按 slug 提取能力五维
         out: dict[str, dict[str, Any]] = {}
         n_cap = 0

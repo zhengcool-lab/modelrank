@@ -13,6 +13,8 @@ export function DetailCharts({ model }: { model: UIModelRecord }) {
   const gridLine = dark ? "#232B3D" : "#F2F3F5";
   const axisText = dark ? "#86909C" : "#86909C";
 
+  const hasTrend = model.trendHistory.length >= 2;
+
   const lineOption = useMemo<EChartsOption>(() => {
     const weeks = model.trendHistory.map((_, i) => `W${i + 1}`);
     return {
@@ -47,6 +49,58 @@ export function DetailCharts({ model }: { model: UIModelRecord }) {
       ],
     };
   }, [model, primary, gridLine, axisText, dark]);
+
+  // 无历史时序时不用空折线占位：改展示 AA 官方评测子项（真实分数，横向条形）
+  const benchItems = model.benchmarks ?? [];
+  const benchOption = useMemo<EChartsOption>(() => {
+    const labels = benchItems.map((b) => b.label);
+    return {
+      grid: { left: 118, right: 44, top: 4, bottom: 4 },
+      tooltip: {
+        trigger: "item",
+        formatter: (p: unknown) => {
+          const i = (p as { dataIndex: number }).dataIndex;
+          const b = benchItems[i];
+          return b ? `${b.label}：${b.value}${b.unit === "pct" ? "%" : " 分"}` : "";
+        },
+      },
+      xAxis: {
+        type: "value",
+        max: 100,
+        splitLine: { lineStyle: { color: gridLine } },
+        axisLabel: { show: false },
+        axisLine: { show: false },
+        axisTick: { show: false },
+      },
+      yAxis: {
+        type: "category",
+        data: labels,
+        inverse: true,
+        axisLine: { show: false },
+        axisTick: { show: false },
+        axisLabel: { color: axisText, fontSize: 11 },
+      },
+      series: [
+        {
+          type: "bar",
+          data: benchItems.map((b) => b.value),
+          barWidth: 11,
+          itemStyle: { color: primary, borderRadius: 4 },
+          label: {
+            show: true,
+            position: "right",
+            fontSize: 11,
+            color: axisText,
+            formatter: (p: unknown) => {
+              const i = (p as { dataIndex: number }).dataIndex;
+              const b = benchItems[i];
+              return b ? `${b.value}${b.unit === "pct" ? "%" : ""}` : "";
+            },
+          },
+        },
+      ],
+    };
+  }, [benchItems, primary, gridLine, axisText]);
 
   const radarOption = useMemo<EChartsOption>(
     () => ({
@@ -91,10 +145,31 @@ export function DetailCharts({ model }: { model: UIModelRecord }) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <EChart option={lineOption} height={200} />
-      </div>
-      {/* 桌面端同样上下堆叠，避免雷达图右侧标签被卡片裁切 */}
+      {/* 上半：有 ≥2 期历史采样才画趋势折线；否则用 AA 官方评测子项条形图（真实数据） */}
+      {hasTrend ? (
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <EChart option={lineOption} height={200} />
+        </div>
+      ) : benchItems.length >= 2 ? (
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: 11, color: "var(--mr-text-3)", marginBottom: 4 }}>
+            AA 官方评测子项（当前快照，非时序）
+          </div>
+          <EChart option={benchOption} height={Math.max(150, benchItems.length * 26 + 12)} />
+        </div>
+      ) : (
+        <div
+          style={{
+            padding: "18px 0",
+            fontSize: 12,
+            color: "var(--mr-text-3)",
+            lineHeight: 1.7,
+          }}
+        >
+          暂无可用的评测子项数据；评分趋势需逐期采样累积，本期为首期。
+        </div>
+      )}
+      {/* 下半：能力五维雷达 */}
       <div className="w-full">
         <EChart option={radarOption} height={280} />
       </div>

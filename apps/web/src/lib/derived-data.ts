@@ -43,8 +43,8 @@ export interface SpecRow {
 }
 
 /**
- * 从 model 真实字段派生规格行：上下文窗口、价格、更新日期。
- * 没有数据源的字段（最大输出 / 知识截止 / 参数规模等）一律不输出。
+ * 从 model 真实字段派生规格行：上下文窗口、参数量、模型类型、模态、许可证、发布日期、价格、更新日期。
+ * 没有数据源的字段一律不输出（不编造）。
  */
 export function getModelSpecs(model: UIModelRecord): SpecRow[] {
   const rows: SpecRow[] = [];
@@ -52,6 +52,41 @@ export function getModelSpecs(model: UIModelRecord): SpecRow[] {
   // 上下文窗口
   if (model.context) {
     rows.push({ label: "上下文窗口", value: model.context });
+  }
+
+  // 参数量（AA 真实数据）
+  if (model.params) {
+    rows.push({ label: "参数量", value: model.params });
+  }
+
+  // 模型类型
+  if (typeof model.isReasoning === "boolean") {
+    rows.push({ label: "模型类型", value: model.isReasoning ? "推理模型" : "非推理模型" });
+  }
+
+  // 输入 / 输出模态
+  if (model.modalities) {
+    if (model.modalities.in.length) {
+      rows.push({ label: "输入模态", value: model.modalities.in.join(" / ") });
+    }
+    if (model.modalities.out.length) {
+      rows.push({ label: "输出模态", value: model.modalities.out.join(" / ") });
+    }
+  }
+
+  // 许可证
+  if (model.license) {
+    rows.push({ label: "许可证", value: model.license });
+  }
+
+  // 发布日期
+  if (model.releaseDate) {
+    rows.push({ label: "发布日期", value: formatDate(model.releaseDate) });
+  }
+
+  // 知识截止
+  if (model.knowledgeCutoff) {
+    rows.push({ label: "知识截止", value: formatDate(model.knowledgeCutoff) });
   }
 
   // 价格（输入 / 输出，每 M tokens）

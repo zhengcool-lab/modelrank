@@ -76,6 +76,35 @@ export interface UIModelRecord {
   /** 近 12 周综合分采样（趋势折线图） */
   trendHistory: number[];
   blurb: string;
+
+  // ---- AA 真实补充字段（Artificial Analysis 全量数据解密所得，缺省表示该模型无该项数据）
+  /** 发布日期 YYYY-MM-DD */
+  releaseDate?: string;
+  /** 参数量（含激活），如 "2.8T（激活 104B）" */
+  params?: string;
+  /** 是否推理模型 */
+  isReasoning?: boolean;
+  /** 许可证名称 */
+  license?: string;
+  /** 权重公开地址（仅开源权重模型） */
+  weightsUrl?: string;
+  /** 知识截止日期 */
+  knowledgeCutoff?: string;
+  /** 输入 / 输出模态 */
+  modalities?: { in: string[]; out: string[] };
+  /** AA 官方评测子项（真实分数）；unit: pct=百分比 pts=原始分 */
+  benchmarks?: { label: string; value: number; unit: "pct" | "pts" }[];
+  /** 厂商构成（同厂商在 AA 全量库中的模型数 / 开源数 / 闭源数 / 已评测数） */
+  vendorStats?: { total: number; open: number; closed: number; rated: number };
+  /** 同厂商其他模型（AA 全量库，含未进本期榜单的） */
+  siblings?: {
+    name: string;
+    id: string;
+    score: number | null;
+    open: boolean | null;
+    releaseDate: string | null;
+    inBoard: boolean;
+  }[];
 }
 
 export type NewsCategory = "发布" | "评测" | "融资" | "政策" | "价格";
