@@ -1,11 +1,10 @@
-"""LMArena (lmarena.ai) leaderboard fetcher.
+"""LMArena (lmarena.ai → arena.ai) leaderboard fetcher.
 
-LMArena's leaderboard is a Next.js app; the server-rendered HTML usually
-embeds a `__NEXT_DATA__` JSON blob with the current ranking. We try to
-extract that. If the HTML does not contain it (JS-only render, Cloudflare
-challenge, network error), we fall back to curated mock rows and flag the
-result with `is_mock=True` so the reviewer knows not to trust the numbers
-until a real scraper is wired in.
+榜单页是 Next.js 应用，正常情况下服务端渲染的 HTML 里带 `__NEXT_DATA__`
+JSON。但 arena.ai 目前由 Cloudflare Turnstile 保护：普通请求、headless Chrome、
+有窗口 Chrome 都只拿到 403 的 "Just a moment" 挑战页。下面的解析逻辑保留（等
+挑战解除或换到可用出口即可复用），抓不到时返回空列表且 is_mock=False ——
+宁可少一个数据源，也不要让编造的 ELO 混进 models.json 被当成真实评分。
 """
 from __future__ import annotations
 
@@ -88,20 +87,6 @@ def _row_to_model(row: dict[str, Any]) -> dict[str, Any]:
     )
 
 
-def _mock() -> list[dict[str, Any]]:
-    # TODO(pipeline): replace with real extraction once LMArena's SSR
-    # payload shape is locked in. These are approximate ELO placeholders
-    # for shape-testing the JSON contract only — DO NOT publish.
-    log.warning("arena: falling back to mock leaderboard rows")
-    return [
-        blank_model(vendor="OpenAI", name="GPT-5", score=1360.0, source_url=URL),
-        blank_model(vendor="Anthropic", name="Claude Opus 4.1", score=1345.0, source_url=URL),
-        blank_model(vendor="Google", name="Gemini 2.5 Pro", score=1328.0, source_url=URL),
-        blank_model(vendor="DeepSeek", name="DeepSeek-V3.1", score=1305.0, source_url=URL),
-        blank_model(vendor="Alibaba", name="Qwen3-Max", score=1290.0, source_url=URL),
-    ]
-
-
 def fetch() -> dict[str, Any]:
     try:
         with make_client() as client:
@@ -109,7 +94,7 @@ def fetch() -> dict[str, Any]:
             resp.raise_for_status()
             data = _extract_next_data(resp.text)
             if not data:
-                raise RuntimeError("no __NEXT_DATA__ blob found in HTML")
+                raise RuntimeError("no __NEXT_DATA__ blob found in HTML (Cloudflare challenge?)")
             rows = _walk_for_leaderboard(data)
             if not rows:
                 raise RuntimeError("could not locate leaderboard rows in __NEXT_DATA__")
@@ -118,10 +103,13 @@ def fetch() -> dict[str, Any]:
                 raise RuntimeError("rows parsed but no numeric scores extracted")
             return {"source": "lmarena", "models": models, "is_mock": False, "error": None}
     except Exception as e:  # noqa: BLE001 — we deliberately never crash the pipeline
-        log.warning("arena fetch failed: %s", e)
+        # 抓不到就返回空：arena.ai 由 Cloudflare Turnstile 保护，脚本请求（含
+        # headless / 有窗口 Chrome）只会拿到 403 挑战页。假 ELO 一旦进入
+        # models.json 会被下游当真实评分，宁可为空也不要造假。
+        log.warning("arena fetch failed (no rows contributed): %s", e)
         return {
             "source": "lmarena",
-            "models": _mock(),
-            "is_mock": True,
-            "error": f"{type(e).__name__}: {e}",
+            "models": [],
+            "is_mock": False,
+            "error": f"unavailable: {type(e).__name__}: {e}",
         }

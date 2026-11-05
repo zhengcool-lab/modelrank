@@ -1,39 +1,20 @@
 """HuggingFace Open LLM Leaderboard fetcher.
 
-The leaderboard is a Gradio Space; data is served via Gradio's internal
-API which is versioned and brittle. We try a couple of public endpoints
-and fall back to mock rows if they move. This fetcher is only expected
-to contribute *open-weight* models — not API-hosted ones.
+open-llm-leaderboard 已于 2025 年归档停更；页面只是 Gradio Space 外壳，表格由
+Gradio 内部 API 提供，而 datasets-server 对 open-llm-leaderboard/results 的转换
+同样报错（Couldn't cast array）。因此目前拿不到可解析的真实数据：抓不到就返回
+空列表，不回填编造的分数（假分会污染 models.json）。
 """
 from __future__ import annotations
 
 import logging
 from typing import Any
 
-from .common import blank_model, make_client, now_iso
+from .common import make_client
 
 log = logging.getLogger("pipeline.hf")
 
 SPACE_URL = "https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard"
-
-
-def _mock() -> list[dict[str, Any]]:
-    # TODO(pipeline): pin the Gradio API version and re-enable real scraping.
-    log.warning("huggingface: falling back to mock open-llm rows")
-    return [
-        blank_model(
-            vendor="Meta", name="Llama-3.3-70B-Instruct",
-            score=72.5, context_length=128_000, source_url=SPACE_URL,
-        ),
-        blank_model(
-            vendor="Mistral", name="Mistral-Large-3",
-            score=73.1, context_length=128_000, source_url=SPACE_URL,
-        ),
-        blank_model(
-            vendor="Alibaba", name="Qwen3-235B-A22B",
-            score=74.0, context_length=128_000, source_url=SPACE_URL,
-        ),
-    ]
 
 
 def fetch() -> dict[str, Any]:
@@ -43,13 +24,15 @@ def fetch() -> dict[str, Any]:
             resp.raise_for_status()
             # The Space page itself is a shell; the actual table is loaded
             # from the Gradio backend. Without a Gradio client we cannot
-            # reliably extract rows. Intentionally bail to mock.
+            # reliably extract rows. Intentionally bail to nothing.
             raise RuntimeError("HF leaderboard is a Gradio Space; needs gradio_client to parse")
     except Exception as e:  # noqa: BLE001
-        log.warning("HF fetch failed: %s", e)
+        # open-llm-leaderboard 已归档停更，页面是 Gradio Space 外壳，datasets-server
+        # 对 open-llm-leaderboard/results 的转换也报错。抓不到就返回空，不编分数。
+        log.warning("HF fetch failed (no rows contributed): %s", e)
         return {
             "source": "huggingface",
-            "models": _mock(),
-            "is_mock": True,
-            "error": f"{type(e).__name__}: {e}",
+            "models": [],
+            "is_mock": False,
+            "error": f"unavailable: {type(e).__name__}: {e}",
         }
