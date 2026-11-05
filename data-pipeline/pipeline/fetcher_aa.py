@@ -71,15 +71,28 @@ def _fetch_capability_index() -> dict[str, dict[str, Any]]:
     返回 { slug: {"dims": {...五维...}} }；任何环节失败返回 {}（不致命，不影响主流程）。
     """
     try:
+        import time
         import urllib.request
 
+        def _read(url: str, timeout: int, tries: int = 3) -> bytes:
+            """带退避重试的整页/整文件读取；失败到最后一轮才抛出。"""
+            last: Exception | None = None
+            for i in range(tries):
+                try:
+                    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+                    with urllib.request.urlopen(req, timeout=timeout) as resp:
+                        return resp.read()
+                except Exception as e:  # noqa: BLE001 - 网络异常统一重试
+                    last = e
+                    if i + 1 < tries:
+                        log.warning("AA capability: %s 失败（%s），第 %d 次重试", url[-36:], e, i + 2)
+                        time.sleep(2 * (i + 1))
+            raise last if last is not None else RuntimeError("unknown fetch failure")
+
         # 1) 抓任意模型详情页（页面级 manifest 全局存在；用 gemini-4-carbon 兜底）
+        #    实测详情页 1.5-3.7MB、15-20s，原 40s 超时在网络抖动时会被误判为失败。
         probe_slug = "gemini-4-carbon"
-        req = urllib.request.Request(
-            DETAIL_BASE + probe_slug, headers={"User-Agent": "Mozilla/5.0"}
-        )
-        with urllib.request.urlopen(req, timeout=40) as resp:
-            html = resp.read().decode("utf-8", errors="ignore")
+        html = _read(DETAIL_BASE + probe_slug, timeout=90).decode("utf-8", errors="ignore")
 
         # 2) 提取 initialModels 的 manifest（SSR RSC payload 内为转义 JSON）。
         #    详情页有两个 manifest：initialModels（全量 ~700 模型，含 capabilities）
@@ -95,11 +108,7 @@ def _fetch_capability_index() -> dict[str, dict[str, Any]]:
         data_path, key_hex = m.group(1), m.group(2)
 
         # 3) 下载加密数据
-        req = urllib.request.Request(
-            DATA_BASE + data_path, headers={"User-Agent": "Mozilla/5.0"}
-        )
-        with urllib.request.urlopen(req, timeout=60) as resp:
-            blob = resp.read()
+        blob = _read(DATA_BASE + data_path, timeout=90)
 
         # 4) AES-GCM 解密 + gzip 解压
         key = bytes.fromhex(key_hex)
