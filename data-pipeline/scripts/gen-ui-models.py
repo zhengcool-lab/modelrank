@@ -45,6 +45,8 @@ BENCH_SPECS = [
 ]
 # 前端 MODEL_LOGO 映射文件（用于检测新增模型是否缺图标）
 MODEL_LOGO_TS = "apps/web/src/components/model-logo.tsx"
+# 前端静态数据文件（--write 时替换其中的 UI_MODELS 段）
+SEED_TS = "apps/web/src/lib/seed-data.ts"
 MAJOR_VENDORS = {
     "OpenAI", "Anthropic", "Google", "DeepSeek", "Alibaba", "Moonshot",
     "xAI", "Zhipu", "StepFun", "MiniMax", "Tencent", "Mistral", "NVIDIA", "Cohere",
@@ -85,6 +87,30 @@ def mapped_logo_ids() -> set[str]:
             except Exception:
                 return set()
     return set()
+
+
+def write_seed_block(block: str) -> bool:
+    """把生成的 UI_MODELS 段写回 seed-data.ts（只替换该段，保留其余导出）。
+
+    没有这一步，生成结果只能留在 /tmp，前端模型数据永远停在历史快照，
+    每日闭环对 UI 实际无效（新闻侧由 apps/web/scripts/update-news.mjs 负责写回）。
+    """
+    import os
+    for root in ("..", ".", os.path.dirname(__file__) + "/../.."):
+        p = os.path.join(root, SEED_TS)
+        if not os.path.exists(p):
+            continue
+        text = open(p, encoding="utf-8").read()
+        m = re.search(r"export const UI_MODELS[^\n]*= \[.*?\n\];", text, re.S)
+        if not m:
+            print("⚠️ seed-data.ts 中未找到 UI_MODELS 段", file=sys.stderr)
+            return False
+        if m.group(0) == block:
+            return True
+        open(p, "w", encoding="utf-8").write(text[: m.start()] + block + text[m.end() :])
+        return True
+    print("⚠️ 未找到 seed-data.ts", file=sys.stderr)
+    return False
 
 
 def load_enrich() -> list[dict]:
@@ -400,7 +426,11 @@ def main() -> None:
         )
         lines.append("  },")
     lines.append("];")
-    print("\n".join(lines))
+    block = "\n".join(lines)
+    print(block)
+    if "--write" in sys.argv:
+        ok = write_seed_block(block)
+        print(f"// 写回 {SEED_TS}: {'已更新' if ok else '未写入'}", file=sys.stderr)
 
 
 if __name__ == "__main__":
