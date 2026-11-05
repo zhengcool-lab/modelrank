@@ -100,13 +100,80 @@ def _try_live(vendor: str, url: str) -> list[dict[str, Any]] | None:
         with make_client() as client:
             resp = client.get(url)
             resp.raise_for_status()
-            # No reliable DOM contract yet; TODO(pipeline): inspect each
-            # vendor's rendered table (or OpenAPI spec) and write a parser
-            # per vendor. For now, return None to signal "no live data".
+            # 官网定价页多为反爬（OpenAI 403）或客户端渲染，无可靠 DOM 契约。
+            # 这些厂商的价格统一走 OpenRouter 公开模型清单（见 _fetch_openrouter）。
             return None
     except Exception as e:  # noqa: BLE001
         log.warning("vendor %s live fetch failed: %s", vendor, e)
         return None
+
+
+# ---- OpenRouter 公开模型清单（真实挂牌价，支持无 key 访问） ------------------
+
+OPENROUTER_URL = "https://openrouter.ai/api/v1/models"
+
+# OpenRouter id 前缀 → 本站展示用厂商名
+PREFIX_TO_VENDOR: dict[str, str] = {
+    "openai": "OpenAI",
+    "anthropic": "Anthropic",
+    "google": "Google",
+    "qwen": "Alibaba",
+    "deepseek": "DeepSeek",
+}
+
+_OR_VENDOR_PREFIX_RE = re.compile(r"^[^:]+:\s*")
+
+
+def _fetch_openrouter() -> dict[str, list[dict[str, Any]]]:
+    """拉 OpenRouter 公开模型清单，按厂商分组返回真实每百万 token 单价。
+
+    这是替代官网 HTML 抓取的稳定结构化源（官网页 OpenAI 403、Google 超时、
+    其余为客户端渲染表格）。只取常规挂牌价：`:batch` / `:free` 等变体带冒号
+    后缀，价格不同口径，一律排除。整体失败返回空 dict，各厂商再各自回退。
+    """
+    try:
+        with make_client() as client:
+            resp = client.get(OPENROUTER_URL, timeout=40)
+            resp.raise_for_status()
+            payload = resp.json()
+    except Exception as e:  # noqa: BLE001
+        log.warning("openrouter: 模型清单抓取失败: %s", e)
+        return {}
+
+    by_vendor: dict[str, list[dict[str, Any]]] = {}
+    for m in payload.get("data") or []:
+        mid = m.get("id") or ""
+        if not mid or ":" in mid:
+            continue
+        prefix = mid.split("/")[0]
+        vendor = PREFIX_TO_VENDOR.get(prefix)
+        if not vendor:
+            continue
+        pricing = m.get("pricing") or {}
+        try:
+            pin = float(pricing.get("prompt")) * 1_000_000
+            pout = float(pricing.get("completion")) * 1_000_000
+        except (TypeError, ValueError):
+            continue
+        if pin <= 0 or pout <= 0:
+            continue
+        raw_name = (m.get("name") or mid.split("/")[-1]).strip()
+        name = _OR_VENDOR_PREFIX_RE.sub("", raw_name) or mid.split("/")[-1]
+        by_vendor.setdefault(vendor, []).append(
+            blank_model(
+                vendor=vendor,
+                name=name,
+                price_input_per_mtok=round(pin, 4),
+                price_output_per_mtok=round(pout, 4),
+                context_length=m.get("context_length"),
+                source_url=f"https://openrouter.ai/{mid}",
+                captured_at=now_iso(),
+            )
+        )
+    for v, rows in by_vendor.items():
+        log.info("vendor %s: %d live rows (openrouter)", v, len(rows))
+    return by_vendor
+
 
 
 # ---- DeepSeek pricing page parser -----------------------------------------
@@ -262,21 +329,28 @@ def _fetch_deepseek(url: str) -> list[dict[str, Any]] | None:
     return None
 
 
-def fetch_one(cfg: dict[str, Any]) -> dict[str, Any]:
-    vendor = cfg["vendor"]
-    url = cfg["url"]
-    live = _try_live(vendor, url)
-    if live:
-        return {"source": f"vendor:{vendor}", "models": live, "is_mock": False, "error": None}
-    # Fall back to curated mock.
-    log.warning("vendor %s: no live rows extracted, using mock pricing", vendor)
-    return {
-        "source": f"vendor:{vendor}",
-        "models": _to_rows(vendor, url, cfg["mock"]),
-        "is_mock": True,
-        "error": "live parser not implemented; using curated mock",
-    }
-
-
 def fetch_all() -> list[dict[str, Any]]:
-    return [fetch_one(cfg) for cfg in VENDORS]
+    """每家厂商按优先级取真实数据：OpenRouter（五家同口径）→ 官网解析 → mock。"""
+    or_rows = _fetch_openrouter()
+    out: list[dict[str, Any]] = []
+    for cfg in VENDORS:
+        vendor = cfg["vendor"]
+        rows = or_rows.get(vendor)
+        if rows:
+            out.append({"source": f"vendor:{vendor}", "models": rows, "is_mock": False, "error": None})
+            continue
+        live = _try_live(vendor, cfg["url"])
+        if live:
+            log.info("vendor %s: %d live rows (official page)", vendor, len(live))
+            out.append({"source": f"vendor:{vendor}", "models": live, "is_mock": False, "error": None})
+            continue
+        log.warning("vendor %s: no live rows extracted, using mock pricing", vendor)
+        out.append(
+            {
+                "source": f"vendor:{vendor}",
+                "models": _to_rows(vendor, cfg["url"], cfg["mock"]),
+                "is_mock": True,
+                "error": "no live source available; using curated mock",
+            }
+        )
+    return out
