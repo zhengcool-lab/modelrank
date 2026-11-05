@@ -167,7 +167,8 @@ export function ProductLogo({
         border: "1px solid var(--mr-border)",
         borderRadius: radius,
         boxSizing: "border-box",
-        padding: Math.max(2, size * 0.09),
+        /* 资源已统一归一化（内容占画布 90%），瓷片内边距收紧让视觉与其它图标一致 */
+        padding: Math.max(1, size * 0.04),
       }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -185,8 +186,8 @@ export function ProductLogo({
           }
         }}
         style={{
-          width: size * 0.62,
-          height: size * 0.62,
+          width: size * 0.84,
+          height: size * 0.84,
           objectFit: "contain",
         }}
       />
@@ -250,7 +251,7 @@ export function VendorLogo({
         border: "1px solid var(--mr-border)",
         borderRadius: radius,
         boxSizing: "border-box",
-        padding: Math.max(2, size * 0.1),
+        padding: Math.max(1, size * 0.04),
       }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -265,8 +266,8 @@ export function VendorLogo({
         }}
         alt={vendor}
         style={{
-          width: size * 0.66,
-          height: size * 0.66,
+          width: size * 0.84,
+          height: size * 0.84,
           objectFit: "contain",
         }}
       />
