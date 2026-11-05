@@ -154,3 +154,44 @@ export function Sparkline({ model }: { model: UIModelRecord }) {
     </svg>
   );
 }
+
+/**
+ * 排名角标：叠在模型图标左上角，替代独立的"排名"列，为名称/指标让出横向空间。
+ * 前三名用金/银/铜实底白字，其余为中性灰。榜单单表格与移动卡片共用同一实现，
+ * 避免两处样式漂移。使用方需在外层放 position:relative 容器。
+ */
+export function RankBadge({ n, size = 18 }: { n: number; size?: number }) {
+  const bg =
+    n === 1
+      ? "var(--mr-gold)"
+      : n === 2
+        ? "var(--mr-silver)"
+        : n === 3
+          ? "var(--mr-bronze)"
+          : "var(--mr-text-3)";
+  return (
+    <span
+      aria-label={`第 ${n} 名`}
+      style={{
+        position: "absolute",
+        top: -Math.round(size / 2.6),
+        left: -Math.round(size / 2.6),
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        width: size,
+        height: size,
+        borderRadius: "50%",
+        background: bg,
+        color: "#fff",
+        fontSize: Math.round(size * 0.56),
+        fontWeight: 700,
+        lineHeight: 1,
+        boxShadow: "0 0 0 1.5px var(--mr-card)",
+        zIndex: 2,
+      }}
+    >
+      {n}
+    </span>
+  );
+}

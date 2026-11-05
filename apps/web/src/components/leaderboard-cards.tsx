@@ -4,43 +4,8 @@ import Link from "next/link";
 import { Message } from "@arco-design/web-react";
 import type { UIModelRecord } from "@/lib/types";
 import { useCompare } from "@/context/compare";
-import { DeltaText, OpenTag, TierBadge } from "./badges";
+import { DeltaText, OpenTag, RankBadge, TierBadge } from "./badges";
 import { ProductLogo } from "./model-logo";
-
-function RankCorner({ n }: { n: number }) {
-  const color =
-    n === 1
-      ? "var(--mr-gold)"
-      : n === 2
-        ? "var(--mr-silver)"
-        : n === 3
-          ? "var(--mr-bronze)"
-          : "var(--mr-text-3)";
-  return (
-    <span
-      style={{
-        position: "absolute",
-        top: -7,
-        left: -7,
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        width: 18,
-        height: 18,
-        borderRadius: "50%",
-        background: color,
-        color: n <= 3 ? "#fff" : "#fff",
-        fontSize: 10,
-        fontWeight: 700,
-        lineHeight: 1,
-        boxShadow: "0 0 0 1.5px var(--mr-card)",
-        zIndex: 2,
-      }}
-    >
-      {n}
-    </span>
-  );
-}
 
 function CheckBox({ checked }: { checked: boolean }) {
   return (
@@ -106,7 +71,7 @@ export function LeaderboardCards({ models }: { models: UIModelRecord[] }) {
             {/* 排名角标叠在图标左上角，省掉独立排名列 */}
             <div style={{ position: "relative", flex: "none" }}>
               <ProductLogo modelId={m.id} modelName={m.name} size={36} radius={8} />
-              <RankCorner n={n} />
+              <RankBadge n={n} />
             </div>
 
             {/* 紧凑双行布局：行1 = 名字+评分+涨跌（右对齐），行2 = 标签+厂商+价格（左右铺满） */}

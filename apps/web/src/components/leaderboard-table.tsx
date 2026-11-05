@@ -17,6 +17,7 @@ import { useCompare } from "@/context/compare";
 import {
   DeltaText,
   OpenTag,
+  RankBadge,
   SourceTag,
   TierBadge,
 } from "./badges";
@@ -142,48 +143,19 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
           </div>
         ),
       }),
-      columnHelper.accessor("score", {
-        id: "rank",
-        header: "排名",
-        cell: ({ row }) => {
-          const r = row.original;
-          const n = models.filter((m) => m.score > r.score).length + 1;
-          const medal =
-            n === 1
-              ? { bg: "var(--mr-gold)", color: "#fff" }
-              : n === 2
-                ? { bg: "var(--mr-silver)", color: "#fff" }
-                : n === 3
-                  ? { bg: "var(--mr-bronze)", color: "#fff" }
-                  : { bg: "transparent", color: "var(--mr-text-3)" };
-          return (
-            <span
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: 24,
-                height: 24,
-                borderRadius: 4,
-                background: medal.bg,
-                color: n <= 3 ? medal.color : "var(--mr-text-3)",
-                fontSize: 12,
-                fontWeight: 600,
-              }}
-            >
-              {n}
-            </span>
-          );
-        },
-      }),
       columnHelper.accessor("name", {
         id: "model",
         header: "模型",
         cell: ({ row }) => {
           const m = row.original;
+          const n = models.filter((x) => x.score > m.score).length + 1;
           return (
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <ProductLogo modelId={m.id} modelName={m.name} size={36} radius={8} />
+              {/* 排名角标叠在图标左上角，替代独立排名列，给名称让出横向空间 */}
+              <div style={{ position: "relative", flex: "none" }}>
+                <ProductLogo modelId={m.id} modelName={m.name} size={36} radius={8} />
+                <RankBadge n={n} />
+              </div>
               <div style={{ minWidth: 0 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <span style={{ fontSize: 14, fontWeight: 600, color: "var(--mr-text)" }}>
@@ -327,8 +299,7 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
 
   const widths: Record<string, number> = {
     select: 40,
-    rank: 64,
-    model: 280,
+    model: 300,
     dims: 150,
     score: 120,
     price: 160,
