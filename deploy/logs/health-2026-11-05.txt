@@ -1,0 +1,57 @@
+=== ModelRank 健康巡检 2026-11-05 12:16:06 ===
+目标: https://modelrank-1br.pages.dev
+
+--- 页面可达性 ---
+✅ GET / → HTTP 200
+✅ GET /detail/gpt-6-astra → HTTP 200
+✅ GET /detail/gemini-4-carbon → HTTP 200
+✅ GET /news → HTTP 200
+✅ GET /compare → HTTP 200
+✅ GET /cost → HTTP 200
+--- 关键资源 ---
+✅ GET /product-logos/claude.png → HTTP 200
+✅ GET /product-logos/cohere.png → HTTP 200
+✅ GET /product-logos/deepseek.png → HTTP 200
+✅ GET /product-logos/gemini.png → HTTP 200
+✅ GET /product-logos/glm.png → HTTP 200
+✅ GET /product-logos/grok.png → HTTP 200
+✅ GET /product-logos/hunyuan.png → HTTP 200
+✅ GET /product-logos/kimi.png → HTTP 200
+✅ GET /product-logos/kimi-k2.png → HTTP 200
+✅ GET /product-logos/minimax.png → HTTP 200
+✅ GET /product-logos/mistral.png → HTTP 200
+✅ GET /product-logos/nvidia.svg → HTTP 200
+✅ GET /product-logos/openai.png → HTTP 200
+✅ GET /product-logos/qwen.png → HTTP 200
+✅ GET /product-logos/step.png → HTTP 200
+✅ GET /vendor-logos/alibaba.png → HTTP 200
+✅ GET /vendor-logos/anthropic.png → HTTP 200
+✅ GET /vendor-logos/baichuan.png → HTTP 200
+✅ GET /vendor-logos/baidu.png → HTTP 200
+✅ GET /vendor-logos/bytedance.png → HTTP 200
+✅ GET /vendor-logos/cohere.png → HTTP 200
+✅ GET /vendor-logos/deepseek.svg → HTTP 200
+✅ GET /vendor-logos/google.svg → HTTP 200
+✅ GET /vendor-logos/meituan.png → HTTP 200
+✅ GET /vendor-logos/meta.svg → HTTP 200
+✅ GET /vendor-logos/microsoft.png → HTTP 200
+✅ GET /vendor-logos/minimax.png → HTTP 200
+✅ GET /vendor-logos/mistral.svg → HTTP 200
+✅ GET /vendor-logos/moonshot.png → HTTP 200
+✅ GET /vendor-logos/nvidia.svg → HTTP 200
+✅ GET /vendor-logos/openai.svg → HTTP 200
+✅ GET /vendor-logos/stepfun.svg → HTTP 200
+✅ GET /vendor-logos/tencent.png → HTTP 200
+✅ GET /vendor-logos/yi.png → HTTP 200
+✅ GET /vendor-logos/zhipu.png → HTTP 200
+✅ GET /sitemap.xml → HTTP 200
+✅ GET /robots.txt → HTTP 200
+--- 数据完整性 ---
+✅ UI_MODELS 模型数量 ≥ 30（实际 34）
+✅ priceLevel 存在 high 级（实际 10 个，非 0 说明价格分级真实）
+✅ priceEstimated=true 标注 ≤ 模型数（实际 2，属诚实占位标注，非错误）
+✅ news-data.ts 新闻条数 ≥ 10（实际 29）
+--- 性能预算 ---
+✅ 首页 HTML 体积 < 400000 字节（实际 270190）
+
+=== 巡检结果：通过 48 / 失败 0 ===
