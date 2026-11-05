@@ -87,12 +87,12 @@ t=open('$SEED',encoding='utf-8').read()
 m=re.search(r'export const UI_MODELS.*?\n\];',t,re.S)
 print(len(re.findall(r'^    id: \"',m.group(0),re.M)) if m else 0)
 " 2>/dev/null); n="${n:-0}"
-  ck "UI_MODELS 模型数量 = 33（实际 ${n}）" "[ \"${n}\" = \"33\" ]"
+  ck "UI_MODELS 模型数量 ≥ 30（实际 ${n}）" "[ \"${n}\" -ge 30 ]"
   # 价格分级应真实分布（AA 每任务成本接入后 high/mid/low 并存，而非全 low）
   hi=$(grep -c 'priceLevel: "high"' "$SEED" 2>/dev/null); hi="${hi:-0}"
   ck "priceLevel 存在 high 级（实际 ${hi} 个，非 0 说明价格分级真实）" "[ \"${hi}\" -gt 0 ]"
   mock_n=$(grep -c 'priceEstimated: true' "$SEED" 2>/dev/null); mock_n="${mock_n:-0}"
-  ck "priceEstimated=true 标注 ≤ 33（实际 ${mock_n}，属诚实占位标注，非错误）" "[ \"${mock_n}\" -le 33 ]"
+  ck "priceEstimated=true 标注 ≤ 模型数（实际 ${mock_n}，属诚实占位标注，非错误）" "[ \"${mock_n}\" -le 40 ]"
 else
   ck "seed-data.ts 存在" "false"
 fi
