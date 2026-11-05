@@ -52,7 +52,7 @@ cd "$REPO/apps/web"
 node scripts/update-news.mjs >>"$LOG" 2>&1
 
 # ---- 3. 无变化跳过部署（模型段 id+score 对比） ----
-python3 - <<'PY' >>"$LOG" 2>&1
+python3 - <<'PY' >>"$LOG" 2>&1 || true
 import re, sys
 new_ids = set(re.findall(r'id: "([^"]+)"', open('/tmp/ui_models_new.txt', encoding='utf-8').read()))
 seed = open('/Users/zhengyingbo/development/ModelRank/apps/web/src/lib/seed-data.ts', encoding='utf-8').read()
@@ -64,7 +64,6 @@ if new_ids == old_ids and new_ids:
 print(f"模型段有变化：old={len(old_ids)} new={len(new_ids)}")
 sys.exit(1)
 PY
-MODEL_CHANGED=$?
 
 # ---- 4. 构建 + 部署（模型变化或新闻变化时执行） ----
 cd "$REPO/apps/web"
