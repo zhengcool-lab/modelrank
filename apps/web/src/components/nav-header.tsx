@@ -7,6 +7,7 @@ import { ThemeToggle } from "./theme-toggle";
 
 const NAV_ITEMS = [
   { href: "/", label: "榜单" },
+  { href: "/agents", label: "Agent 榜" },
   { href: "/library", label: "模型库" },
   { href: "/compare", label: "对比器" },
   { href: "/cost", label: "成本计算器" },

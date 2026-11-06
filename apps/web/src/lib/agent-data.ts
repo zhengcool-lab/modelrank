@@ -1,0 +1,356 @@
+/**
+ * Agent 产品榜数据（手工维护，非自动抓取）
+ *
+ * 口径说明：
+ * - 价格均为官方定价页/官方帮助文档核对所得，核对日期见 priceCheckedAt；促销价为连续包月/年付价。
+ * - 能力等级（S/A/B/C）为编辑评估，依据是官方功能清单 + 公开横评结论，不是第三方跑分；
+ *   客观锚点另见 bestModel（该产品可调用的最强模型及其 Artificial Analysis 智能指数分）。
+ * - 倍率（multipliers）：仅有官方公开数值的产品填写 factor，其余只写定性说明，不推算、不编造。
+ */
+
+export type AgentCategory = "coding" | "office" | "general";
+export type Grade = "S" | "A" | "B" | "C";
+
+export interface AgentPlan {
+  name: string;
+  monthly: number;
+  promo?: number;
+  currency: "USD" | "CNY";
+  perSeat?: boolean;
+  quota?: string;
+  note?: string;
+}
+
+export interface AgentMultiplier {
+  model: string;
+  factor?: number;
+  note: string;
+}
+
+export interface AgentProduct {
+  id: string;
+  name: string;
+  vendor: string;
+  category: AgentCategory;
+  tagline: string;
+  grades: {
+    coding?: Grade;
+    research?: Grade;
+    office?: Grade;
+    automation?: Grade;
+  };
+  gradeBasis: string;
+  bestModel?: { name: string; score: number; slug?: string };
+  billingMode: "订阅额度" | "积分制" | "按 token 计费";
+  models: string[];
+  plans: AgentPlan[];
+  multipliers?: AgentMultiplier[];
+  priceCheckedAt: string;
+  sources: { label: string; url: string }[];
+}
+
+export const AGENT_PRODUCTS: AgentProduct[] = [
+  {
+    id: "claude-code",
+    name: "Claude Code",
+    vendor: "Anthropic",
+    category: "coding",
+    tagline: "终端里的编码 Agent，按订阅额度计费，不做模型倍率",
+    grades: { coding: "S", automation: "A", research: "B" },
+    gradeBasis: "官方文档 + 开发者横评：终端原生、MCP 生态完整、长任务稳定性好；无独立 IDE 图形界面",
+    bestModel: { name: "Claude Opus 5.5", score: 59.0, slug: "claude-opus-5-5" },
+    billingMode: "订阅额度",
+    models: ["Claude Opus 5.5", "Claude Sonnet 5.5", "Claude Fable 5.1", "Claude Haiku 5.5"],
+    plans: [
+      { name: "Pro", monthly: 20, promo: 17, currency: "USD", quota: "含 Claude Code", note: "年付 $200 折合 $17/月" },
+      { name: "Max 5x", monthly: 100, currency: "USD", quota: "5 倍用量" },
+      { name: "Max 20x", monthly: 200, currency: "USD", quota: "20 倍用量" },
+      { name: "Team Premium", monthly: 100, currency: "USD", perSeat: true, note: "年付价，5 席起；Team Standard 不含 Claude Code" },
+    ],
+    multipliers: [
+      { model: "全部 Claude 模型", note: "不按模型算倍率，共用同一个月度额度池；超额后降速或需升级档位" },
+    ],
+    priceCheckedAt: "2026-11-06",
+    sources: [
+      { label: "Claude 定价", url: "https://claude.com/pricing" },
+      { label: "Claude Code 套餐说明", url: "https://www.codetalenthub.io/wp-content/uploads/Best-AI-Coding-Assistants.pdf" },
+    ],
+  },
+  {
+    id: "cursor",
+    name: "Cursor",
+    vendor: "Anysphere",
+    category: "coding",
+    tagline: "IDE 形态的编码 Agent，Pro 起分「Cursor 模型池 / 其他模型池」两条额度",
+    grades: { coding: "S", automation: "A", research: "B" },
+    gradeBasis: "官方定价页 + 横评：IDE 内联补全与 Agent 模式成熟；重度使用容易撞额度",
+    bestModel: { name: "Claude Opus 5.5", score: 59.0, slug: "claude-opus-5-5" },
+    billingMode: "订阅额度",
+    models: ["Claude 系列", "GPT 系列", "Gemini 系列", "开源模型（BYO Key 可用）"],
+    plans: [
+      { name: "Hobby", monthly: 0, currency: "USD", quota: "免费额度" },
+      { name: "Pro", monthly: 20, currency: "USD", quota: "含两个模型池" },
+      { name: "Pro Plus", monthly: 60, currency: "USD" },
+      { name: "Ultra", monthly: 200, currency: "USD" },
+      { name: "Teams Standard", monthly: 40, currency: "USD", perSeat: true },
+      { name: "Teams Premium", monthly: 120, currency: "USD", perSeat: true },
+    ],
+    multipliers: [
+      { model: "Cursor 模型池", note: "Pro 以上分池计价：Cursor 自有模型池与其他模型池额度独立消耗，官方未公布逐模型倍率数值" },
+      { model: "其他模型（BYO Key）", note: "自带 API Key 时按厂商 token 单价直接计费，不经 Cursor 加价" },
+    ],
+    priceCheckedAt: "2026-11-06",
+    sources: [
+      { label: "AI Coding 工具对比矩阵 2026", url: "https://www.developersdigest.tech/blog/ai-coding-tools-comparison-matrix-2026" },
+    ],
+  },
+  {
+    id: "github-copilot",
+    name: "GitHub Copilot",
+    vendor: "GitHub",
+    category: "coding",
+    tagline: "覆盖面最广的编码助手，Pro 起可挂第三方 Agent（Claude Code / Codex）",
+    grades: { coding: "A", automation: "B", research: "C" },
+    gradeBasis: "官方定价页：补全能力稳定、企业采购链路成熟；Agent 能力弱于纯 Agent 产品",
+    bestModel: { name: "Claude Opus 5.5", score: 59.0, slug: "claude-opus-5-5" },
+    billingMode: "订阅额度",
+    models: ["Claude 系列", "GPT 系列", "Gemini 系列", "Microsoft MAI"],
+    plans: [
+      { name: "Free", monthly: 0, currency: "USD", quota: "2,000 次补全/月" },
+      { name: "Pro", monthly: 10, currency: "USD", quota: "含 $15 AI credits" },
+      { name: "Pro+", monthly: 39, currency: "USD", quota: "含 $70 AI credits" },
+      { name: "Max", monthly: 100, currency: "USD", quota: "含 $200 AI credits" },
+      { name: "Business", monthly: 19, currency: "USD", perSeat: true },
+      { name: "Enterprise", monthly: 39, currency: "USD", perSeat: true },
+    ],
+    multipliers: [
+      { model: "全部模型", note: "以 credits 折算：各模型按自身 token 单价扣 credits，官方未公开逐模型倍率表" },
+    ],
+    priceCheckedAt: "2026-11-06",
+    sources: [
+      { label: "AI Coding 工具定价 2026", url: "https://www.developersdigest.tech/blog/ai-coding-tools-pricing-2026" },
+      { label: "AI Coding Agents 对比", url: "https://cheatsheets.davidveksler.com/ai-coding-agents-compared.html" },
+    ],
+  },
+  {
+    id: "devin",
+    name: "Devin",
+    vendor: "Cognition",
+    category: "coding",
+    tagline: "自主式编码 Agent，按所选模型的 token 成本折算用量",
+    grades: { coding: "A", automation: "S", research: "B" },
+    gradeBasis: "官方文档：自主跑完整任务链、支持 Teams/Enterprise 集中计费；可控性依赖任务描述质量",
+    bestModel: { name: "Gemini 4 Argon", score: 60.0, slug: "gemini-4-carbon" },
+    billingMode: "按 token 计费",
+    models: ["SWE-2", "Claude 系列", "GPT 系列", "Gemini 系列"],
+    plans: [
+      { name: "Free", monthly: 0, currency: "USD", quota: "轻量额度，模型受限" },
+      { name: "Pro", monthly: 20, currency: "USD", quota: "含前沿模型访问" },
+      { name: "Max", monthly: 200, currency: "USD", quota: "显著更高额度" },
+      { name: "Teams / Enterprise", monthly: 0, currency: "USD", note: "按需报价，集中计费与管理后台" },
+    ],
+    multipliers: [
+      { model: "SWE-2", factor: 1, note: "官方标注为基准价：$3.00/1M 输入、$15.00/1M 输出（2026-12-31 前 75% 折扣）" },
+      { model: "Gemini 4 Argon", factor: 0.5, note: "官方标注 list price 5 折（至 2026-12-01）" },
+      { model: "Claude / GPT 系列", note: "按各自 token 单价扣额度，官方模型选择器内实时展示" },
+    ],
+    priceCheckedAt: "2026-11-06",
+    sources: [
+      { label: "Devin 定价", url: "https://devin.ai/pricing" },
+      { label: "Devin 模型与计费", url: "https://docs.devinenterprise.com/desktop/chat/models" },
+    ],
+  },
+  {
+    id: "trae",
+    name: "TRAE",
+    vendor: "字节跳动",
+    category: "coding",
+    tagline: "积分制编码 IDE，对指定模型给公开折扣倍率",
+    grades: { coding: "A", automation: "B", research: "C" },
+    gradeBasis: "官方计费文档：云端任务并行、Seed 系列深度集成；生态较新",
+    bestModel: { name: "Claude Opus 5.5", score: 59.0, slug: "claude-opus-5-5" },
+    billingMode: "积分制",
+    models: ["Seed-2.1-Turbo", "Seed-Code", "GLM-5.3", "DeepSeek 系列", "Claude / GPT 系列"],
+    plans: [
+      { name: "免费", monthly: 0, currency: "CNY", quota: "每月登录赠 500 积分" },
+      { name: "会员 Lite", monthly: 49, promo: 45, currency: "CNY", quota: "2,000 积分/月" },
+      { name: "会员 Pro", monthly: 99, promo: 89, currency: "CNY", quota: "4,000 积分/月" },
+      { name: "会员 Pro+", monthly: 239, promo: 219, currency: "CNY", quota: "12,000 积分/月" },
+      { name: "会员 Ultra", monthly: 699, promo: 629, currency: "CNY", quota: "40,000 积分/月" },
+    ],
+    multipliers: [
+      { model: "Seed-2.1-Turbo", factor: 0.25, note: "官方：计费享 2.5 折（会员全档同享）" },
+      { model: "Seed-Code", factor: 0.25, note: "官方：计费享 2.5 折（会员全档同享）" },
+      { model: "GLM-5.3 / DeepSeek", note: "会员调用享专属补贴，具体折扣未公开数值" },
+      { model: "自定义模型", factor: 0, note: "不消耗积分，按 BYO Key 自行结算" },
+    ],
+    priceCheckedAt: "2026-11-06",
+    sources: [{ label: "TRAE 套餐与计费", url: "https://docs.trae.cn/ide_plans-and-billing?lang=zh" }],
+  },
+  {
+    id: "workbuddy",
+    name: "WorkBuddy",
+    vendor: "腾讯",
+    category: "office",
+    tagline: "办公场景 Agent，积分制、全模型可选，官方不公开逐模型倍率数值",
+    grades: { coding: "B", research: "B", office: "S", automation: "A" },
+    gradeBasis: "官方定价页与积分文档：项目/云服务/腾讯会议文档打通，办公闭环最完整；编码能力非主打",
+    bestModel: { name: "Gemini 4 Carbon", score: 60.0, slug: "gemini-4-carbon" },
+    billingMode: "积分制",
+    models: ["全模型可选（含 Auto 调度）", "自定义模型（费用自付）"],
+    plans: [
+      { name: "体验版", monthly: 0, currency: "CNY", quota: "500 积分/月" },
+      { name: "标准版", monthly: 99, promo: 70, currency: "CNY", quota: "4,000 积分（2,000 基础 + 2,000 赠送）" },
+      { name: "高级版", monthly: 199, promo: 140, currency: "CNY", quota: "9,000 积分（4,000 + 5,000）" },
+      { name: "旗舰版", monthly: 999, promo: 700, currency: "CNY", quota: "50,000 积分（20,000 + 30,000）" },
+      { name: "Buddy One VIP", monthly: 999, promo: 700, currency: "CNY", quota: "50,000 共享积分 + 腾讯会议/文档/ima/网盘" },
+    ],
+    multipliers: [
+      { model: "高级模型（Opus / Gemini 4 等）", note: "官方：Token 处理单价更高，同量 Token 消耗积分更多；未公布逐模型倍率数值" },
+      { model: "三档模式", note: "极速/标准/极致三档：极致模式消耗更高，用于复杂任务；同样未公开倍率数值" },
+      { model: "自定义模型", factor: 0, note: "不消耗套餐积分，Token 与订阅费用由用户自付" },
+    ],
+    priceCheckedAt: "2026-11-06",
+    sources: [
+      { label: "WorkBuddy 定价", url: "https://www.workbuddy.cn/pricing/" },
+      { label: "WorkBuddy 积分规则", url: "https://www.workbuddy.cn/docs/workbuddy/Credits" },
+      { label: "WorkBuddy 模型配置", url: "https://www.workbuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Model" },
+    ],
+  },
+  {
+    id: "chatgpt",
+    name: "ChatGPT",
+    vendor: "OpenAI",
+    category: "general",
+    tagline: "通用助手，Pro 档已拆成 100 / 200 / 500 三档",
+    grades: { coding: "A", research: "S", office: "A", automation: "A" },
+    gradeBasis: "官方帮助中心与定价页：研究/长文/图像能力全面；Agent 编排偏对话式",
+    bestModel: { name: "GPT-6 Astra", score: 57.0, slug: "gpt-6-astra" },
+    billingMode: "订阅额度",
+    models: ["GPT-6 Astra", "GPT-6.1 Sol", "GPT-5.6 系列"],
+    plans: [
+      { name: "Go", monthly: 0, currency: "USD", note: "入门档，价格随地区浮动" },
+      { name: "Plus", monthly: 20, currency: "USD" },
+      { name: "Pro 100", monthly: 100, currency: "USD", quota: "不含极速模式" },
+      { name: "Pro 200", monthly: 200, currency: "USD", quota: "含用量高于 Pro 100" },
+      { name: "Pro 500", monthly: 500, currency: "USD", quota: "含极速模式" },
+      { name: "Business Standard", monthly: 25, promo: 20, currency: "USD", perSeat: true, note: "年付 $20/席" },
+      { name: "Business Premium", monthly: 125, promo: 100, currency: "USD", perSeat: true, note: "5 倍额度，解除 5 小时限制" },
+    ],
+    multipliers: [
+      { model: "全部模型", note: "按档位给统一额度，不按模型区分倍率；模型选择由产品侧限定" },
+    ],
+    priceCheckedAt: "2026-11-06",
+    sources: [
+      { label: "ChatGPT Pro 档位说明", url: "https://help.openai.com/zh-hans-cn/articles/9793128-about-chatgpt-pro-tiers" },
+      { label: "ChatGPT Business 定价", url: "https://openai.com/zh-Hans-CN/business/pricing/" },
+    ],
+  },
+  {
+    id: "gemini",
+    name: "Gemini",
+    vendor: "Google",
+    category: "general",
+    tagline: "通用助手 + 视频生成，Ultra 档 2026 年从 $250 降到 $200",
+    grades: { coding: "A", research: "S", office: "A", automation: "B" },
+    gradeBasis: "官方发布说明：多模态与搜索接地能力突出；Agent 编排弱于专用产品",
+    bestModel: { name: "Gemini 4 Carbon", score: 60.0, slug: "gemini-4-carbon" },
+    billingMode: "订阅额度",
+    models: ["Gemini 4 Carbon", "Gemini 4 Argon", "Gemini 3.8 Flash"],
+    plans: [
+      { name: "Google AI Pro", monthly: 19.99, currency: "USD", quota: "4 倍用量上限 + 2TB 存储" },
+      { name: "Google AI Ultra", monthly: 200, currency: "USD", quota: "20 倍用量上限（原 $250）", note: "另有 $100 起的入门 Ultra 档" },
+      { name: "Gemini Enterprise", monthly: 30, currency: "USD", perSeat: true, note: "企业版起价，含 IT 管控" },
+    ],
+    multipliers: [
+      { model: "全部 Gemini 模型", note: "按订阅档位给统一用量上限，不按模型区分倍率" },
+    ],
+    priceCheckedAt: "2026-11-06",
+    sources: [
+      { label: "Google AI 订阅更新（2026 I/O）", url: "https://blog.google/products-and-platforms/products/google-one/google-ai-subscriptions/?pubDate=20260521" },
+      { label: "Gemini 方案说明", url: "https://gemini.google/tw/about/?hl=zh-TW" },
+    ],
+  },
+  {
+    id: "coze",
+    name: "扣子 Coze",
+    vendor: "字节跳动",
+    category: "office",
+    tagline: "Agent 搭建平台，积分制多档套餐，2026-11-12 起调价",
+    grades: { coding: "B", research: "B", office: "A", automation: "S" },
+    gradeBasis: "官方套餐文档：多 Agent 协作、模型自定义、工作流编排能力强；偏平台而非成品助手",
+    bestModel: { name: "Gemini 4 Carbon", score: 60.0, slug: "gemini-4-carbon" },
+    billingMode: "积分制",
+    models: ["平台内置多模型可选", "自定义模型接入"],
+    plans: [
+      { name: "个人免费版", monthly: 0, currency: "CNY" },
+      { name: "个人进阶版", monthly: 39.9, currency: "CNY", quota: "3 万积分/月" },
+      { name: "个人高阶版", monthly: 99, currency: "CNY", quota: "9.9 万积分/月" },
+      { name: "个人旗舰版", monthly: 199, currency: "CNY", quota: "19.9 万积分/月" },
+      { name: "个人尊享版", monthly: 999, currency: "CNY", quota: "99 万积分/月" },
+      { name: "企业标准版", monthly: 498, currency: "CNY", note: "起价，按席位数计" },
+      { name: "企业旗舰版", monthly: 5980, currency: "CNY", note: "起价" },
+      { name: "团队旗舰版", monthly: 283, currency: "CNY", perSeat: true, quota: "8,000 积分/席/月" },
+    ],
+    multipliers: [
+      { model: "内置模型", note: "按模型 token 单价折算积分，官方未公布逐模型倍率表" },
+      { model: "自定义模型", note: "接入自有模型，按外部账单结算" },
+    ],
+    priceCheckedAt: "2026-11-06",
+    sources: [
+      { label: "扣子订阅套餐", url: "https://docs.coze.cn/guides/edition" },
+      { label: "扣子团队版定价", url: "https://docs.coze.cn/coze_pro_team_plan" },
+      { label: "个人版调价公告（11-12 生效）", url: "https://docs.coze.cn/cozespace_coze_billing_overview" },
+    ],
+  },
+  {
+    id: "manus",
+    name: "Manus",
+    vendor: "Manus",
+    category: "general",
+    tagline: "自主执行型通用 Agent，个人档价格随地区浮动",
+    grades: { coding: "B", research: "A", office: "A", automation: "S" },
+    gradeBasis: "官方帮助中心：长任务自主执行、网页与文档产出完整；个人档定价透明度低于同行",
+    bestModel: { name: "Claude Opus 5.5", score: 59.0, slug: "claude-opus-5-5" },
+    billingMode: "订阅额度",
+    models: ["内置多模型调度（具体型号未完全公开）"],
+    plans: [
+      { name: "Team", monthly: 20, currency: "USD", perSeat: true, note: "起价，年付享 17% 折扣" },
+      { name: "个人档", monthly: 0, currency: "USD", note: "官网 pricing 页按地区展示，未统一标价" },
+    ],
+    multipliers: [
+      { model: "内置模型", note: "不对外公开逐模型倍率，按任务消耗计" },
+    ],
+    priceCheckedAt: "2026-11-06",
+    sources: [{ label: "Manus 会员定价说明", url: "https://help.manus.im/zh-CN/articles/11711111-manus-%E7%9B%AE%E5%89%8D%E7%9A%84%E4%BC%9A%E5%91%98%E5%AE%9A%E4%BB%B7%E6%98%AF%E5%A4%9A%E5%B0%91" }],
+  },
+];
+
+export const AGENT_CATEGORY_LABEL: Record<AgentCategory, string> = {
+  coding: "编码",
+  office: "办公",
+  general: "通用",
+};
+
+export function getAgent(id: string): AgentProduct | undefined {
+  return AGENT_PRODUCTS.find((a) => a.id === id);
+}
+
+/** 起价：取最便宜的付费档（0 元档不算），用于列表展示 */
+export function entryPrice(a: AgentProduct): string {
+  const paid = a.plans.filter((p) => p.monthly > 0);
+  if (paid.length === 0) return "免费";
+  const min = paid.reduce((x, y) => (x.monthly <= y.monthly ? x : y));
+  const sym = min.currency === "USD" ? "$" : "¥";
+  return `${sym}${min.monthly}${min.perSeat ? "/席" : ""}/月起`;
+}
+
+/** 官方公开了数值倍率的模型条目数（factor=0 表示「不消耗积分」，不算倍率公开） */
+export function hasPublishedMultiplier(a: AgentProduct): boolean {
+  return (a.multipliers ?? []).some((m) => typeof m.factor === "number" && m.factor > 0);
+}
+
+/** 官方公开的正数倍率条目数 */
+export function publishedMultiplierCount(a: AgentProduct): number {
+  return (a.multipliers ?? []).filter((m) => typeof m.factor === "number" && m.factor > 0).length;
+}

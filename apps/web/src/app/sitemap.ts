@@ -1,11 +1,13 @@
 import type { MetadataRoute } from "next";
+import { AGENT_PRODUCTS } from "@/lib/agent-data";
 
 // 站点地图：列出所有静态路由
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = "https://modelrank.zheng-cool.workers.dev";
-  const lastModified = new Date("2026-10-26");
+  const lastModified = new Date("2026-11-06");
   const routes = [
     "",
+    "/agents",
     "/compare",
     "/cost",
     "/library",
@@ -15,6 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/about",
     "/data-sources",
     "/disclaimer",
+    ...AGENT_PRODUCTS.map((a) => `/agent/${a.id}`),
   ];
   return routes.map((r) => ({
     url: `${base}${r}`,
