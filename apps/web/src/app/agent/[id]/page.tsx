@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import { NavHeader } from "@/components/nav-header";
 import { Footer } from "@/components/footer";
 import { ProductLogo } from "@/components/model-logo";
-import { AGENT_CATEGORY_LABEL, AGENT_PRODUCTS, getAgent, type Grade } from "@/lib/agent-data";
+import { AGENT_CATEGORY_LABEL, AGENT_PRODUCTS, getAgent, planPriceLabel, type AgentPlan, type Grade } from "@/lib/agent-data";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -36,14 +36,8 @@ const DIM_LABEL: Record<string, string> = {
   automation: "自动化",
 };
 
-function money(p: { monthly: number; promo?: number; currency: "USD" | "CNY"; perSeat?: boolean }) {
-  const sym = p.currency === "USD" ? "$" : "¥";
-  const seat = p.perSeat ? "/席" : "";
-  if (p.monthly === 0) return "免费";
-  if (p.promo && p.promo !== p.monthly) {
-    return `${sym}${p.promo}${seat}/月（原价 ${sym}${p.monthly}）`;
-  }
-  return `${sym}${p.monthly}${seat}/月`;
+function money(p: AgentPlan) {
+  return planPriceLabel(p);
 }
 
 export default async function AgentDetailPage({ params }: Props) {
@@ -112,7 +106,11 @@ export default async function AgentDetailPage({ params }: Props) {
                   color: "var(--mr-text-2)",
                 }}
               >
-                可调用最强模型：
+                可调用强模型
+                <span style={{ marginLeft: 6, color: "var(--mr-text-3)", fontSize: 11 }}>
+                  （官方列出型号中站内评分最高者）
+                </span>
+                ：
                 <Link href={`/detail/${a.bestModel.slug}`} className="mr-link" style={{ marginLeft: 4 }}>
                   {a.bestModel.name}（AA 智能指数 {a.bestModel.score}）
                 </Link>
@@ -243,6 +241,9 @@ export default async function AgentDetailPage({ params }: Props) {
                 style={{ fontSize: 12, wordBreak: "break-all" }}
               >
                 {s.label}
+                {s.overseas && (
+                  <span style={{ marginLeft: 6, fontSize: 11, color: "var(--mr-text-4)" }}>（海外站点，需代理访问）</span>
+                )}
               </a>
             ))}
           </div>

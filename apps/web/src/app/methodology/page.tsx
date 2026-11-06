@@ -222,6 +222,50 @@ export default function MethodologyPage() {
             </div>
             <div style={{ fontSize: 12, color: "var(--mr-text-3)", lineHeight: 1.8, marginTop: 10 }}>{wm.note}</div>
           </div>
+
+          <div className="mr-card" style={{ padding: "20px 22px", marginTop: 16 }}>
+            <div style={{ fontSize: 14, fontWeight: 600, color: "var(--mr-text)" }}>
+              Agent 产品榜口径
+              <span style={{ fontSize: 11, fontWeight: 400, color: "var(--mr-text-3)", marginLeft: 8 }}>
+                与模型榜同源不同法：这里评的是产品，不是模型
+              </span>
+            </div>
+
+            <div style={{ fontSize: 13, color: "var(--mr-text-2)", lineHeight: 1.9, marginTop: 12 }}>
+              <b style={{ color: "var(--mr-text)" }}>一、能力等级 S / A / B / C</b>
+              <br />
+              分编码、办公、调研、自动化四个维度独立评级，同一产品在不同维度可以不同级。定级依据两条：官方功能清单（官方文档、定价页、更新日志）
+              与公开横评交叉验证；两者冲突时以官方为准并记录分歧。不采用任何单一 benchmark 跑分，也不给带小数的精确分。
+              <br />
+              S = 该维度第一梯队，可独立完成复杂任务；A = 成熟可用，需人工校对；B = 够用，适合标准化任务；C = 偏弱，非该产品强项。
+            </div>
+
+            <div style={{ fontSize: 13, color: "var(--mr-text-2)", lineHeight: 1.9, marginTop: 12 }}>
+              <b style={{ color: "var(--mr-text)" }}>二、可调用强模型</b>
+              <br />
+              取该产品官方列出的可选型号中，站内 Artificial Analysis 评分最高者，分数与其模型详情页完全一致。
+              未逐一公开型号清单的产品（WorkBuddy、扣子、Manus 等）标注为推断，不作绝对断言。
+            </div>
+
+            <div style={{ fontSize: 13, color: "var(--mr-text-2)", lineHeight: 1.9, marginTop: 12 }}>
+              <b style={{ color: "var(--mr-text)" }}>三、模型计费倍率</b>
+              <br />
+              只展示官方明确给出数值的倍率（TRAE Seed 系列 0.25x、Devin Gemini 4 Argon 0.5x 等），按官方原值呈现，不做二次换算；
+              官方仅作定性描述的（「按 Token 单价浮动」「享专属补贴」）一律标「未公开」，不推算、不估算。
+              「不扣积分」是独立的第四种状态（自定义模型按 BYO Key 自行结算），既不等于 0 折，也不等于倍率公开。
+            </div>
+
+            <div style={{ fontSize: 13, color: "var(--mr-text-2)", lineHeight: 1.9, marginTop: 12 }}>
+              <b style={{ color: "var(--mr-text)" }}>四、价格与起价</b>
+              <br />
+              全部来自官方定价页或官方帮助文档，页面标注核对日期；促销价与原价并列显示，不做隐藏。
+              无固定标价的档位（按需报价、按地区浮动）标「询价」，不参与起价计算；起价 = 最低可购买档位，不是最低标价。
+            </div>
+
+            <div style={{ fontSize: 12, color: "var(--mr-text-3)", lineHeight: 1.8, marginTop: 14, paddingTop: 12, borderTop: "1px solid var(--mr-border-soft)" }}>
+              发现价格、倍率或等级有误，可通过下方申诉入口提交，核实后在下一版更正并保留修订记录。
+            </div>
+          </div>
         </div>
 
         <div style={{ flex: "none", minWidth: 0 }} className="md:w-[360px]">

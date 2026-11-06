@@ -76,6 +76,54 @@ for res in "/sitemap.xml" "/robots.txt"; do
   ck "GET $res → HTTP ${code}" "[ \"${code}\" = \"200\" ]"
 done
 
+# ---- 2b. Agent 产品榜 ----
+# 注：页面正文含 "$3.00" 之类字样，不能拼进 eval（会被当变量展开），
+# 因此正文断言统一落临时文件后按 pattern 匹配。
+echo "--- Agent 产品榜 ---" | tee -a "$OUT"
+strip_html() { python3 -c "import sys,re,html; t=sys.stdin.read(); t=re.sub(r'<script.*?</script>|<style.*?</style>','',t,flags=re.S); t=re.sub(r'<[^>]+>',' ',t); print(re.sub(r'\s+',' ',html.unescape(t)))"; }
+AGENT_TMP=$(mktemp -d)
+trap 'rm -rf "$AGENT_TMP"' EXIT
+
+ckf() { # ckf <描述> <文件> <pattern> [negate]
+  local desc="$1" f="$2" pat="$3" neg="${4:-0}" hit=0
+  grep -qE -- "$pat" "$f" 2>/dev/null && hit=1
+  if { [ "$neg" = "1" ] && [ "$hit" = "0" ]; } || { [ "$neg" = "0" ] && [ "$hit" = "1" ]; }; then
+    echo "✅ $desc" | tee -a "$OUT"; PASS=$((PASS+1))
+  else
+    echo "❌ $desc" | tee -a "$OUT"; FAIL=$((FAIL+1))
+  fi
+}
+
+for id in claude-code cursor github-copilot devin trae workbuddy chatgpt gemini coze manus; do
+  code=$(curl -s -o /dev/null -w "%{http_code}" -m 15 "$BASE/agent/$id" 2>/dev/null)
+  ck "GET /agent/$id → HTTP ${code}" "[ \"${code}\" = \"200\" ]"
+done
+
+code=$(curl -s -o /dev/null -w "%{http_code}" -m 15 "$BASE/agent/not-exist" 2>/dev/null)
+ck "不存在的 agent 返回 404（实际 ${code}）" "[ \"${code}\" = \"404\" ]"
+
+curl -s -m 25 "$BASE/agents" 2>/dev/null | strip_html > "$AGENT_TMP/agents.txt"
+ckf "列表页含「可调用强模型」列" "$AGENT_TMP/agents.txt" "可调用强模型"
+ckf "列表页含询价档口径说明" "$AGENT_TMP/agents.txt" "询价"
+ckf "列表页无旧文案「可调用最强模型」" "$AGENT_TMP/agents.txt" "可调用最强模型" 1
+
+curl -s -m 25 "$BASE/agent/devin" 2>/dev/null | strip_html > "$AGENT_TMP/devin.txt"
+ckf "Devin 页 Teams/Enterprise 显示询价（不再显示免费）" "$AGENT_TMP/devin.txt" "询价"
+ckf "Devin 页强模型为 Gemini 4 Argon · 50" "$AGENT_TMP/devin.txt" "Gemini 4 Argon *（ *AA 智能指数 50"
+ckf "Devin 页无 Argon·60 错配" "$AGENT_TMP/devin.txt" "Gemini 4 Argon *（ *AA 智能指数 60" 1
+
+curl -s -m 25 "$BASE/sitemap.xml" > "$AGENT_TMP/sitemap.xml" 2>/dev/null
+ckf "sitemap 指向 pages.dev 域" "$AGENT_TMP/sitemap.xml" "modelrank-1br.pages.dev"
+ckf "sitemap 不含旧 workers.dev 域" "$AGENT_TMP/sitemap.xml" "zheng-cool.workers.dev" 1
+ckf "sitemap 含 /agents" "$AGENT_TMP/sitemap.xml" "/agents"
+ckf "sitemap 含模型详情页" "$AGENT_TMP/sitemap.xml" "/detail/"
+
+curl -s -m 15 "$BASE/robots.txt" > "$AGENT_TMP/robots.txt" 2>/dev/null
+ckf "robots.txt 指向 pages.dev 域" "$AGENT_TMP/robots.txt" "modelrank-1br.pages.dev"
+
+curl -s -m 25 "$BASE/methodology" 2>/dev/null | strip_html > "$AGENT_TMP/methodology.txt"
+ckf "方法论页含 Agent 榜口径段" "$AGENT_TMP/methodology.txt" "Agent 产品榜口径"
+
 # ---- 3. 数据完整性（本地源码） ----
 echo "--- 数据完整性 ---" | tee -a "$OUT"
 SEED="$REPO/apps/web/src/lib/seed-data.ts"

@@ -111,7 +111,7 @@ export default function AgentsPage() {
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
               <thead>
                 <tr style={{ background: "var(--mr-card-2)", borderBottom: "1px solid var(--mr-border)" }}>
-                  {["产品", "类别", "能力评估", "起价", "计费方式", "模型倍率", "可调用最强模型"].map((h) => (
+                  {["产品", "类别", "能力评估", "起价", "计费方式", "模型倍率", "可调用强模型"].map((h) => (
                     <th
                       key={h}
                       style={{
@@ -149,10 +149,11 @@ export default function AgentsPage() {
                       {AGENT_CATEGORY_LABEL[a.category]}
                     </td>
                     <td style={{ padding: "12px 14px", whiteSpace: "nowrap" }}>
-                      <span style={{ display: "flex", gap: 10 }}>
+                      <span style={{ display: "flex", gap: 8 }}>
                         <GradePill label="编" grade={a.grades.coding} />
                         <GradePill label="办" grade={a.grades.office} />
                         <GradePill label="自" grade={a.grades.automation} />
+                        <GradePill label="研" grade={a.grades.research} />
                       </span>
                     </td>
                     <td style={{ padding: "12px 14px", color: "var(--mr-text)", fontWeight: 600, whiteSpace: "nowrap" }}>
@@ -262,9 +263,12 @@ export default function AgentsPage() {
         <div className="mr-mx" style={{ marginTop: 24, marginBottom: 40, fontSize: 12, lineHeight: 1.7, color: "var(--mr-text-3)" }}>
           <b style={{ color: "var(--mr-text-2)" }}>读表说明</b>
           ：能力等级 S / A / B / C 为编辑评估，依据官方功能清单与公开横评结论，不代表第三方 benchmark 分数；
-          「可调用最强模型」一列给出该产品可调用的最强模型及其 Artificial Analysis 智能指数分，可点进模型详情页看完整评测。
+          「可调用强模型」取该产品官方列出的可选型号中站内评分最高者，分数与其模型详情页一致，
+          未逐一公开型号清单的产品（WorkBuddy、扣子、Manus 等）该列为推断，不作绝对断言。
           「模型倍率」只有官方公开了数值的才显示倍率（如 TRAE 的 Seed 系列 2.5 折、Devin 的 Gemini 4 Argon 5 折），
-          其余产品官方仅说明「按模型 Token 单价浮动」而未给数值，本榜不推算、不估算。价格均来自官方定价页，促销价为连续包月/年付价。
+          其余产品官方仅说明「按模型 Token 单价浮动」而未给数值，本榜不推算、不估算。
+          「起价」取最低可购买档位；标「询价」的档位（Devin Teams/Enterprise、ChatGPT Go、Manus 个人档）无固定标价，不计入起价。
+          价格均来自官方定价页，促销价为连续包月/年付价。
         </div>
       </div>
 

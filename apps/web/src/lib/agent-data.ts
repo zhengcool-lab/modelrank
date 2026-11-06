@@ -3,9 +3,11 @@
  *
  * 口径说明：
  * - 价格均为官方定价页/官方帮助文档核对所得，核对日期见 priceCheckedAt；促销价为连续包月/年付价。
- * - 能力等级（S/A/B/C）为编辑评估，依据是官方功能清单 + 公开横评结论，不是第三方跑分；
- *   客观锚点另见 bestModel（该产品可调用的最强模型及其 Artificial Analysis 智能指数分）。
+ * - 能力等级（S/A/B/C）为编辑评估，依据是官方功能清单 + 公开横评结论，不是第三方跑分。
+ * - 客观锚点见 bestModel：取该产品官方列出的可选型号中，站内（Artificial Analysis）评分最高者；
+ *   分数必须与 seed-data 中同名模型完全一致，未逐一公开型号清单的产品在该列标注为推断。
  * - 倍率（multipliers）：仅有官方公开数值的产品填写 factor，其余只写定性说明，不推算、不编造。
+ * - 套餐价格：monthly 为 0 且标注 quote 的档位不是免费档（需询价或按地区浮动），不参与起价计算。
  */
 
 export type AgentCategory = "coding" | "office" | "general";
@@ -18,7 +20,21 @@ export interface AgentPlan {
   currency: "USD" | "CNY";
   perSeat?: boolean;
   quota?: string;
+  /** 无固定标价：需询价、按地区浮动或按席位报价。monthly 为 0 也不代表免费 */
+  quote?: boolean;
   note?: string;
+}
+
+/** 询价档的价格文案（详情页统一渲染，避免把 0 元当成免费） */
+export function planPriceLabel(p: AgentPlan): string {
+  if (p.quote) return "询价 / 按地区浮动";
+  const sym = p.currency === "USD" ? "$" : "¥";
+  const seat = p.perSeat ? "/席" : "";
+  if (p.monthly === 0) return "免费";
+  if (p.promo && p.promo > 0 && p.promo !== p.monthly) {
+    return `${sym}${p.promo}${seat}/月（原价 ${sym}${p.monthly}${seat}）`;
+  }
+  return `${sym}${p.monthly}${seat}/月`;
 }
 
 export interface AgentMultiplier {
@@ -46,7 +62,8 @@ export interface AgentProduct {
   plans: AgentPlan[];
   multipliers?: AgentMultiplier[];
   priceCheckedAt: string;
-  sources: { label: string; url: string }[];
+  /** overseas：该来源站点在中国大陆网络下通常无法直连，页面会加角标提示 */
+  sources: { label: string; url: string; overseas?: boolean }[];
 }
 
 export const AGENT_PRODUCTS: AgentProduct[] = [
@@ -140,14 +157,14 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
     tagline: "自主式编码 Agent，按所选模型的 token 成本折算用量",
     grades: { coding: "A", automation: "S", research: "B" },
     gradeBasis: "官方文档：自主跑完整任务链、支持 Teams/Enterprise 集中计费；可控性依赖任务描述质量",
-    bestModel: { name: "Gemini 4 Argon", score: 60.0, slug: "gemini-4-carbon" },
+    bestModel: { name: "Gemini 4 Argon", score: 50.0, slug: "gemini-4-argon" },
     billingMode: "按 token 计费",
     models: ["SWE-2", "Claude 系列", "GPT 系列", "Gemini 系列"],
     plans: [
       { name: "Free", monthly: 0, currency: "USD", quota: "轻量额度，模型受限" },
       { name: "Pro", monthly: 20, currency: "USD", quota: "含前沿模型访问" },
       { name: "Max", monthly: 200, currency: "USD", quota: "显著更高额度" },
-      { name: "Teams / Enterprise", monthly: 0, currency: "USD", note: "按需报价，集中计费与管理后台" },
+      { name: "Teams / Enterprise", monthly: 0, currency: "USD", quote: true, note: "按需报价，集中计费与管理后台" },
     ],
     multipliers: [
       { model: "SWE-2", factor: 1, note: "官方标注为基准价：$3.00/1M 输入、$15.00/1M 输出（2026-12-31 前 75% 折扣）" },
@@ -229,7 +246,7 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
     billingMode: "订阅额度",
     models: ["GPT-6 Astra", "GPT-6.1 Sol", "GPT-5.6 系列"],
     plans: [
-      { name: "Go", monthly: 0, currency: "USD", note: "入门档，价格随地区浮动" },
+      { name: "Go", monthly: 0, currency: "USD", quote: true, note: "入门档，价格随地区浮动" },
       { name: "Plus", monthly: 20, currency: "USD" },
       { name: "Pro 100", monthly: 100, currency: "USD", quota: "不含极速模式" },
       { name: "Pro 200", monthly: 200, currency: "USD", quota: "含用量高于 Pro 100" },
@@ -242,8 +259,8 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
     ],
     priceCheckedAt: "2026-11-06",
     sources: [
-      { label: "ChatGPT Pro 档位说明", url: "https://help.openai.com/zh-hans-cn/articles/9793128-about-chatgpt-pro-tiers" },
-      { label: "ChatGPT Business 定价", url: "https://openai.com/zh-Hans-CN/business/pricing/" },
+      { label: "ChatGPT Pro 档位说明", url: "https://help.openai.com/zh-hans-cn/articles/9793128-about-chatgpt-pro-tiers", overseas: true },
+      { label: "ChatGPT Business 定价", url: "https://openai.com/zh-Hans-CN/business/pricing/", overseas: true },
     ],
   },
   {
@@ -267,8 +284,8 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
     ],
     priceCheckedAt: "2026-11-06",
     sources: [
-      { label: "Google AI 订阅更新（2026 I/O）", url: "https://blog.google/products-and-platforms/products/google-one/google-ai-subscriptions/?pubDate=20260521" },
-      { label: "Gemini 方案说明", url: "https://gemini.google/tw/about/?hl=zh-TW" },
+      { label: "Google AI 订阅更新（2026 I/O）", url: "https://blog.google/products-and-platforms/products/google-one/google-ai-subscriptions/?pubDate=20260521", overseas: true },
+      { label: "Gemini 方案说明", url: "https://gemini.google/tw/about/?hl=zh-TW", overseas: true },
     ],
   },
   {
@@ -316,7 +333,7 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
     models: ["内置多模型调度（具体型号未完全公开）"],
     plans: [
       { name: "Team", monthly: 20, currency: "USD", perSeat: true, note: "起价，年付享 17% 折扣" },
-      { name: "个人档", monthly: 0, currency: "USD", note: "官网 pricing 页按地区展示，未统一标价" },
+      { name: "个人档", monthly: 0, currency: "USD", quote: true, note: "官网 pricing 页按地区展示，未统一标价" },
     ],
     multipliers: [
       { model: "内置模型", note: "不对外公开逐模型倍率，按任务消耗计" },
@@ -336,10 +353,10 @@ export function getAgent(id: string): AgentProduct | undefined {
   return AGENT_PRODUCTS.find((a) => a.id === id);
 }
 
-/** 起价：取最便宜的付费档（0 元档不算），用于列表展示 */
+/** 起价：取最便宜的付费档（0 元档与询价档都不算），用于列表展示 */
 export function entryPrice(a: AgentProduct): string {
-  const paid = a.plans.filter((p) => p.monthly > 0);
-  if (paid.length === 0) return "免费";
+  const paid = a.plans.filter((p) => p.monthly > 0 && !p.quote);
+  if (paid.length === 0) return "询价";
   const min = paid.reduce((x, y) => (x.monthly <= y.monthly ? x : y));
   const sym = min.currency === "USD" ? "$" : "¥";
   return `${sym}${min.monthly}${min.perSeat ? "/席" : ""}/月起`;
