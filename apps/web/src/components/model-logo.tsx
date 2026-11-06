@@ -100,6 +100,7 @@ const MODEL_LOGO: Record<string, string> = {
   "step-5-preview": "step.png",
   "ling-3-1-flash-1019": "hunyuan.png",
   "inkling-small": "hunyuan.png",
+  "inkling-2-small": "hunyuan.png",
   inkling: "hunyuan.png",
   "mistral-large-4": "mistral.png",
   "mistral-small-4": "mistral.png",
