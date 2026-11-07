@@ -62,6 +62,11 @@ const VENDOR_EXT: Record<string, "png" | "svg"> = {
 };
 
 /**
+ * 图标资源版本号：logo 文件替换 / 补齐后递增，强制客户端绕开旧的失败缓存。
+ */
+const LOGO_VERSION = "2";
+
+/**
  * 模型 id → 产品 logo 家族文件名（public/product-logos/ 下）。
  * AI 模型经常迭代版本号（gpt-6-astra → gpt-6-luna 等），同一家族复用同一图标，
  * 避免每个版本号都拷贝一份 png；未映射的 id 走默认 {modelId}.png/.svg 加载。
@@ -172,8 +177,10 @@ export function ProductLogo({
   const [useSvg, setUseSvg] = useState(false);
 
   // 未映射的模型：strict 模式直接回退字母方块；否则尝试 {modelId}.png → {modelId}.svg
+  // 已映射的图标带版本号：早期个别 logo 曾缺失返回 404，浏览器缓存失败态后会一直走 onError 回退成字母方块；
+  // 换图 / 补图后递增该版本号即可让客户端强制重新拉取。
   const src = mapped
-    ? `${base}/${mapped}`
+    ? `${base}/${mapped}?v=${LOGO_VERSION}`
     : useSvg
       ? `${base}/${modelId}.svg`
       : `${base}/${modelId}.png`;
