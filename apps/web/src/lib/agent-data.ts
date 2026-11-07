@@ -102,27 +102,30 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
     name: "Cursor",
     vendor: "Anysphere",
     category: "coding",
-    tagline: "IDE 形态的编码 Agent，Pro 起分「Cursor 模型池 / 其他模型池」两条额度",
+    tagline: "IDE 形态的编码 Agent；Plus 起步，Pro / Super / Ultra 按 4x / 15x / 50x 用量倍数分档",
     grades: { coding: "S", automation: "A", research: "B" },
-    gradeBasis: "官方定价页 + 横评：IDE 内联补全与 Agent 模式成熟；重度使用容易撞额度",
+    gradeBasis: "官方定价页与模型文档：IDE 内联补全与 Agent 模式成熟；档位差异主要体现在用量倍数与第三方模型计费方式",
     bestModel: { name: "Claude Opus 5.5", score: 59.0, slug: "claude-opus-5-5" },
     billingMode: "订阅额度",
-    models: ["Claude 系列", "GPT 系列", "Gemini 系列", "开源模型（BYO Key 可用）"],
+    models: ["Claude 系列", "GPT 系列", "Gemini 系列", "Grok 系列（含聊天、图像、视频）"],
     plans: [
-      { name: "Hobby", monthly: 0, currency: "USD", quota: "免费额度" },
-      { name: "Pro", monthly: 20, currency: "USD", quota: "含两个模型池" },
-      { name: "Pro Plus", monthly: 60, currency: "USD" },
-      { name: "Ultra", monthly: 200, currency: "USD" },
-      { name: "Teams Standard", monthly: 40, currency: "USD", perSeat: true },
-      { name: "Teams Premium", monthly: 120, currency: "USD", perSeat: true },
+      { name: "免费", monthly: 0, currency: "USD", quota: "有限 AI 用量" },
+      { name: "Plus", monthly: 8, currency: "USD", quota: "共享 AI 用量池，入门档" },
+      { name: "高级版", monthly: 30, currency: "USD", quota: "Plus 的 4 倍用量" },
+      { name: "Super", monthly: 100, currency: "USD", quota: "Plus 的 15 倍用量" },
+      { name: "Ultra", monthly: 200, currency: "USD", quota: "Plus 的 50 倍用量" },
+      { name: "团队版", monthly: 30, currency: "USD", perSeat: true, note: "起，4–50 倍用量" },
+      { name: "企业版", monthly: 0, currency: "USD", quote: true },
     ],
     multipliers: [
-      { model: "Cursor 模型池", note: "Pro 以上分池计价：Cursor 自有模型池与其他模型池额度独立消耗，官方未公布逐模型倍率数值" },
-      { model: "其他模型（BYO Key）", note: "自带 API Key 时按厂商 token 单价直接计费，不经 Cursor 加价" },
+      { model: "档位用量倍数", note: "官方：Pro 为 Plus 的 4 倍用量、Super 15 倍、Ultra 50 倍，团队版按席位 4–50 倍（用量倍数，非价格折扣）" },
+      { model: "第三方模型", note: "高级版起可按 API 标价调用第三方模型，用量单独计费、不含在月费内" },
     ],
-    priceCheckedAt: "2026-11-06",
+    priceCheckedAt: "2026-11-07",
     sources: [
-      { label: "AI Coding 工具对比矩阵 2026", url: "https://www.developersdigest.tech/blog/ai-coding-tools-comparison-matrix-2026" },
+      { label: "Cursor 定价", url: "https://cursor.com/pricing" },
+      { label: "Cursor 模型与定价文档", url: "https://cursor.com/docs/models" },
+      { label: "AI Coding 工具对比矩阵 2026（评级参考）", url: "https://www.developersdigest.tech/blog/ai-coding-tools-comparison-matrix-2026" },
     ],
   },
   {
@@ -231,7 +234,7 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
       { model: "三档模式", note: "极速/标准/极致三档：极致模式消耗更高，用于复杂任务；同样未公开倍率数值" },
       { model: "自定义模型", factor: 0, note: "不消耗套餐积分，Token 与订阅费用由用户自付" },
     ],
-    priceCheckedAt: "2026-11-06",
+    priceCheckedAt: "2026-11-07",
     sources: [
       { label: "WorkBuddy 定价", url: "https://www.workbuddy.cn/pricing/" },
       { label: "WorkBuddy 积分规则", url: "https://www.workbuddy.cn/docs/workbuddy/Credits" },
@@ -261,7 +264,7 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
     multipliers: [
       { model: "全部模型", note: "按档位给统一额度，不按模型区分倍率；模型选择由产品侧限定" },
     ],
-    priceCheckedAt: "2026-11-06",
+    priceCheckedAt: "2026-11-07",
     sources: [
       { label: "ChatGPT Pro 档位说明", url: "https://help.openai.com/zh-hans-cn/articles/9793128-about-chatgpt-pro-tiers", overseas: true },
       { label: "ChatGPT Business 定价", url: "https://openai.com/zh-Hans-CN/business/pricing/", overseas: true },
@@ -286,7 +289,7 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
     multipliers: [
       { model: "全部 Gemini 模型", note: "按订阅档位给统一用量上限，不按模型区分倍率" },
     ],
-    priceCheckedAt: "2026-11-06",
+    priceCheckedAt: "2026-11-07",
     sources: [
       { label: "Google AI 订阅更新（2026 I/O）", url: "https://blog.google/products-and-platforms/products/google-one/google-ai-subscriptions/?pubDate=20260521", overseas: true },
       { label: "Gemini 方案说明", url: "https://gemini.google/tw/about/?hl=zh-TW", overseas: true },
@@ -317,7 +320,7 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
       { model: "内置模型", note: "按模型 token 单价折算积分，官方未公布逐模型倍率表" },
       { model: "自定义模型", note: "接入自有模型，按外部账单结算" },
     ],
-    priceCheckedAt: "2026-11-06",
+    priceCheckedAt: "2026-11-07",
     sources: [
       { label: "扣子订阅套餐", url: "https://docs.coze.cn/guides/edition" },
       { label: "扣子团队版定价", url: "https://docs.coze.cn/coze_pro_team_plan" },
@@ -342,7 +345,7 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
     multipliers: [
       { model: "内置模型", note: "不对外公开逐模型倍率，按任务消耗计" },
     ],
-    priceCheckedAt: "2026-11-06",
+    priceCheckedAt: "2026-11-07",
     sources: [{ label: "Manus 会员定价说明", url: "https://help.manus.im/zh-CN/articles/11711111-manus-%E7%9B%AE%E5%89%8D%E7%9A%84%E4%BC%9A%E5%91%98%E5%AE%9A%E4%BB%B7%E6%98%AF%E5%A4%9A%E5%B0%91" }],
   },
   {

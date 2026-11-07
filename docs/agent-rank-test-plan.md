@@ -191,31 +191,38 @@ Agent 榜不同于模型榜。模型榜的分数来自单一权威源（Artifici
 
 19 家定价页探测结论：套餐表普遍是 JS 渲染，SSR 文本抽不出完整套餐结构；页面里还混着年付折算价、token 单价、其他产品价格。自动抽取再回写，一定会把 `$20/月` 写成 `$8/月` 之类。**宁可少自动化，也不要写错价格**，所以机制只做一件事：核对「我们记录的价格是否仍出现在官网页面上」。
 
-### 8.2 四态判定
+### 8.2 三级降级链 + 四态判定
 
-`data-pipeline/scripts/check-agent-pricing.py` 正则读出 `agent-data.ts` 里每个产品的币种与全部付费档月价（`monthly>0` 与 `promo>0`），抓官方定价页后按币种匹配页面金额，算覆盖率：
+`data-pipeline/scripts/check-agent-pricing.py` 正则读出 `agent-data.ts` 里每个产品的币种与全部付费档月价（`monthly>0` 与 `promo>0`），按「直连 → 代理 → 浏览器」逐级尝试抓官方页：每级失败或正文 < 200 字就降一级，一旦命中 `verified` 立即停止升级（不再走更重的通道）。
+
+| 级别 | 实现 | 实测收益 |
+|---|---|---|
+| `direct` | httpx 直连（`trust_env=False`，不吃系统代理） | 覆盖绝大多数站点 |
+| `proxy` | 走 `http://127.0.0.1:9090`（`AGENT_PRICING_PROXY` 可改；`off`/`0`/空 = 关闭该级） | 只对被墙站点有效：gemini 从 ConnectTimeout 变 200 |
+| `browser` | `data-pipeline/scripts/render-page.py`：playwright 驱动本机 Chrome 渲染后取 `inner_text("body")`（`AGENT_PRICING_BROWSER=0` 可关） | 只对 SSR 拦截页有效：workbuddy 从 31 字拦截页变 6/6 全命中 |
+
+任何一级失败都不中断，取覆盖率最高的一次作为结果；报告里逐产品记录 `tier`（最终命中通道）、`attempts`（每级结果）、`chars`（正文字数）。四态判定：
 
 | 状态 | 条件 | 对 `priceCheckedAt` 的处理 |
 |---|---|---|
-| `verified` | 页面 200 且至少命中 50% 已记录价位 | **刷新成今天**（证明官网仍在售这些价位） |
-| `weak` | 有命中但覆盖率 < 50% | 保持原核对日（只验证到个别档位，不足以断言整表未变；Cursor 的 Pro/Teams 价在 JS 里，只露出 `$200`） |
-| `unverified` | 页面 200 但一个价位都没命中 | 保持原核对日（多为纯 JS 渲染，如 Manus） |
-| `unreachable` | 403 / 超时 / 正文 < 200 字（拦截页） | 保持原核对日（ChatGPT 403、Gemini 连接超时、Coze 与 WorkBuddy 返回拦截页） |
+| `verified` | 命中 ≥ 50% 已记录价位（允许 1% 舍入差，如 200 ≈ 199.99） | **刷新成今天**（证明官网仍在售这些价位） |
+| `weak` | 有命中但覆盖率 < 50% | 保持原核对日（只验证到个别档位，不足以断言整表未变） |
+| `unverified` | 页面拿到了但一个价位都没命中 | 保持原核对日（多为纯 JS 渲染） |
+| `unreachable` | 三级全废（403 / 超时 / 拦截页） | 保持原核对日 |
 
 `refresh-agent-price-date.py` 只改写 `verified` 产品的日期，其余一律不动——页面上「价格核对于 X」因此不会变成假话。支持 `--dry` 预览。
 
-### 8.3 2026-11-07 首次运行结果
+### 8.3 2026-11-07 运行结果
 
-`verified 14 / weak 1 / unverified 1 / unreachable 4`：
+只有直连时是 `verified 14 / weak 1 / unverified 1 / unreachable 4`。补齐三级降级链、并把核对页从「推测的营销页」换成「我们记录数据时实际依据的官方页」之后，结果变成 **`verified 20 / weak 0 / unverified 0 / unreachable 0`**：
 
-| 状态 | 产品 |
-|---|---|
-| verified（14，核对日刷成 2026-11-07） | claude-code（4/4）、github-copilot（3/4）、devin（2/2）、trae（4/8，命中四个原价档）、windsurf（3/3）、kiro（4/4）、augment（2/2）、replit（4/4）、bolt（2/2）、v0（2/2）、warp（2/2）、zed（2/2）、notion（2/2）、claude（4/4） |
-| weak（1，保持 11-06） | cursor（1/5） |
-| unverified（1，保持 11-06） | manus（页内 0 个美元数字） |
-| unreachable（4，保持 11-06） | workbuddy（31 字拦截页）、chatgpt（403）、gemini（ConnectTimeout）、coze（45 字拦截页） |
+| 通过通道 | 家数 | 产品 |
+|---|---|---|
+| `direct` | 17 | 除 github-copilot / gemini / workbuddy 之外的 17 家 |
+| `proxy` | 2 | github-copilot（3/4，直连偶发超时）、gemini（2/3，`one.google.com/about/google-ai-plans/`，`$200` 按 1% 容差对上 `$199.99`） |
+| `browser` | 1 | workbuddy（6/6，定价页是 SSR 拦截页，只有浏览器渲染才出价格） |
 
-报告落在 `data-pipeline/out/agent_pricing_report.json`（含每个产品的 URL、币种、记录价、命中价、覆盖率）。
+关键修正：coze 由 `www.coze.cn/pricing`（已 404）换成 `docs.coze.cn/guides/edition` → 5/7；manus 由营销页换成帮助中心文章 → 1/1；gemini 由 `gemini.google/subscriptions/`（JS 空壳）换成 Google One 套餐页 → 2/3。
 
 ### 8.4 接入每日闭环
 
@@ -223,11 +230,11 @@ Agent 榜不同于模型榜。模型榜的分数来自单一权威源（Artifici
 
 ### 8.5 页面口径
 
-- `/agents`：取所有产品中最新的核对日展示，并在日期不一致时追加「（最早 YYYY-MM-DD，逐产品核对日见详情页）」，不让读者以为 20 家同一天核对过。
+- `/agents`：取所有产品中最新的核对日展示，并固定追加「（逐产品核对日见详情页）」；日期不一致时再补「最早 YYYY-MM-DD」。
 - `/agent/[id]`：meta description 与该产品定价区块显示各自的 `priceCheckedAt`。
 
 ### 8.6 已知局限
 
-- 4 家站点结构上抓不到（403 / 超时 / 拦截页），1 家纯 JS 渲染，1 家覆盖率不足——这 6 家在页面上的核对日会停留在 2026-11-06，直到人工复核并手改。这是刻意的：不核对上就不改日期。
-- 机制只能发现「价位不再出现在页面上」，不能发现「新增了档位」或「套餐内容缩水」。这类变化仍需人工复核。
-- 巡检 `deploy/health-check.sh` 已加 3 条断言（列表页含核对日、列表页注明日期差异、详情页显示核对日期），当前 **94/0 全通过**。
+- 可达性随网络环境波动：chatgpt 的 help.openai.com 时通时 403（靠直连重试偶尔拿到 3/6）、gemini 必须走代理、github-copilot 偶发直连超时。这些是网络问题不是数据问题，每级的 `attempts` 都留在报告里可查。
+- 机制只能发现「价位不再出现在页面上」，不能发现「新增了档位」或「套餐内容缩水」。这类变化仍需人工复核 —— 2026-11-07 这次正是靠它发现 Cursor 的 6 档已全部过时（官网现值：免费 / Plus $8 / 高级版 $30 / Super $100 / Ultra $200 / 团队版 $30+ 起），随后按官网重写了该产品的套餐、倍率说明与来源（原来只挂着一条第三方博客，没有官方依据）。
+- 巡检 `deploy/health-check.sh` 现有 94 条断言，覆盖核对日展示、Agent 数据与模型/新闻完整性。
