@@ -113,6 +113,34 @@ const MODEL_LOGO: Record<string, string> = {
   "grok-4-7": "grok.png",
 };
 
+/**
+ * Agent 产品 logo：产品 id → /agent-logos/{file}
+ * 与模型榜图标同一套规范：512×512 透明底、内容占画布 90%、白瓷片渲染。
+ * 图标均取自各产品官网的官方 favicon / app icon，未做重绘。
+ */
+const AGENT_LOGO: Record<string, string> = {
+  "claude-code": "claude-code.png",
+  cursor: "cursor.png",
+  "github-copilot": "github-copilot.png",
+  devin: "devin.png",
+  trae: "trae.png",
+  workbuddy: "workbuddy.png",
+  chatgpt: "chatgpt.png",
+  gemini: "gemini.png",
+  coze: "coze.png",
+  manus: "manus.png",
+  windsurf: "windsurf.png",
+  kiro: "kiro.png",
+  augment: "augment.png",
+  replit: "replit.png",
+  bolt: "bolt.png",
+  v0: "v0.png",
+  warp: "warp.png",
+  zed: "zed.png",
+  notion: "notion.png",
+  claude: "claude.png",
+};
+
 export function vendorSlug(vendor: string): string | null {
   return VENDOR_SLUG[vendor] ?? null;
 }
@@ -126,6 +154,7 @@ export function ProductLogo({
   size = 32,
   radius = 8,
   strict = false,
+  kind = "model",
 }: {
   modelId: string;
   modelName: string;
@@ -133,17 +162,21 @@ export function ProductLogo({
   radius?: number;
   /** 严格模式：无映射时直接用首字母方块，不猜测 {modelId}.png（避免 404 破图） */
   strict?: boolean;
+  /** model：模型榜图标（/product-logos）；agent：Agent 榜图标（/agent-logos） */
+  kind?: "model" | "agent";
 }) {
   const [error, setError] = useState(false);
-  const mapped = MODEL_LOGO[modelId];
+  const isAgent = kind === "agent";
+  const mapped = isAgent ? AGENT_LOGO[modelId] : MODEL_LOGO[modelId];
+  const base = isAgent ? "/agent-logos" : "/product-logos";
   const [useSvg, setUseSvg] = useState(false);
 
   // 未映射的模型：strict 模式直接回退字母方块；否则尝试 {modelId}.png → {modelId}.svg
   const src = mapped
-    ? `/product-logos/${mapped}`
+    ? `${base}/${mapped}`
     : useSvg
-      ? `/product-logos/${modelId}.svg`
-      : `/product-logos/${modelId}.png`;
+      ? `${base}/${modelId}.svg`
+      : `${base}/${modelId}.png`;
   const showFallback = error || (strict && !mapped);
 
   if (showFallback) {

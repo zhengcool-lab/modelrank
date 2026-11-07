@@ -138,7 +138,7 @@ export default function AgentsPage() {
                   >
                     <td style={{ padding: "12px 14px" }}>
                       <Link href={`/agent/${a.id}`} style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-                        <ProductLogo modelId={a.id} modelName={a.name} size={30} strict />
+                        <ProductLogo modelId={a.id} modelName={a.name} size={30} strict kind="agent" />
                         <span>
                           <span style={{ display: "block", color: "var(--mr-text)", fontWeight: 600 }}>{a.name}</span>
                           <span style={{ display: "block", fontSize: 11, color: "var(--mr-text-3)" }}>{a.vendor}</span>
@@ -171,11 +171,18 @@ export default function AgentsPage() {
                     </td>
                     <td style={{ padding: "12px 14px", color: "var(--mr-text-2)", whiteSpace: "nowrap" }}>
                       {a.bestModel ? (
-                        <Link href={`/detail/${a.bestModel.slug}`} className="mr-link" style={{ fontSize: 12 }}>
-                          {a.bestModel.name} · {a.bestModel.score}
-                        </Link>
+                        a.bestModel.slug && a.bestModel.score != null ? (
+                          <Link href={`/detail/${a.bestModel.slug}`} className="mr-link" style={{ fontSize: 12 }}>
+                            {a.bestModel.name} · {a.bestModel.score}
+                          </Link>
+                        ) : (
+                          <span style={{ fontSize: 12 }}>
+                            {a.bestModel.name}
+                            <span style={{ color: "var(--mr-text-3)", marginLeft: 4 }}>· 站内未收录</span>
+                          </span>
+                        )
                       ) : (
-                        "—"
+                        <span style={{ color: "var(--mr-text-3)", fontSize: 12 }}>未公开型号</span>
                       )}
                     </td>
                   </tr>
@@ -202,7 +209,7 @@ export default function AgentsPage() {
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <ProductLogo modelId={a.id} modelName={a.name} size={34} strict />
+                <ProductLogo modelId={a.id} modelName={a.name} size={34} strict kind="agent" />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 15, fontWeight: 600, color: "var(--mr-text)" }}>{a.name}</div>
                   <div style={{ fontSize: 11, color: "var(--mr-text-3)", marginTop: 2 }}>
@@ -263,12 +270,13 @@ export default function AgentsPage() {
         <div className="mr-mx" style={{ marginTop: 24, marginBottom: 40, fontSize: 12, lineHeight: 1.7, color: "var(--mr-text-3)" }}>
           <b style={{ color: "var(--mr-text-2)" }}>读表说明</b>
           ：能力等级 S / A / B / C 为编辑评估，依据官方功能清单与公开横评结论，不代表第三方 benchmark 分数；
-          「可调用强模型」取该产品官方列出的可选型号中站内评分最高者，分数与其模型详情页一致，
-          未逐一公开型号清单的产品（WorkBuddy、扣子、Manus 等）该列为推断，不作绝对断言。
+          「可调用强模型」取该产品官方列出的可选型号中站内评分最高者，分数与其模型详情页一致。
+          官方点名了型号但站内未收录的（如 Kiro 的 Claude Sonnet 4.5、Windsurf 的 SWE-2）标注「站内未收录」，
+          官方完全未公开型号清单的（Augment、Replit、bolt、v0、Warp、Zed、Notion 等）标注「未公开型号」——两种情况都不补分数、不推测归属。
           「模型倍率」只有官方公开了数值的才显示倍率（如 TRAE 的 Seed 系列 2.5 折、Devin 的 Gemini 4 Argon 5 折），
           其余产品官方仅说明「按模型 Token 单价浮动」而未给数值，本榜不推算、不估算。
-          「起价」取最低可购买档位；标「询价」的档位（Devin Teams/Enterprise、ChatGPT Go、Manus 个人档）无固定标价，不计入起价。
-          价格均来自官方定价页，促销价为连续包月/年付价。
+          「起价」取最低可购买档位；标「询价」的档位（Devin Teams/Enterprise、ChatGPT Go、Manus 个人档、Kiro 团队版等）无固定标价，不计入起价。
+          价格均来自官方定价页，促销价为连续包月/年付价；图标取自各产品官网的官方 favicon / app icon，未做重绘。
         </div>
       </div>
 

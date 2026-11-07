@@ -141,3 +141,44 @@ Agent 榜不同于模型榜。模型榜的分数来自单一权威源（Artifici
 **回归防护**：新增断言覆盖 10 个详情页可达、404 兜底、列表页文案、Devin 询价与 50 分、sitemap/robots 域名、方法论口径段。任何一项回退都会在下次巡检直接报红。
 
 **口径说明（P0-3 的取值依据）**：Devin 的 `multipliers` 中只有 Gemini 系列（Argon 0.5x）与 SWE-2 为官方公开数值，官方模型选择器列出的 Claude/GPT 系列未标明具体可用型号。因此按"官方明确列出的型号中站内评分最高者"取 Gemini 4 Argon；不取 Claude Opus 5.5（59），是因为无法证实 Devin 可用该型号，避免用更高分制造一处无依据的归属。
+
+## 七、扩榜与图标补齐（2026-11-06 已上线）
+
+在七项修复上线（`866ae2cc`）之后，按用户要求把收录从 10 家扩到 **20 家**，并补齐全部产品真实图标（原为文字方块）。
+
+### 7.1 新增 10 家与分类结构
+
+| 分类 | 新增 | 分类合计 |
+|---|---|---|
+| 编码 | Windsurf、Kiro、Augment Code、Replit、bolt.new、v0、Warp、Zed | 13 |
+| 办公 | Notion AI | 3 |
+| 通用 | Claude | 4 |
+
+价格均逐条核对官方定价页（`priceCheckedAt: 2026-11-06`），不做换算或估算；官方页拒绝访问或纯 JS 渲染的候选（Perplexity、Grok、Gamma、Lovable、Tabnine、Kimi 等）未纳入，避免用二手价格充数。
+
+### 7.2 强模型三态口径
+
+`bestModel` 改为 `{ name, score?, slug? }`，只写官方点名的型号：
+
+| 状态 | 判定 | 渲染 |
+|---|---|---|
+| 官方点名且站内已收录 | 有 `slug` + `score` | 可点击链接 + 分数 |
+| 官方点名但站内未收录 | 有 `name`、无 `slug/score` | 名称 + 「站内未收录」（Kiro 的 Claude Sonnet 4.5、Windsurf 的 SWE-2） |
+| 官方未公开型号清单 | 无 `bestModel` | 「未公开型号」（Augment、Replit、bolt、v0、Warp、Zed、Notion） |
+
+两种情况都不补分数、不推测型号归属——避免用未证实的型号制造虚高评分。
+
+### 7.3 图标规范
+
+20 个图标全部取自各产品官网的官方 favicon / app icon（SVG 经 Playwright 渲染为位图），统一归一化为 **512×512 透明底 PNG**（内容占画布 90%、按 alpha bbox 裁边居中），落在 `apps/web/public/agent-logos/`，由 `ProductLogo` 的 `kind="agent"` 分支加载，与模型榜共用同一套白瓷片渲染（白底 + 发丝边框 + 同比例内边距）。
+
+### 7.4 验证
+
+| 项目 | 结果 |
+|---|---|
+| 本地构建 | `pnpm build` 全绿（Compiled successfully / 15-15 静态页） |
+| 本地视觉 | 桌面 20 行、移动 20 卡片、暗色模式，图标 20/20 加载成功、0 回退方块、无横向溢出 |
+| 线上回读 | 45/45 通过（收录数、10 个新详情页、20 个图标 HTTP 200、三态文案、Windsurf SWE-2、Kiro 未收录提示） |
+| 全量巡检 | **91/0 全通过**（新增 8 条详情页可达 + 6 条图标探活 + 3 条文案断言） |
+
+巡检 `deploy/health-check.sh` 的 Agent id 列表已同步为 20 个，新增页面或图标缺失会在下次巡检直接报红。

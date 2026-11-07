@@ -94,9 +94,15 @@ ckf() { # ckf <描述> <文件> <pattern> [negate]
   fi
 }
 
-for id in claude-code cursor github-copilot devin trae workbuddy chatgpt gemini coze manus; do
+for id in claude-code cursor github-copilot devin trae windsurf kiro augment replit bolt v0 warp zed workbuddy coze notion chatgpt gemini manus claude; do
   code=$(curl -s -o /dev/null -w "%{http_code}" -m 15 "$BASE/agent/$id" 2>/dev/null)
   ck "GET /agent/$id → HTTP ${code}" "[ \"${code}\" = \"200\" ]"
+done
+
+# Agent 榜产品图标（20 家全覆盖，抽 6 个关键新id 探活）
+for logo in windsurf kiro notion claude v0 zed; do
+  code=$(curl -s -o /dev/null -w "%{http_code}" -m 10 "$BASE/agent-logos/$logo.png" 2>/dev/null)
+  ck "图标 /agent-logos/$logo.png → HTTP ${code}" "[ \"${code}\" = \"200\" ]"
 done
 
 code=$(curl -s -o /dev/null -w "%{http_code}" -m 15 "$BASE/agent/not-exist" 2>/dev/null)
@@ -106,6 +112,10 @@ curl -s -m 25 "$BASE/agents" 2>/dev/null | strip_html > "$AGENT_TMP/agents.txt"
 ckf "列表页含「可调用强模型」列" "$AGENT_TMP/agents.txt" "可调用强模型"
 ckf "列表页含询价档口径说明" "$AGENT_TMP/agents.txt" "询价"
 ckf "列表页无旧文案「可调用最强模型」" "$AGENT_TMP/agents.txt" "可调用最强模型" 1
+ckf "列表页标注收录 20 个 Agent" "$AGENT_TMP/agents.txt" "收录 20 个"
+ckf "列表页含「站内未收录」标注（Kiro/Windsurf 型号）" "$AGENT_TMP/agents.txt" "站内未收录"
+ckf "列表页含「未公开型号」标注" "$AGENT_TMP/agents.txt" "未公开型号"
+ckf "列表页不再出现 WORKBUDDY 等推断式表述" "$AGENT_TMP/agents.txt" "该列为推断" 1
 
 curl -s -m 25 "$BASE/agent/devin" 2>/dev/null | strip_html > "$AGENT_TMP/devin.txt"
 ckf "Devin 页 Teams/Enterprise 显示询价（不再显示免费）" "$AGENT_TMP/devin.txt" "询价"

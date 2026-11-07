@@ -59,7 +59,7 @@ export default async function AgentDetailPage({ params }: Props) {
           </Link>
 
           <div style={{ display: "flex", alignItems: "center", gap: 14, marginTop: 14 }}>
-            <ProductLogo modelId={a.id} modelName={a.name} size={56} radius={12} strict />
+            <ProductLogo modelId={a.id} modelName={a.name} size={56} radius={12} strict kind="agent" />
             <div>
               <div style={{ fontSize: 28, fontWeight: 700, color: "var(--mr-text)", lineHeight: 1.2 }}>{a.name}</div>
               <div style={{ fontSize: 13, color: "var(--mr-text-3)", marginTop: 4 }}>
@@ -111,9 +111,16 @@ export default async function AgentDetailPage({ params }: Props) {
                   （官方列出型号中站内评分最高者）
                 </span>
                 ：
-                <Link href={`/detail/${a.bestModel.slug}`} className="mr-link" style={{ marginLeft: 4 }}>
-                  {a.bestModel.name}（AA 智能指数 {a.bestModel.score}）
-                </Link>
+                {a.bestModel.slug && a.bestModel.score != null ? (
+                  <Link href={`/detail/${a.bestModel.slug}`} className="mr-link" style={{ marginLeft: 4 }}>
+                    {a.bestModel.name}（AA 智能指数 {a.bestModel.score}）
+                  </Link>
+                ) : (
+                  <span style={{ marginLeft: 4 }}>
+                    {a.bestModel.name}
+                    <span style={{ color: "var(--mr-text-3)", marginLeft: 4 }}>（站内未收录该型号，暂无评分）</span>
+                  </span>
+                )}
               </div>
             )}
           </div>
@@ -255,20 +262,19 @@ export default async function AgentDetailPage({ params }: Props) {
               borderTop: "1px solid var(--mr-border-soft)",
               fontSize: 12,
               color: "var(--mr-text-3)",
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "baseline",
+              rowGap: 6,
+              columnGap: 10,
             }}
           >
-            其他 Agent：
-            {AGENT_PRODUCTS.filter((x) => x.id !== a.id)
-              .map((x) => x.name)
-              .slice(0, 9)
-              .map((n, i) => {
-                const prod = AGENT_PRODUCTS.filter((y) => y.id !== a.id)[i];
-                return (
-                  <Link key={prod.id} href={`/agent/${prod.id}`} className="mr-link" style={{ marginLeft: 8, fontSize: 12 }}>
-                    {n}
-                  </Link>
-                );
-              })}
+            <span>其他 Agent：</span>
+            {AGENT_PRODUCTS.filter((x) => x.id !== a.id).map((prod) => (
+              <Link key={prod.id} href={`/agent/${prod.id}`} className="mr-link" style={{ fontSize: 12, whiteSpace: "nowrap" }}>
+                {prod.name}
+              </Link>
+            ))}
           </div>
         </div>
       </div>
