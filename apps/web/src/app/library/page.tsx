@@ -324,7 +324,7 @@ export default function LibraryPage() {
               className="flex-nowrap md:flex-wrap"
               style={{ display: "flex", gap: 8, alignItems: "center", overflowX: "auto", WebkitOverflowScrolling: "touch" }}
             >
-              <span style={{ fontSize: 12, color: "var(--mr-text-3)", flex: "none" }}>性价比</span>
+              <span style={{ fontSize: 12, color: "var(--mr-text-3)", flex: "none" }}>能力档</span>
               {TIER_OPTIONS.map((o) => (
                 <FilterChip key={o.key} active={tier === o.key} onClick={() => setTier(o.key)}>{o.label}</FilterChip>
               ))}
@@ -358,7 +358,7 @@ export default function LibraryPage() {
           <div style={{ width: 320, flex: "none", fontSize: 12, fontWeight: 600, color: "var(--mr-text-3)" }}>模型</div>
           <div style={{ width: 160, flex: "none", fontSize: 12, fontWeight: 600, color: "var(--mr-text-3)", textAlign: "right" }}>评分（±CI）</div>
           <div style={{ width: 200, flex: "none", fontSize: 12, fontWeight: 600, color: "var(--mr-text-3)", textAlign: "right" }}>价格 输入/输出（$/M）</div>
-          <div style={{ width: 110, flex: "none", fontSize: 12, fontWeight: 600, color: "var(--mr-text-3)" }}>性价比</div>
+          <div style={{ width: 110, flex: "none", fontSize: 12, fontWeight: 600, color: "var(--mr-text-3)" }}>能力档</div>
           <div style={{ flex: 1, fontSize: 12, fontWeight: 600, color: "var(--mr-text-3)", textAlign: "right" }}>操作</div>
         </div>
         {pageRows.map((m) => {

@@ -61,7 +61,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!model) return { title: "模型未找到 · ModelRank" };
   return {
     title: `${model.name} 详情 · ModelRank`,
-    description: `${model.name} 价格、性能、性价比详情`,
+    description: `${model.name} 价格、性能与能力档详情`,
   };
 }
 
@@ -119,7 +119,7 @@ export default async function DetailPage({ params }: Props) {
                   borderRadius: 4,
                 }}
               >
-                性价比 {model.tier}
+                能力档 {model.tier}
               </span>
             </div>
             <div style={{ fontSize: 13, color: "var(--mr-text-2)", marginTop: 4 }}>

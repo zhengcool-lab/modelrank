@@ -8,12 +8,16 @@ import { LeaderboardCards } from "@/components/leaderboard-cards";
 
 const TIERS: Tier[] = ["S", "A", "B", "C"];
 
-/** 各档选中时的实底配色，沿用 TierBadge 语义 */
+/** 各档选中时的实底配色，沿用 TierBadge 语义：S 主色 / A 蓝 / B 深灰 / C 浅灰 */
 const TIER_ACTIVE_STYLE: Record<Tier, { color: string; bg: string; border: string }> = {
   S: { color: "#fff", bg: "var(--mr-primary)", border: "var(--mr-primary)" },
   A: { color: "#fff", bg: "var(--mr-a-badge)", border: "var(--mr-a-badge)" },
   B: { color: "#fff", bg: "var(--mr-text-3)", border: "var(--mr-text-3)" },
-  C: { color: "var(--mr-text-2)", bg: "var(--mr-card-2)", border: "var(--mr-border)" },
+  C: {
+    color: "var(--mr-text)",
+    bg: "color-mix(in srgb, var(--mr-text-3) 18%, var(--mr-card))",
+    border: "color-mix(in srgb, var(--mr-text-3) 42%, var(--mr-border))",
+  },
 };
 
 export function TierFilteredBoard() {
@@ -34,9 +38,9 @@ export function TierFilteredBoard() {
 
   return (
     <>
-      {/* 性价比档多选 */}
+      {/* 能力档多选（按 AA 智能指数，与价格无关） */}
       <div className="mr-pad-x" style={{ display: "flex", alignItems: "center", gap: 8, paddingTop: 10, flexWrap: "wrap" }}>
-        <span style={{ fontSize: 12, color: "var(--mr-text-3)" }}>性价比档：</span>
+        <span style={{ fontSize: 12, color: "var(--mr-text-3)" }}>能力档：</span>
         {TIERS.map((t) => {
           const active = selected.has(t);
           const s = TIER_ACTIVE_STYLE[t];
@@ -64,7 +68,9 @@ export function TierFilteredBoard() {
           );
         })}
         <span style={{ fontSize: 12, color: "var(--mr-text-3)" }}>
-          {selected.size === 0 ? "未筛选 · 全部档位" : `已选 ${[...selected].join(" / ")} · ${filtered.length} 个模型`}
+          {selected.size === 0
+            ? "全部（按 AA 智能指数分档：S≥50 / A≥40 / B≥25 / C<25，与价格无关）"
+            : `已选 ${[...selected].join(" / ")} · ${filtered.length} 个模型`}
         </span>
       </div>
 

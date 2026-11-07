@@ -232,7 +232,7 @@ function CompareInner() {
     },
     {
       group: "成本与延迟",
-      label: "性价比评级",
+      label: "能力档",
       renderCell: (m) => <TierBadge tier={m.tier} />,
     },
     // 能力子维度：AA 无五维数据时整行诚实提示，不渲染空进度条

@@ -11,7 +11,7 @@ type Sibling = NonNullable<UIModelRecord["siblings"]>[number];
 /**
  * 详情页右栏：同厂商其他模型列表。
  * 数据来源分两层：
- *  1. 本期榜单内的同厂商模型（可点进详情页，带分数与性价比档）；
+ *  1. 本期榜单内的同厂商模型（可点进详情页，带分数与能力档）；
  *  2. AA 收录库里该厂商其余模型（含未达收录门槛/未入榜的，标注"未进本期榜单"）。
  */
 export function SameVendorModels({

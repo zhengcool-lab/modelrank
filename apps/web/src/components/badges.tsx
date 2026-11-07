@@ -1,7 +1,7 @@
 import type { ModelSource, Tier, UIModelRecord } from "@/lib/types";
 
 /**
- * 性价比评级徽章：S 主色实底白字 / A 蓝实底白字 / B 半透明灰底描边 / C 浅灰底描边。
+ * 能力档徽章：S 主色实底白字 / A 蓝实底白字 / B 半透明灰底描边 / C 浅灰底描边。
  * A 级底色在 --mr-a-badge(#4c7bd9) 上白字对比度仅 ~4.1:1，未达 AA 4.5:1，
  * 故用 color-mix 压深一档（随 token 自动适配深浅色主题）。
  * B/C 用 color-mix 半透明灰 + 内描边，深浅色下都不发飘、不呈"白方块"。

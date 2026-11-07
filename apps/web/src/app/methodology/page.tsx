@@ -225,6 +225,24 @@ export default function MethodologyPage() {
 
           <div className="mr-card" style={{ padding: "20px 22px", marginTop: 16 }}>
             <div style={{ fontSize: 14, fontWeight: 600, color: "var(--mr-text)" }}>
+              模型榜能力档 S / A / B / C
+              <span style={{ fontSize: 11, fontWeight: 400, color: "var(--mr-text-3)", marginLeft: 8 }}>
+                按 AA 智能指数分档，与价格无关
+              </span>
+            </div>
+
+            <div style={{ fontSize: 13, color: "var(--mr-text-2)", lineHeight: 1.9, marginTop: 12 }}>
+              <b style={{ color: "var(--mr-text)" }}>S ≥ 50 · A ≥ 40 · B ≥ 25 · C &lt; 25</b>
+              <br />
+              阈值切在 Artificial Analysis 智能指数（0–100）上，只反映综合能力高低，不参与任何价格折算。
+              所以单价高但能力强的模型仍在 S（如 GPT-6 Astra，57 分，$10/$50），单价低但能力弱的仍在 C——
+              档位回答的是「有多强」，不是「划算不划算」。
+              成本另由「每任务成本」独立标注：≥ $5 为高、≥ $1 为中、&lt; $1 为低。
+            </div>
+          </div>
+
+          <div className="mr-card" style={{ padding: "20px 22px", marginTop: 16 }}>
+            <div style={{ fontSize: 14, fontWeight: 600, color: "var(--mr-text)" }}>
               Agent 产品榜口径
               <span style={{ fontSize: 11, fontWeight: 400, color: "var(--mr-text-3)", marginLeft: 8 }}>
                 与模型榜同源不同法：这里评的是产品，不是模型

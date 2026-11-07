@@ -238,7 +238,7 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
       }),
       columnHelper.accessor("tier", {
         id: "tier",
-        header: "性价比",
+        header: "能力档",
         cell: ({ row }) => <TierBadge tier={row.original.tier} />,
       }),
       columnHelper.accessor("source", {
