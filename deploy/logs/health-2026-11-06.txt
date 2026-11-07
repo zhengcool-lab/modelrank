@@ -1,0 +1,198 @@
+=== ModelRank 健康巡检 2026-11-06 23:47:55 ===
+目标: https://modelrank-1br.pages.dev
+
+--- 页面可达性 ---
+✅ GET / → HTTP 200
+✅ GET / → HTTP 200
+✅ GET /detail/gpt-6-astra → HTTP 200
+✅ GET /detail/gpt-6-astra → HTTP 200
+✅ GET /detail/gemini-4-carbon → HTTP 200
+✅ GET /detail/gemini-4-carbon → HTTP 200
+✅ GET /news → HTTP 200
+✅ GET /news → HTTP 200
+✅ GET /compare → HTTP 200
+✅ GET /compare → HTTP 200
+✅ GET /cost → HTTP 200
+--- 关键资源 ---
+✅ GET /cost → HTTP 200
+--- 关键资源 ---
+✅ GET /product-logos/claude.png → HTTP 200
+✅ GET /product-logos/claude.png → HTTP 200
+✅ GET /product-logos/cohere.png → HTTP 200
+✅ GET /product-logos/cohere.png → HTTP 200
+✅ GET /product-logos/deepseek.png → HTTP 200
+✅ GET /product-logos/deepseek.png → HTTP 200
+✅ GET /product-logos/gemini.png → HTTP 200
+✅ GET /product-logos/gemini.png → HTTP 200
+✅ GET /product-logos/glm.png → HTTP 200
+✅ GET /product-logos/glm.png → HTTP 200
+✅ GET /product-logos/grok.png → HTTP 200
+✅ GET /product-logos/grok.png → HTTP 200
+✅ GET /product-logos/hunyuan.png → HTTP 200
+✅ GET /product-logos/hunyuan.png → HTTP 200
+✅ GET /product-logos/kimi.png → HTTP 200
+✅ GET /product-logos/kimi.png → HTTP 200
+✅ GET /product-logos/kimi-k2.png → HTTP 200
+✅ GET /product-logos/minimax.png → HTTP 200
+✅ GET /product-logos/mistral.png → HTTP 200
+✅ GET /product-logos/kimi-k2.png → HTTP 200
+✅ GET /product-logos/nvidia.svg → HTTP 200
+✅ GET /product-logos/minimax.png → HTTP 200
+✅ GET /product-logos/openai.png → HTTP 200
+✅ GET /product-logos/mistral.png → HTTP 200
+✅ GET /product-logos/nvidia.svg → HTTP 200
+✅ GET /product-logos/qwen.png → HTTP 200
+✅ GET /product-logos/openai.png → HTTP 200
+✅ GET /product-logos/step.png → HTTP 200
+✅ GET /vendor-logos/alibaba.png → HTTP 200
+✅ GET /product-logos/qwen.png → HTTP 200
+✅ GET /vendor-logos/anthropic.png → HTTP 200
+✅ GET /vendor-logos/baichuan.png → HTTP 200
+✅ GET /product-logos/step.png → HTTP 200
+✅ GET /vendor-logos/baidu.png → HTTP 200
+✅ GET /vendor-logos/alibaba.png → HTTP 200
+✅ GET /vendor-logos/bytedance.png → HTTP 200
+✅ GET /vendor-logos/anthropic.png → HTTP 200
+✅ GET /vendor-logos/cohere.png → HTTP 200
+✅ GET /vendor-logos/baichuan.png → HTTP 200
+✅ GET /vendor-logos/baidu.png → HTTP 200
+✅ GET /vendor-logos/deepseek.svg → HTTP 200
+✅ GET /vendor-logos/bytedance.png → HTTP 200
+✅ GET /vendor-logos/cohere.png → HTTP 200
+✅ GET /vendor-logos/deepseek.svg → HTTP 200
+✅ GET /vendor-logos/google.svg → HTTP 200
+✅ GET /vendor-logos/google.svg → HTTP 200
+✅ GET /vendor-logos/meituan.png → HTTP 200
+✅ GET /vendor-logos/meituan.png → HTTP 200
+✅ GET /vendor-logos/meta.svg → HTTP 200
+✅ GET /vendor-logos/meta.svg → HTTP 200
+✅ GET /vendor-logos/microsoft.png → HTTP 200
+✅ GET /vendor-logos/minimax.png → HTTP 200
+✅ GET /vendor-logos/mistral.svg → HTTP 200
+✅ GET /vendor-logos/microsoft.png → HTTP 200
+✅ GET /vendor-logos/minimax.png → HTTP 200
+✅ GET /vendor-logos/moonshot.png → HTTP 200
+✅ GET /vendor-logos/mistral.svg → HTTP 200
+✅ GET /vendor-logos/nvidia.svg → HTTP 200
+✅ GET /vendor-logos/openai.svg → HTTP 200
+✅ GET /vendor-logos/moonshot.png → HTTP 200
+✅ GET /vendor-logos/stepfun.svg → HTTP 200
+✅ GET /vendor-logos/nvidia.svg → HTTP 200
+✅ GET /vendor-logos/tencent.png → HTTP 200
+✅ GET /vendor-logos/yi.png → HTTP 200
+✅ GET /vendor-logos/zhipu.png → HTTP 200
+✅ GET /vendor-logos/openai.svg → HTTP 200
+✅ GET /sitemap.xml → HTTP 200
+✅ GET /vendor-logos/stepfun.svg → HTTP 200
+✅ GET /robots.txt → HTTP 200
+--- Agent 产品榜 ---
+✅ GET /vendor-logos/tencent.png → HTTP 200
+✅ GET /agent/claude-code → HTTP 200
+✅ GET /agent/cursor → HTTP 200
+✅ GET /vendor-logos/yi.png → HTTP 200
+✅ GET /vendor-logos/zhipu.png → HTTP 200
+✅ GET /agent/github-copilot → HTTP 200
+✅ GET /sitemap.xml → HTTP 200
+✅ GET /robots.txt → HTTP 200
+--- Agent 产品榜 ---
+✅ GET /agent/devin → HTTP 200
+✅ GET /agent/claude-code → HTTP 200
+✅ GET /agent/trae → HTTP 200
+✅ GET /agent/cursor → HTTP 200
+✅ GET /agent/windsurf → HTTP 200
+✅ GET /agent/github-copilot → HTTP 200
+✅ GET /agent/kiro → HTTP 200
+✅ GET /agent/devin → HTTP 200
+✅ GET /agent/trae → HTTP 200
+✅ GET /agent/augment → HTTP 200
+✅ GET /agent/replit → HTTP 200
+✅ GET /agent/windsurf → HTTP 200
+✅ GET /agent/bolt → HTTP 200
+✅ GET /agent/kiro → HTTP 200
+✅ GET /agent/v0 → HTTP 200
+✅ GET /agent/augment → HTTP 200
+✅ GET /agent/warp → HTTP 200
+✅ GET /agent/replit → HTTP 200
+✅ GET /agent/bolt → HTTP 200
+✅ GET /agent/zed → HTTP 200
+✅ GET /agent/v0 → HTTP 200
+✅ GET /agent/warp → HTTP 200
+✅ GET /agent/zed → HTTP 200
+✅ GET /agent/workbuddy → HTTP 200
+✅ GET /agent/workbuddy → HTTP 200
+✅ GET /agent/coze → HTTP 200
+❌ GET /agent/coze → HTTP 000
+✅ GET /agent/notion → HTTP 200
+✅ GET /agent/notion → HTTP 200
+✅ GET /agent/chatgpt → HTTP 200
+✅ GET /agent/chatgpt → HTTP 200
+✅ GET /agent/gemini → HTTP 200
+✅ GET /agent/manus → HTTP 200
+✅ GET /agent/gemini → HTTP 200
+✅ GET /agent/claude → HTTP 200
+✅ GET /agent/manus → HTTP 200
+✅ GET /agent/claude → HTTP 200
+✅ 图标 /agent-logos/windsurf.png → HTTP 200
+✅ 图标 /agent-logos/windsurf.png → HTTP 200
+✅ 图标 /agent-logos/kiro.png → HTTP 200
+✅ 图标 /agent-logos/kiro.png → HTTP 200
+✅ 图标 /agent-logos/notion.png → HTTP 200
+✅ 图标 /agent-logos/notion.png → HTTP 200
+✅ 图标 /agent-logos/claude.png → HTTP 200
+✅ 图标 /agent-logos/claude.png → HTTP 200
+✅ 图标 /agent-logos/v0.png → HTTP 200
+✅ 图标 /agent-logos/v0.png → HTTP 200
+✅ 图标 /agent-logos/zed.png → HTTP 200
+✅ 不存在的 agent 返回 404（实际 404）
+✅ 图标 /agent-logos/zed.png → HTTP 200
+✅ 不存在的 agent 返回 404（实际 404）
+✅ 列表页含「可调用强模型」列
+✅ 列表页含询价档口径说明
+✅ 列表页无旧文案「可调用最强模型」
+✅ 列表页标注收录 20 个 Agent
+✅ 列表页含「站内未收录」标注（Kiro/Windsurf 型号）
+✅ 列表页含「未公开型号」标注
+✅ 列表页不再出现 WORKBUDDY 等推断式表述
+✅ Devin 页 Teams/Enterprise 显示询价（不再显示免费）
+✅ Devin 页强模型为 Gemini 4 Argon · 50
+✅ Devin 页无 Argon·60 错配
+✅ 列表页含「可调用强模型」列
+✅ 列表页含询价档口径说明
+✅ 列表页无旧文案「可调用最强模型」
+✅ 列表页标注收录 20 个 Agent
+✅ 列表页含「站内未收录」标注（Kiro/Windsurf 型号）
+✅ 列表页含「未公开型号」标注
+✅ 列表页不再出现 WORKBUDDY 等推断式表述
+✅ sitemap 指向 pages.dev 域
+✅ sitemap 不含旧 workers.dev 域
+✅ sitemap 含 /agents
+✅ sitemap 含模型详情页
+✅ robots.txt 指向 pages.dev 域
+✅ Devin 页 Teams/Enterprise 显示询价（不再显示免费）
+✅ Devin 页强模型为 Gemini 4 Argon · 50
+✅ Devin 页无 Argon·60 错配
+✅ 方法论页含 Agent 榜口径段
+--- 数据完整性 ---
+✅ UI_MODELS 模型数量 ≥ 30（实际 35）
+✅ priceLevel 存在 high 级（实际 10 个，非 0 说明价格分级真实）
+✅ priceEstimated=true 标注 ≤ 模型数（实际 2，属诚实占位标注，非错误）
+✅ news-data.ts 新闻条数 ≥ 10（实际 30）
+--- 性能预算 ---
+✅ sitemap 指向 pages.dev 域
+✅ sitemap 不含旧 workers.dev 域
+✅ sitemap 含 /agents
+✅ sitemap 含模型详情页
+✅ 首页 HTML 体积 < 400000 字节（实际 282812）
+
+=== 巡检结果：通过 90 / 失败 1 ===
+✅ robots.txt 指向 pages.dev 域
+✅ 方法论页含 Agent 榜口径段
+--- 数据完整性 ---
+✅ UI_MODELS 模型数量 ≥ 30（实际 35）
+✅ priceLevel 存在 high 级（实际 10 个，非 0 说明价格分级真实）
+✅ priceEstimated=true 标注 ≤ 模型数（实际 2，属诚实占位标注，非错误）
+✅ news-data.ts 新闻条数 ≥ 10（实际 30）
+--- 性能预算 ---
+✅ 首页 HTML 体积 < 400000 字节（实际 282812）
+
+=== 巡检结果：通过 91 / 失败 0 ===

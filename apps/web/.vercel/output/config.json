@@ -124,6 +124,14 @@
       "status": 404
     },
     {
+      "src": "^/agent/(?<nxtPid>[^/]+?)(?:\\.rsc)(?:/)?$",
+      "dest": "/agent/[id].rsc?nxtPid=$nxtPid"
+    },
+    {
+      "src": "^/agent/(?<nxtPid>[^/]+?)(?:/)?$",
+      "dest": "/agent/[id]?nxtPid=$nxtPid"
+    },
+    {
       "src": "^/api/models/(?<nxtPid>[^/]+?)(?:\\.rsc)(?:/)?$",
       "dest": "/api/models/[id].rsc?nxtPid=$nxtPid"
     },
@@ -143,7 +151,7 @@
       "handle": "hit"
     },
     {
-      "src": "/_next/static/(?:[^/]+/pages|pages|chunks|runtime|css|image|media|3SuRJk9mz3vPwXZfgG4fW)/.+",
+      "src": "/_next/static/(?:[^/]+/pages|pages|chunks|runtime|css|image|media|b0isbTcC9D_fsuPsNi4p9)/.+",
       "headers": {
         "cache-control": "public,max-age=31536000,immutable"
       },
