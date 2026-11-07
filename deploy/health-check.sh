@@ -122,6 +122,12 @@ ckf "Devin 页 Teams/Enterprise 显示询价（不再显示免费）" "$AGENT_TM
 ckf "Devin 页强模型为 Gemini 4 Argon · 50" "$AGENT_TMP/devin.txt" "Gemini 4 Argon *（ *AA 智能指数 50"
 ckf "Devin 页无 Argon·60 错配" "$AGENT_TMP/devin.txt" "Gemini 4 Argon *（ *AA 智能指数 60" 1
 
+# 定价核对机制：列表页报最新核对日并说明各产品日期不同，详情页逐产品显示
+ckf "列表页含价格核对日期" "$AGENT_TMP/agents.txt" "价格核对于 *2026-"
+ckf "列表页注明各产品核对日不同" "$AGENT_TMP/agents.txt" "逐产品核对日见详情页"
+curl -s -m 20 "$BASE/agent/windsurf" 2>/dev/null | strip_html > "$AGENT_TMP/windsurf.txt"
+ckf "详情页显示该产品价格核对日期" "$AGENT_TMP/windsurf.txt" "核对日期 *2026-"
+
 curl -s -m 25 "$BASE/sitemap.xml" > "$AGENT_TMP/sitemap.xml" 2>/dev/null
 ckf "sitemap 指向 pages.dev 域" "$AGENT_TMP/sitemap.xml" "modelrank-1br.pages.dev"
 ckf "sitemap 不含旧 workers.dev 域" "$AGENT_TMP/sitemap.xml" "zheng-cool.workers.dev" 1

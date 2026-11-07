@@ -56,7 +56,10 @@ function gradeSummary(a: AgentProduct): string {
 }
 
 export default function AgentsPage() {
-  const checked = AGENT_PRODUCTS.map((a) => a.priceCheckedAt).sort().pop() ?? "";
+  // 各产品核对日不同（每日只对「官网仍列出原价」的产品刷新），列表页不能只报最新日期
+  const dates = Array.from(new Set(AGENT_PRODUCTS.map((a) => a.priceCheckedAt))).sort();
+  const checked = dates[dates.length - 1] ?? "";
+  const checkedNote = dates.length > 1 ? `（最早 ${dates[0]}，逐产品核对日见详情页）` : "";
   const coding = AGENT_PRODUCTS.filter((a) => a.category === "coding");
   const office = AGENT_PRODUCTS.filter((a) => a.category === "office");
   const general = AGENT_PRODUCTS.filter((a) => a.category === "general");
@@ -83,7 +86,8 @@ export default function AgentsPage() {
               Agent 产品榜
             </div>
             <div style={{ fontSize: 13, color: "var(--mr-text-3)", marginTop: 6 }}>
-              收录 {AGENT_PRODUCTS.length} 个 Agent 产品 · 能力为编辑评估（非第三方跑分）· 价格核对于 {checked} · 口径见
+              收录 {AGENT_PRODUCTS.length} 个 Agent 产品 · 能力为编辑评估（非第三方跑分）· 价格核对于 {checked}
+              {checkedNote} · 口径见
               <Link href="/methodology" className="mr-link" style={{ marginLeft: 4 }}>
                 方法论
               </Link>

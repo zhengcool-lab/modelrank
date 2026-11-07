@@ -182,3 +182,52 @@ Agent 榜不同于模型榜。模型榜的分数来自单一权威源（Artifici
 | 全量巡检 | **91/0 全通过**（新增 8 条详情页可达 + 6 条图标探活 + 3 条文案断言） |
 
 巡检 `deploy/health-check.sh` 的 Agent id 列表已同步为 20 个，新增页面或图标缺失会在下次巡检直接报红。
+
+---
+
+## 八、Agent 定价每日核对机制（2026-11-07 上线）
+
+### 8.1 为什么不做「自动抓价格回写」
+
+19 家定价页探测结论：套餐表普遍是 JS 渲染，SSR 文本抽不出完整套餐结构；页面里还混着年付折算价、token 单价、其他产品价格。自动抽取再回写，一定会把 `$20/月` 写成 `$8/月` 之类。**宁可少自动化，也不要写错价格**，所以机制只做一件事：核对「我们记录的价格是否仍出现在官网页面上」。
+
+### 8.2 四态判定
+
+`data-pipeline/scripts/check-agent-pricing.py` 正则读出 `agent-data.ts` 里每个产品的币种与全部付费档月价（`monthly>0` 与 `promo>0`），抓官方定价页后按币种匹配页面金额，算覆盖率：
+
+| 状态 | 条件 | 对 `priceCheckedAt` 的处理 |
+|---|---|---|
+| `verified` | 页面 200 且至少命中 50% 已记录价位 | **刷新成今天**（证明官网仍在售这些价位） |
+| `weak` | 有命中但覆盖率 < 50% | 保持原核对日（只验证到个别档位，不足以断言整表未变；Cursor 的 Pro/Teams 价在 JS 里，只露出 `$200`） |
+| `unverified` | 页面 200 但一个价位都没命中 | 保持原核对日（多为纯 JS 渲染，如 Manus） |
+| `unreachable` | 403 / 超时 / 正文 < 200 字（拦截页） | 保持原核对日（ChatGPT 403、Gemini 连接超时、Coze 与 WorkBuddy 返回拦截页） |
+
+`refresh-agent-price-date.py` 只改写 `verified` 产品的日期，其余一律不动——页面上「价格核对于 X」因此不会变成假话。支持 `--dry` 预览。
+
+### 8.3 2026-11-07 首次运行结果
+
+`verified 14 / weak 1 / unverified 1 / unreachable 4`：
+
+| 状态 | 产品 |
+|---|---|
+| verified（14，核对日刷成 2026-11-07） | claude-code（4/4）、github-copilot（3/4）、devin（2/2）、trae（4/8，命中四个原价档）、windsurf（3/3）、kiro（4/4）、augment（2/2）、replit（4/4）、bolt（2/2）、v0（2/2）、warp（2/2）、zed（2/2）、notion（2/2）、claude（4/4） |
+| weak（1，保持 11-06） | cursor（1/5） |
+| unverified（1，保持 11-06） | manus（页内 0 个美元数字） |
+| unreachable（4，保持 11-06） | workbuddy（31 字拦截页）、chatgpt（403）、gemini（ConnectTimeout）、coze（45 字拦截页） |
+
+报告落在 `data-pipeline/out/agent_pricing_report.json`（含每个产品的 URL、币种、记录价、命中价、覆盖率）。
+
+### 8.4 接入每日闭环
+
+`deploy/run-all.sh` 新增「2.5/5 Agent 产品定价核对」：核对 → 只刷 verified 的日期；**非阻断**，脚本失败只 warning，不影响模型与新闻数据。变化检测的 `git diff --quiet` 目标同时包含 `src/lib/agent-data.ts`，所以核对日期变了也会触发构建部署。
+
+### 8.5 页面口径
+
+- `/agents`：取所有产品中最新的核对日展示，并在日期不一致时追加「（最早 YYYY-MM-DD，逐产品核对日见详情页）」，不让读者以为 20 家同一天核对过。
+- `/agent/[id]`：meta description 与该产品定价区块显示各自的 `priceCheckedAt`。
+
+### 8.6 已知局限
+
+- 4 家站点结构上抓不到（403 / 超时 / 拦截页），1 家纯 JS 渲染，1 家覆盖率不足——这 6 家在页面上的核对日会停留在 2026-11-06，直到人工复核并手改。这是刻意的：不核对上就不改日期。
+- 机制只能发现「价位不再出现在页面上」，不能发现「新增了档位」或「套餐内容缩水」。这类变化仍需人工复核。
+- 巡检 `deploy/health-check.sh` 已加 3 条断言（列表页含核对日、列表页注明日期差异、详情页显示核对日期），当前 **94/0 全通过**。

@@ -91,7 +91,7 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
     multipliers: [
       { model: "全部 Claude 模型", note: "不按模型算倍率，共用同一个月度额度池；超额后降速或需升级档位" },
     ],
-    priceCheckedAt: "2026-11-06",
+    priceCheckedAt: "2026-11-07",
     sources: [
       { label: "Claude 定价", url: "https://claude.com/pricing" },
       { label: "Claude Code 套餐说明", url: "https://www.codetalenthub.io/wp-content/uploads/Best-AI-Coding-Assistants.pdf" },
@@ -147,7 +147,7 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
     multipliers: [
       { model: "全部模型", note: "以 credits 折算：各模型按自身 token 单价扣 credits，官方未公开逐模型倍率表" },
     ],
-    priceCheckedAt: "2026-11-06",
+    priceCheckedAt: "2026-11-07",
     sources: [
       { label: "AI Coding 工具定价 2026", url: "https://www.developersdigest.tech/blog/ai-coding-tools-pricing-2026" },
       { label: "AI Coding Agents 对比", url: "https://cheatsheets.davidveksler.com/ai-coding-agents-compared.html" },
@@ -175,7 +175,7 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
       { model: "Gemini 4 Argon", factor: 0.5, note: "官方标注 list price 5 折（至 2026-12-01）" },
       { model: "Claude / GPT 系列", note: "按各自 token 单价扣额度，官方模型选择器内实时展示" },
     ],
-    priceCheckedAt: "2026-11-06",
+    priceCheckedAt: "2026-11-07",
     sources: [
       { label: "Devin 定价", url: "https://devin.ai/pricing" },
       { label: "Devin 模型与计费", url: "https://docs.devinenterprise.com/desktop/chat/models" },
@@ -205,7 +205,7 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
       { model: "GLM-5.3 / DeepSeek", note: "会员调用享专属补贴，具体折扣未公开数值" },
       { model: "自定义模型", factor: 0, note: "不消耗积分，按 BYO Key 自行结算" },
     ],
-    priceCheckedAt: "2026-11-06",
+    priceCheckedAt: "2026-11-07",
     sources: [{ label: "TRAE 套餐与计费", url: "https://docs.trae.cn/ide_plans-and-billing?lang=zh" }],
   },
   {
@@ -366,7 +366,7 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
     multipliers: [
       { model: "SWE-2 / Claude / GPT", note: "官方定价页未公布逐模型倍率，按套餐额度消耗；额度用尽后按 API 原价加购用量" },
     ],
-    priceCheckedAt: "2026-11-06",
+    priceCheckedAt: "2026-11-07",
     sources: [{ label: "Windsurf 定价", url: "https://windsurf.com/pricing", overseas: true }],
   },
   {
@@ -391,7 +391,7 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
     multipliers: [
       { model: "全部模型", note: "统一折算为 credit 消耗，官方未公布逐模型倍率；超额 credit 按 $0.04/个 加购" },
     ],
-    priceCheckedAt: "2026-11-06",
+    priceCheckedAt: "2026-11-07",
     sources: [{ label: "Kiro 定价", url: "https://kiro.dev/pricing", overseas: true }],
   },
   {
@@ -412,7 +412,7 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
     multipliers: [
       { model: "全部能力（模型 / Context Engine / 算力）", note: "统一按 usage 额度计费，官方未公布逐模型倍率；可另行加购 top-up" },
     ],
-    priceCheckedAt: "2026-11-06",
+    priceCheckedAt: "2026-11-07",
     sources: [{ label: "Augment Code 定价", url: "https://www.augmentcode.com/pricing", overseas: true }],
   },
   {
@@ -433,7 +433,7 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
     multipliers: [
       { model: "全部模型", note: "按订阅额度抵扣，官方未公布逐模型倍率；另有 $215 / $425 / $825 / $2000 等更高用量档" },
     ],
-    priceCheckedAt: "2026-11-06",
+    priceCheckedAt: "2026-11-07",
     sources: [{ label: "Replit 定价", url: "https://replit.com/pricing", overseas: true }],
   },
   {
@@ -454,7 +454,7 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
     multipliers: [
       { model: "全部模型", note: "按 token 额度消耗，官方未公布逐模型倍率" },
     ],
-    priceCheckedAt: "2026-11-06",
+    priceCheckedAt: "2026-11-07",
     sources: [{ label: "bolt.new 定价", url: "https://bolt.new/pricing", overseas: true }],
   },
   {
@@ -475,7 +475,7 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
     multipliers: [
       { model: "全部模型", note: "按 credits 折算，官方未公布逐模型倍率" },
     ],
-    priceCheckedAt: "2026-11-06",
+    priceCheckedAt: "2026-11-07",
     sources: [{ label: "v0 定价", url: "https://v0.app/pricing", overseas: true }],
   },
   {
@@ -496,7 +496,7 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
     multipliers: [
       { model: "全部模型", note: "agent 用量按 API 原始价格折算，官方未公布逐模型倍率；可另行加购用量" },
     ],
-    priceCheckedAt: "2026-11-06",
+    priceCheckedAt: "2026-11-07",
     sources: [{ label: "Warp 定价", url: "https://www.warp.dev/pricing", overseas: true }],
   },
   {
@@ -517,7 +517,7 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
     multipliers: [
       { model: "全部模型", note: "Pro 含 $5 token 额度，超出按用量计费；官方未公布逐模型倍率" },
     ],
-    priceCheckedAt: "2026-11-06",
+    priceCheckedAt: "2026-11-07",
     sources: [{ label: "Zed 定价", url: "https://zed.dev/pricing", overseas: true }],
   },
   {
@@ -539,7 +539,7 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
     multipliers: [
       { model: "Notion AI", note: "按 Notion credits 计费（$10 / 1,000 credits），官方未公布逐模型倍率" },
     ],
-    priceCheckedAt: "2026-11-06",
+    priceCheckedAt: "2026-11-07",
     sources: [{ label: "Notion 定价", url: "https://www.notion.com/pricing", overseas: true }],
   },
   {
@@ -563,7 +563,7 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
     multipliers: [
       { model: "全部 Claude 模型", note: "不按模型算倍率，共用同一个月度额度池" },
     ],
-    priceCheckedAt: "2026-11-06",
+    priceCheckedAt: "2026-11-07",
     sources: [{ label: "Claude 定价", url: "https://claude.com/pricing", overseas: true }],
   },
 ];

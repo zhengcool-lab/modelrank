@@ -51,12 +51,24 @@ log "2/5 生成前端数据 ..."
 cd "$REPO/apps/web"
 node scripts/update-news.mjs >>"$LOG" 2>&1
 
+# ---- 2.5 Agent 产品定价核对（非阻断） ----
+# 逐个抓官方定价页，检查「已记录的价位是否仍出现在页面」，核对通过才刷新 priceCheckedAt。
+# 抓不到/看不到价格的产品保持原核对日，绝不因为「今天跑过脚本」就把日期改成今天。
+log "2.5/5 Agent 产品定价核对 ..."
+if ( cd "$REPO/data-pipeline" && .venv/bin/python scripts/check-agent-pricing.py >>"$LOG" 2>&1 ); then
+  if ! ( cd "$REPO/data-pipeline" && .venv/bin/python scripts/refresh-agent-price-date.py >>"$LOG" 2>&1 ); then
+    log "⚠️ Agent 核对日刷新失败（不影响模型/新闻数据）"
+  fi
+else
+  log "⚠️ Agent 定价核对失败（不阻断，各产品保持上次核对日）"
+fi
+
 # ---- 3. 变化检测：模型段已由 --write 写回 seed-data.ts，统一由下方 git diff 判定 ----
 
-# ---- 4. 构建 + 部署（模型变化或新闻变化时执行） ----
+# ---- 4. 构建 + 部署（模型/新闻/Agent 核对日有变化时执行） ----
 cd "$REPO/apps/web"
-if git diff --quiet -- src/lib/seed-data.ts src/lib/news-data.ts; then
-  log "3/5 模型/新闻均无变化，跳过构建部署"
+if git diff --quiet -- src/lib/seed-data.ts src/lib/news-data.ts src/lib/agent-data.ts; then
+  log "3/5 模型/新闻/Agent 核对日均无变化，跳过构建部署"
 else
   log "3/5 数据有变化，开始构建 ..."
   if ! pnpm build >>"$LOG" 2>&1; then
