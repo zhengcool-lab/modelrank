@@ -169,12 +169,12 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
     billingMode: "订阅额度",
     models: ["GPT-6 Astra", "GPT-6.1 Sol", "GPT-6.1 Terra", "GPT-6 Sol", "GPT-6 Luna", "GPT-5.6 系列"],
     plans: [
-      { name: "Free", monthly: 0, currency: "USD", note: "仅桌面端 GPT-6 Luna，Standard 速度" },
-      { name: "Go", monthly: 8, currency: "USD", note: "轻量编码任务，额度限 GPT-6 Luna" },
-      { name: "Plus", monthly: 20, currency: "USD", note: "Web / CLI / IDE / iOS，含自动 code review 与 Slack、Linear 集成" },
-      { name: "Pro", monthly: 100, currency: "USD", note: "$100 / $200 / $500 三档；Pro 500 含 Ultrafast" },
-      { name: "Business", monthly: 25, promo: 20, currency: "USD", perSeat: true, note: "2 席起，年付 $20/席" },
-      { name: "Enterprise & Edu", monthly: 0, currency: "USD", quote: true, note: "联系销售；弹性计价按 credits" },
+      { name: "Free", monthly: 0, currency: "USD", quota: "仅桌面端 GPT-6 Luna，Standard 速度", note: "不含图片生成" },
+      { name: "Go", monthly: 8, currency: "USD", quota: "轻量任务，额度限 GPT-6 Luna" },
+      { name: "Plus", monthly: 20, currency: "USD", quota: "5 小时窗口本地消息数：Astra 5–45 / 6.1 Sol 15–160 / Luna 350–3,000", note: "Web / CLI / IDE / iOS，含自动 code review 与 Slack、Linear 集成" },
+      { name: "Pro", monthly: 100, currency: "USD", quota: "无 5 小时限制；Fast 2.5x，可用 credits 扩量", note: "$100 / $200 / $500 三档；Pro 500 含 Ultrafast" },
+      { name: "Business", monthly: 25, promo: 20, currency: "USD", perSeat: true, quota: "年付 $20/席；更大云 VM、共享 credits、SAML SSO", note: "2 席起" },
+      { name: "Enterprise & Edu", monthly: 0, currency: "USD", quote: true, quota: "按 credits 弹性计价", note: "联系销售" },
     ],
     multipliers: [
       {
