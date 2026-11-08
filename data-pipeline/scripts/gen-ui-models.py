@@ -29,6 +29,7 @@ VENDOR_CREATOR = {
     "OpenAI": "openai", "Anthropic": "anthropic", "Google": "google", "DeepSeek": "deepseek",
     "Alibaba": "alibaba", "Moonshot": "kimi", "xAI": "xai", "Zhipu": "zai",
     "StepFun": "stepfun", "MiniMax": "minimax", "Tencent": "tencent",
+    "Thinking Machines": "thinking-machines", "Inclusion AI": "inclusionai",
     "Mistral": "mistral", "NVIDIA": "nvidia", "Cohere": "cohere",
 }
 # AA 评测子项（真实数据）：pct = 0-1 概率转百分比，pts = 原始分
@@ -50,6 +51,7 @@ SEED_TS = "apps/web/src/lib/seed-data.ts"
 MAJOR_VENDORS = {
     "OpenAI", "Anthropic", "Google", "DeepSeek", "Alibaba", "Moonshot",
     "xAI", "Zhipu", "StepFun", "MiniMax", "Tencent", "Mistral", "NVIDIA", "Cohere",
+    "Thinking Machines", "Inclusion AI",
 }
 # 开源权重模型（名字规则判断）
 OPEN_PATTERNS = ["gpt-oss", "Qwen3.8 27B", "Qwen3.5 Omni Plus", "Llama", "Phi",

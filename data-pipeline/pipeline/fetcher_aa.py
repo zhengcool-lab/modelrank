@@ -46,6 +46,7 @@ DATA_BASE = "https://artificialanalysis.ai/data/"
 DETAIL_VENDORS = {
     "OpenAI", "Anthropic", "Google", "DeepSeek", "Alibaba", "Moonshot",
     "xAI", "Zhipu", "StepFun", "MiniMax", "Tencent", "Mistral", "NVIDIA", "Cohere",
+    "Thinking Machines", "Inclusion AI",
 }
 
 # AA capability 五维字段（0-100 指数分）。前端展示顺序即此列表。
@@ -183,6 +184,7 @@ DETAIL_BASE = "https://artificialanalysis.ai/models/"
 DETAIL_VENDORS = {
     "OpenAI", "Anthropic", "Google", "DeepSeek", "Alibaba", "Moonshot",
     "xAI", "Zhipu", "StepFun", "MiniMax", "Tencent", "Mistral", "NVIDIA", "Cohere",
+    "Thinking Machines", "Inclusion AI",
 }
 
 
@@ -259,6 +261,16 @@ def _fetch_detail(slug: str) -> dict[str, Any]:
 
 def _vendor_of(name: str) -> str:
     n = name.lower()
+    # AA 对腾讯混元的命名是 "Hy3 / Tencent Hy4"，不带 hunyuan 字样，必须单独识别，
+    # 否则整家腾讯都会被判成 Other 而在 DETAIL_VENDORS / MAJOR_VENDORS 过滤中被丢掉。
+    if re.match(r"hy\s?\d", n) or "tencent" in n or "hunyuan" in n:
+        return "Tencent"
+    # Ling 是蚂蚁 Inclusion AI、Inkling 是 Thinking Machines Lab，都不是腾讯；
+    # 用前缀而不是子串匹配，避免 "inkling" 被 "ling" 误吞。
+    if n.startswith("inkling"):
+        return "Thinking Machines"
+    if n.startswith("ling"):
+        return "Inclusion AI"
     for v, keys in [
         ("OpenAI", ["gpt", "openai", "o1", "o3", "o4", "codex", "chatgpt"]),
         ("Anthropic", ["claude"]),
@@ -269,7 +281,7 @@ def _vendor_of(name: str) -> str:
         ("Mistral", ["mistral"]),
         ("Moonshot", ["kimi"]),
         ("ByteDance", ["doubao", "seed"]),
-        ("Tencent", ["hunyuan", "ling", "inkling"]),
+        ("Tencent", ["hunyuan", "tencent"]),
         ("Baidu", ["ernie"]),
         ("Zhipu", ["glm"]),
         ("StepFun", ["step"]),
