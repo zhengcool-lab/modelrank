@@ -62,6 +62,7 @@ PAGES: dict[str, str] = {
     "trae": "https://www.trae.cn/pricing",
     "workbuddy": "https://www.workbuddy.cn/pricing/",
     "chatgpt": "https://help.openai.com/zh-hans-cn/articles/9793128-about-chatgpt-pro-tiers",
+    "codex": "https://developers.openai.com/codex/pricing",
     "gemini": "https://one.google.com/about/google-ai-plans/",
     "coze": "https://docs.coze.cn/guides/edition",
     "manus": "https://help.manus.im/zh-CN/articles/11711111-manus-%E7%9B%AE%E5%89%8D%E7%9A%84%E4%BC%9A%E5%91%98%E5%AE%9A%E4%BB%B7%E6%98%AF%E5%A4%9A%E5%B0%91",

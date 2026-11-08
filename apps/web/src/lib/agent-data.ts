@@ -157,6 +157,38 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
     ],
   },
   {
+    id: "codex",
+    name: "Codex",
+    vendor: "OpenAI",
+    category: "coding",
+    tagline: "CLI / IDE / 云端三端同权，含 GitHub code review 与 Slack、Linear 集成",
+    grades: { coding: "S", automation: "A", research: "B" },
+    gradeBasis:
+      "官方功能对照表：CLI、IDE 扩展、云端会话、SDK 与自动化 token、GitHub PR review、Slack/Linear 集成、沙箱与定时任务齐备；模型能力取 GPT-6 系列",
+    bestModel: { name: "GPT-6 Astra", score: 57.0, slug: "gpt-6-astra" },
+    billingMode: "订阅额度",
+    models: ["GPT-6 Astra", "GPT-6.1 Sol", "GPT-6.1 Terra", "GPT-6 Sol", "GPT-6 Luna", "GPT-5.6 系列"],
+    plans: [
+      { name: "Free", monthly: 0, currency: "USD", note: "仅桌面端 GPT-6 Luna，Standard 速度" },
+      { name: "Go", monthly: 8, currency: "USD", note: "轻量编码任务，额度限 GPT-6 Luna" },
+      { name: "Plus", monthly: 20, currency: "USD", note: "Web / CLI / IDE / iOS，含自动 code review 与 Slack、Linear 集成" },
+      { name: "Pro", monthly: 100, currency: "USD", note: "$100 / $200 / $500 三档；Pro 500 含 Ultrafast" },
+      { name: "Business", monthly: 25, promo: 20, currency: "USD", perSeat: true, note: "2 席起，年付 $20/席" },
+      { name: "Enterprise & Edu", monthly: 0, currency: "USD", quote: true, note: "联系销售；弹性计价按 credits" },
+    ],
+    multipliers: [
+      {
+        model: "全部模型",
+        note: "按 credits 计费（每百万输入 token：GPT-6 Astra 250、GPT-6.1 Sol 50、GPT-6 Luna 2.5），官方未给相对倍率",
+      },
+    ],
+    priceCheckedAt: "2026-11-08",
+    sources: [
+      { label: "Codex 定价与额度（官方文档）", url: "https://developers.openai.com/codex/pricing", overseas: true },
+      { label: "Codex in ChatGPT 产品页", url: "https://chatgpt.com/codex", overseas: true },
+    ],
+  },
+  {
     id: "devin",
     name: "Devin",
     vendor: "Cognition",
@@ -253,7 +285,7 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
     billingMode: "订阅额度",
     models: ["GPT-6 Astra", "GPT-6.1 Sol", "GPT-5.6 系列"],
     plans: [
-      { name: "Go", monthly: 0, currency: "USD", quote: true, note: "入门档，价格随地区浮动" },
+      { name: "Go", monthly: 8, currency: "USD", note: "轻量档；与 Codex 共用额度，模型限 GPT-6 Luna" },
       { name: "Plus", monthly: 20, currency: "USD" },
       { name: "Pro 100", monthly: 100, currency: "USD", quota: "不含极速模式" },
       { name: "Pro 200", monthly: 200, currency: "USD", quota: "含用量高于 Pro 100" },

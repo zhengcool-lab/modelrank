@@ -127,6 +127,7 @@ const AGENT_LOGO: Record<string, string> = {
   "claude-code": "claude-code.png",
   cursor: "cursor.png",
   "github-copilot": "github-copilot.png",
+  codex: "codex.png",
   devin: "devin.png",
   trae: "trae.png",
   workbuddy: "workbuddy.png",

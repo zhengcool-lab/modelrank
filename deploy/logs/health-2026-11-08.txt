@@ -1,4 +1,4 @@
-=== ModelRank 健康巡检 2026-11-08 10:45:34 ===
+=== ModelRank 健康巡检 2026-11-08 13:01:44 ===
 目标: https://modelrank-1br.pages.dev
 
 --- 页面可达性 ---
@@ -50,6 +50,7 @@
 ✅ GET /agent/claude-code → HTTP 200
 ✅ GET /agent/cursor → HTTP 200
 ✅ GET /agent/github-copilot → HTTP 200
+✅ GET /agent/codex → HTTP 200
 ✅ GET /agent/devin → HTTP 200
 ✅ GET /agent/trae → HTTP 200
 ✅ GET /agent/windsurf → HTTP 200
@@ -73,11 +74,12 @@
 ✅ 图标 /agent-logos/claude.png → HTTP 200
 ✅ 图标 /agent-logos/v0.png → HTTP 200
 ✅ 图标 /agent-logos/zed.png → HTTP 200
+✅ 图标 /agent-logos/codex.png → HTTP 200
 ✅ 不存在的 agent 返回 404（实际 404）
 ✅ 列表页含「可调用强模型」列
 ✅ 列表页含询价档口径说明
 ✅ 列表页无旧文案「可调用最强模型」
-✅ 列表页标注收录 20 个 Agent
+✅ 列表页标注收录 21 个 Agent
 ✅ 列表页含「站内未收录」标注（Kiro/Windsurf 型号）
 ✅ 列表页含「未公开型号」标注
 ✅ 列表页不再出现 WORKBUDDY 等推断式表述
@@ -101,4 +103,4 @@
 --- 性能预算 ---
 ✅ 首页 HTML 体积 < 400000 字节（实际 283064）
 
-=== 巡检结果：通过 94 / 失败 0 ===
+=== 巡检结果：通过 96 / 失败 0 ===
