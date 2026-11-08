@@ -97,15 +97,28 @@ export function LeaderboardCards({ models }: { models: UIModelRecord[] }) {
                 <span
                   style={{
                     flex: "none",
-                    fontSize: 22,
-                    fontWeight: 700,
-                    color: "var(--mr-text)",
-                    lineHeight: 1,
+                    display: "inline-flex",
+                    flexDirection: "column",
+                    alignItems: "flex-end",
+                    gap: 4,
                   }}
                 >
-                  {m.score.toFixed(1)}
+                  <span
+                    style={{
+                      fontSize: 22,
+                      fontWeight: 700,
+                      color: "var(--mr-text)",
+                      lineHeight: 1,
+                      fontVariantNumeric: "tabular-nums",
+                    }}
+                  >
+                    {m.score.toFixed(1)}
+                  </span>
+                  <span className="mr-scorebar" style={{ width: 56 }} aria-hidden>
+                    <i style={{ width: `${Math.max(4, Math.min(100, (m.score / 60) * 100))}%` }} />
+                  </span>
                 </span>
-                <DeltaText model={m} />
+                <DeltaText model={m} hideEmpty />
               </div>
 
               {/* row 2: tags + vendor + price */}

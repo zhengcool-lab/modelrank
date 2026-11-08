@@ -473,7 +473,9 @@ export default function LibraryPage() {
               >
                 <span>
                   评分 <strong style={{ color: "var(--mr-text)" }}>{m.score.toFixed(1)}</strong>
-                  <span style={{ color: "var(--mr-text-3)" }}> ±{m.ci.toFixed(1)}</span>
+                  {m.ci > 0 && (
+                    <span style={{ color: "var(--mr-text-3)" }}> ±{m.ci.toFixed(1)}</span>
+                  )}
                 </span>
                 <span>
                   价格 <strong style={{ color: "var(--mr-text)" }}>{m.priceInput > 0 ? `$${m.priceInput} / $${m.priceOutput}` : "待核对"}</strong>
