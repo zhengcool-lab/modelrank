@@ -88,7 +88,7 @@ export default function NewsPage() {
         style={{
           display: "flex",
           background: "var(--mr-card-2)",
-          borderRadius: 4,
+          borderRadius: "var(--mr-pill)",
           padding: 3,
           marginTop: 16,
           overflowX: "auto",
@@ -112,7 +112,7 @@ export default function NewsPage() {
               color: cat === c ? "var(--mr-primary)" : "var(--mr-text-2)",
               background: cat === c ? "var(--mr-card)" : "transparent",
               padding: "6px 12px",
-              borderRadius: 4,
+              borderRadius: "var(--mr-pill)",
               border: "none",
               cursor: "pointer",
               boxShadow: cat === c ? "var(--mr-shadow)" : "none",
@@ -126,7 +126,7 @@ export default function NewsPage() {
                 minWidth: 16,
                 textAlign: "center",
                 padding: "0 4px",
-                borderRadius: 8,
+                borderRadius: "var(--mr-radius)",
                 color: cat === c ? "var(--mr-primary)" : "var(--mr-text-3)",
                 background: cat === c ? "var(--mr-primary-bg)" : "var(--mr-card)",
               }}
@@ -161,8 +161,8 @@ export default function NewsPage() {
               }}
               style={{
                 background: "var(--mr-card)",
-                border: "1px solid var(--mr-border)",
-                borderRadius: 10,
+                border: "0.5px solid var(--mr-hairline)",
+                borderRadius: "var(--mr-radius)",
                 boxShadow: "var(--mr-shadow)",
                 padding: "16px 18px",
                 boxSizing: "border-box",
@@ -183,7 +183,7 @@ export default function NewsPage() {
               }}
             >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-                <span style={{ fontSize: 12, fontWeight: 600, color: "var(--mr-primary)", background: "var(--mr-primary-bg)", padding: "2px 10px", borderRadius: 4 }}>
+                <span style={{ fontSize: 12, fontWeight: 600, color: "var(--mr-primary)", background: "var(--mr-primary-bg)", padding: "2px 10px", borderRadius: "var(--mr-pill)"}}>
                   {n.category}
                 </span>
                 <span style={{ fontSize: 12, color: "var(--mr-text-3)", whiteSpace: "nowrap" }} title={fmtFull(n.time)}>
@@ -205,14 +205,14 @@ export default function NewsPage() {
                       onClick={(e) => {
                         e.stopPropagation();
                       }}
-                      style={{ fontSize: 12, color: "var(--mr-primary)", background: "var(--mr-primary-bg)", padding: "2px 10px", borderRadius: 4, whiteSpace: "nowrap", textDecoration: "none" }}
+                      style={{ fontSize: 12, color: "var(--mr-primary)", background: "var(--mr-primary-bg)", padding: "2px 10px", borderRadius: "var(--mr-pill)", whiteSpace: "nowrap", textDecoration: "none" }}
                     >
                       相关：{n.relatedModel}
                     </Link>
                   ) : (
                     <span
                       title="该关键词未对应站内已收录模型"
-                      style={{ fontSize: 12, color: "var(--mr-text-3)", background: "var(--mr-card-2)", border: "1px solid var(--mr-border-soft)", padding: "2px 10px", borderRadius: 4, whiteSpace: "nowrap" }}
+                      style={{ fontSize: 12, color: "var(--mr-text-3)", background: "var(--mr-card-2)", border: "1px solid var(--mr-border-soft)", padding: "2px 10px", borderRadius: "var(--mr-pill)", whiteSpace: "nowrap" }}
                     >
                       相关：{n.relatedModel}
                     </span>
@@ -229,7 +229,7 @@ export default function NewsPage() {
               padding: "48px 20px",
               background: "var(--mr-card)",
               border: "1px dashed var(--mr-border)",
-              borderRadius: 10,
+              borderRadius: "var(--mr-radius)",
               color: "var(--mr-text-3)",
               fontSize: 13,
             }}

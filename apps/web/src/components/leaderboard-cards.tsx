@@ -17,7 +17,7 @@ function CheckBox({ checked }: { checked: boolean }) {
         width: 20,
         height: 20,
         border: `1.5px solid ${checked ? "var(--mr-primary)" : "var(--mr-text-4)"}`,
-        borderRadius: 4,
+        borderRadius: "var(--mr-pill)",
         background: checked ? "var(--mr-primary)" : "var(--mr-card)",
         color: "#fff",
         fontSize: 13,

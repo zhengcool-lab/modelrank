@@ -70,8 +70,8 @@ export default function DataSourcesPage() {
                   alignItems: "center",
                   gap: 12,
                   padding: "10px 12px",
-                  border: "1px solid var(--mr-border)",
-                  borderRadius: 8,
+                  border: "0.5px solid var(--mr-hairline)",
+                  borderRadius: "var(--mr-radius)",
                 }}
               >
                 <div style={{ minWidth: 0, overflowWrap: "break-word" }}>
@@ -88,7 +88,7 @@ export default function DataSourcesPage() {
                     fontSize: 12,
                     fontWeight: 600,
                     padding: "2px 8px",
-                    borderRadius: 4,
+                    borderRadius: "var(--mr-pill)",
                     background:
                       s.污染风险 === "高"
                         ? "rgba(217,70,70,0.12)"

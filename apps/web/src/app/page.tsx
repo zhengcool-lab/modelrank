@@ -77,8 +77,8 @@ export default function Home() {
               style={{
                 flex: 1,
                 background: "var(--mr-card)",
-                border: "1px solid var(--mr-border)",
-                borderRadius: 8,
+                border: "0.5px solid var(--mr-hairline)",
+                borderRadius: "var(--mr-radius)",
                 boxShadow: "var(--mr-shadow)",
                 padding: 16,
                 textDecoration: "none",
@@ -90,13 +90,13 @@ export default function Home() {
                     color: "var(--mr-primary)",
                     background: "var(--mr-primary-bg)",
                     padding: "1px 8px",
-                    borderRadius: 4,
+                    borderRadius: "var(--mr-pill)",
                     marginRight: 6,
                   }}
                 >
                   {n.category}
                 </span>
-                <span style={{ background: "var(--mr-card-2)", padding: "1px 8px", borderRadius: 4 }}>
+                <span style={{ background: "var(--mr-card-2)", padding: "1px 8px", borderRadius: "var(--mr-pill)"}}>
                   AI 摘要
                 </span>
               </div>

@@ -125,7 +125,7 @@ function CostInner() {
             role="radiogroup"
             aria-labelledby="cost-model-label"
             className="grid grid-cols-2 md:grid-cols-4 gap-1.5"
-            style={{ background: "var(--mr-card-2)", borderRadius: 4, padding: 3, marginTop: 10 }}
+            style={{ background: "var(--mr-card-2)", borderRadius: "var(--mr-radius)", padding: 3, marginTop: 10 }}
           >
             {COST_MODELS.map((m) => {
               const active = modelId === m.id;
@@ -143,7 +143,7 @@ function CostInner() {
                     color: active ? "#fff" : "var(--mr-text-2)",
                     background: active ? "var(--mr-primary)" : "transparent",
                     padding: "0 10px",
-                    borderRadius: 4,
+                    borderRadius: "var(--mr-pill)",
                     border: active ? "1px solid var(--mr-primary)" : "1px solid transparent",
                     cursor: "pointer",
                     whiteSpace: "nowrap",
@@ -219,7 +219,7 @@ function CostInner() {
           <div
             role="radiogroup"
             aria-labelledby="cost-cache-label"
-            style={{ display: "inline-flex", background: "var(--mr-card-2)", borderRadius: 4, padding: 3, marginTop: 10 }}
+            style={{ display: "inline-flex", background: "var(--mr-card-2)", borderRadius: "var(--mr-pill)", padding: 3, marginTop: 10 }}
           >
             {CACHE_OPTIONS.map((c) => {
               const active = cache === c;
@@ -237,7 +237,7 @@ function CostInner() {
                     color: active ? "#fff" : "var(--mr-text-2)",
                     background: active ? "var(--mr-primary)" : "transparent",
                     padding: "0 16px",
-                    borderRadius: 4,
+                    borderRadius: "var(--mr-pill)",
                     border: active ? "1px solid var(--mr-primary)" : "1px solid transparent",
                     cursor: "pointer",
                   }}
@@ -259,7 +259,7 @@ function CostInner() {
             flex: "0 1 auto",
             minWidth: 0,
             background: "var(--mr-primary)",
-            borderRadius: 8,
+            borderRadius: "var(--mr-radius)",
             padding: "22px 24px",
             boxSizing: "border-box",
           }}
@@ -315,7 +315,7 @@ function CostInner() {
               color: "var(--mr-primary)",
               fontSize: 13,
               fontWeight: 600,
-              borderRadius: 4,
+              borderRadius: "var(--mr-pill)",
               border: "none",
               cursor: "pointer",
               marginTop: 16,
@@ -341,7 +341,7 @@ function CostInner() {
                     alignItems: "center",
                     width: "100%",
                     background: "rgba(255,255,255,0.1)",
-                    borderRadius: 4,
+                    borderRadius: "var(--mr-pill)",
                     padding: "8px 12px",
                     fontSize: 12,
                     color: "rgba(255,255,255,0.9)",

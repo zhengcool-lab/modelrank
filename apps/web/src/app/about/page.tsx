@@ -29,7 +29,7 @@ export default function AboutPage() {
             padding: "14px 16px",
             background: "var(--mr-primary-bg)",
             borderLeft: "3px solid var(--mr-primary)",
-            borderRadius: 6,
+            borderRadius: "var(--mr-radius)",
             color: "var(--mr-text-2)",
             lineHeight: 1.8,
           }}>

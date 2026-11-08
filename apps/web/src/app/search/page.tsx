@@ -210,7 +210,7 @@ function SearchInner() {
               height: 40,
               padding: "0 32px 0 12px",
               border: "1px solid var(--mr-border)",
-              borderRadius: 4,
+              borderRadius: "var(--mr-pill)",
               background: "var(--mr-card)",
               color: "var(--mr-text)",
               fontSize: 13,
@@ -252,8 +252,8 @@ function SearchInner() {
                 left: 0,
                 right: 0,
                 background: "var(--mr-card)",
-                border: "1px solid var(--mr-border)",
-                borderRadius: 6,
+                border: "0.5px solid var(--mr-hairline)",
+                borderRadius: "var(--mr-radius)",
                 boxShadow: "var(--mr-shadow)",
                 zIndex: 20,
                 overflow: "hidden",
@@ -294,7 +294,7 @@ function SearchInner() {
           style={{
             marginTop: 22,
             border: "1px dashed var(--mr-text-4)",
-            borderRadius: 8,
+            borderRadius: "var(--mr-radius)",
             padding: 28,
             textAlign: "center",
             background: "var(--mr-card)",
@@ -316,7 +316,7 @@ function SearchInner() {
                   color: "var(--mr-primary)",
                   background: "var(--mr-primary-bg)",
                   border: "1px solid transparent",
-                  borderRadius: 999,
+                  borderRadius: "var(--mr-pill)",
                   padding: "4px 14px",
                   cursor: "pointer",
                 }}
@@ -339,7 +339,7 @@ function SearchInner() {
                       color: "var(--mr-text-2)",
                       background: "var(--mr-card-2)",
                       border: "1px solid var(--mr-border)",
-                      borderRadius: 999,
+                      borderRadius: "var(--mr-pill)",
                       padding: "3px 12px",
                       cursor: "pointer",
                     }}
@@ -360,7 +360,7 @@ function SearchInner() {
           style={{
             marginTop: 22,
             border: "1px dashed var(--mr-text-4)",
-            borderRadius: 8,
+            borderRadius: "var(--mr-radius)",
             padding: "40px 24px",
             textAlign: "center",
             background: "var(--mr-card)",
@@ -398,7 +398,7 @@ function SearchInner() {
                   color: "var(--mr-primary)",
                   background: "var(--mr-primary-bg)",
                   border: "1px solid transparent",
-                  borderRadius: 999,
+                  borderRadius: "var(--mr-pill)",
                   padding: "4px 14px",
                   cursor: "pointer",
                 }}
@@ -476,7 +476,7 @@ function SearchInner() {
                       </div>
                     </div>
                     <div className="sr-side">
-                      <span style={{ fontSize: 12, fontWeight: 600, color: "var(--mr-primary)", background: "var(--mr-primary-bg)", padding: "1px 8px", borderRadius: 4 }}>
+                      <span style={{ fontSize: 12, fontWeight: 600, color: "var(--mr-primary)", background: "var(--mr-primary-bg)", padding: "1px 8px", borderRadius: "var(--mr-pill)"}}>
                         {n.category}
                       </span>
                     </div>

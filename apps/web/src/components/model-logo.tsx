@@ -217,7 +217,7 @@ export function ProductLogo({
         flex: "none",
         /* 瓷片化：白底 + 发丝边框，深色卡片上不再是突兀的裸白底方块 */
         background: "#fff",
-        border: "1px solid var(--mr-border)",
+        border: "0.5px solid var(--mr-hairline)",
         borderRadius: radius,
         boxSizing: "border-box",
         /* 资源已统一归一化（内容占画布 90%），瓷片内边距收紧让视觉与其它图标一致 */
@@ -301,7 +301,7 @@ export function VendorLogo({
         flex: "none",
         /* 瓷片化：白底 + 发丝边框，深色卡片上不再是突兀的裸白底方块 */
         background: "#fff",
-        border: "1px solid var(--mr-border)",
+        border: "0.5px solid var(--mr-hairline)",
         borderRadius: radius,
         boxSizing: "border-box",
         padding: Math.max(1, size * 0.04),

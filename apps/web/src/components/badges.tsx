@@ -12,7 +12,7 @@ export function TierBadge({ tier }: { tier: Tier }) {
     fontSize: 12,
     fontWeight: 600,
     padding: "3px 12px",
-    borderRadius: 4,
+    borderRadius: "var(--mr-pill)",
     lineHeight: 1.4,
   };
   if (tier === "S")
@@ -69,7 +69,7 @@ export function OpenTag({ openSource }: { openSource: boolean }) {
         color: openSource ? "var(--mr-up)" : "var(--mr-primary)",
         background: openSource ? "var(--mr-up-bg)" : "var(--mr-primary-bg)",
         padding: "0 6px",
-        borderRadius: 4,
+        borderRadius: "var(--mr-pill)",
         lineHeight: 1.6,
       }}
     >
@@ -94,7 +94,7 @@ export function SourceTag({ source }: { source: ModelSource }) {
         color: s.color,
         background: s.bg,
         padding: "2px 8px",
-        borderRadius: 4,
+        borderRadius: "var(--mr-pill)",
       }}
     >
       {s.label}

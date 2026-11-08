@@ -158,7 +158,7 @@ body {
 .mr-link {
   color: var(--mr-primary);
   text-decoration: none;
-  transition: opacity 0.15s ease;
+  transition: opacity var(--mr-dur-fast) var(--mr-ease);
 }
 .mr-link:hover {
   opacity: 0.82;
@@ -221,8 +221,9 @@ button.mr-card:hover {
 
 /* 内联 button/input 基础过渡（未走 .mr-btn-* 的按钮） */
 button {
-  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease,
-    box-shadow 0.15s ease, filter 0.15s ease;
+  transition: background var(--mr-dur-fast) var(--mr-ease),
+    border-color var(--mr-dur-fast) var(--mr-ease), color var(--mr-dur-fast) var(--mr-ease),
+    box-shadow var(--mr-dur-fast) var(--mr-ease), filter var(--mr-dur-fast) var(--mr-ease);
 }
 button:focus-visible,
 input:focus-visible,
@@ -231,7 +232,8 @@ a:focus-visible {
   outline-offset: 2px;
 }
 input {
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color var(--mr-dur-fast) var(--mr-ease),
+    box-shadow var(--mr-dur-fast) var(--mr-ease);
 }
 input:focus {
   border-color: var(--mr-primary) !important;

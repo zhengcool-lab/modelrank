@@ -136,7 +136,7 @@ export function NavHeader() {
               ? "var(--mr-primary)"
               : "var(--mr-text-2)",
             background: "var(--mr-card)",
-            border: "1px solid var(--mr-border)",
+            border: "0.5px solid var(--mr-hairline)",
             borderRadius: "var(--mr-pill)",
             height: 32,
             lineHeight: "30px",
@@ -165,7 +165,7 @@ export function NavHeader() {
             justifyContent: "center",
             width: 36,
             height: 36,
-            border: "1px solid var(--mr-border)",
+            border: "0.5px solid var(--mr-hairline)",
             borderRadius: "var(--mr-pill)",
             background: "var(--mr-card)",
             cursor: "pointer",

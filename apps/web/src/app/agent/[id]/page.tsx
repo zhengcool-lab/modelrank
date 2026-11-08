@@ -76,8 +76,8 @@ export default async function AgentDetailPage({ params }: Props) {
           <div
             style={{
               padding: 16,
-              borderRadius: 12,
-              border: "1px solid var(--mr-border)",
+              borderRadius: "var(--mr-radius)",
+              border: "0.5px solid var(--mr-hairline)",
               background: "var(--mr-card)",
             }}
           >
@@ -134,7 +134,7 @@ export default async function AgentDetailPage({ params }: Props) {
               核对日期 {a.priceCheckedAt}
             </span>
           </div>
-          <div style={{ border: "1px solid var(--mr-border)", borderRadius: 12, overflow: "hidden", background: "var(--mr-card)" }}>
+          <div style={{ border: "0.5px solid var(--mr-hairline)", borderRadius: "var(--mr-radius)", overflow: "hidden", background: "var(--mr-card)" }}>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
               <thead>
                 <tr style={{ background: "var(--mr-card-2)", borderBottom: "1px solid var(--mr-border)" }}>
@@ -181,7 +181,7 @@ export default async function AgentDetailPage({ params }: Props) {
             可选模型：{a.models.join(" / ")}
           </div>
           {a.multipliers && a.multipliers.length > 0 ? (
-            <div style={{ border: "1px solid var(--mr-border)", borderRadius: 12, overflow: "hidden", background: "var(--mr-card)" }}>
+            <div style={{ border: "0.5px solid var(--mr-hairline)", borderRadius: "var(--mr-radius)", overflow: "hidden", background: "var(--mr-card)" }}>
               <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
                 <thead>
                   <tr style={{ background: "var(--mr-card-2)", borderBottom: "1px solid var(--mr-border)" }}>

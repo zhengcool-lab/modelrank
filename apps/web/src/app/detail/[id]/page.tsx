@@ -116,7 +116,7 @@ export default async function DetailPage({ params }: Props) {
                   color: "#fff",
                   background: "var(--mr-primary)",
                   padding: "1px 8px",
-                  borderRadius: 4,
+                  borderRadius: "var(--mr-pill)",
                 }}
               >
                 能力档 {model.tier}
@@ -350,17 +350,17 @@ export default async function DetailPage({ params }: Props) {
             </div>
             {model.vendorStats && (
               <div style={{ marginTop: 10, display: "flex", flexWrap: "wrap", gap: 6 }}>
-                <span style={{ fontSize: 11, color: "var(--mr-text-2)", background: "var(--mr-card-2)", padding: "2px 8px", borderRadius: 4 }}>
+                <span style={{ fontSize: 11, color: "var(--mr-text-2)", background: "var(--mr-card-2)", padding: "2px 8px", borderRadius: "var(--mr-pill)"}}>
                   AA 收录 {model.vendorStats.total} 个
                 </span>
-                <span style={{ fontSize: 11, color: "var(--mr-text-2)", background: "var(--mr-card-2)", padding: "2px 8px", borderRadius: 4 }}>
+                <span style={{ fontSize: 11, color: "var(--mr-text-2)", background: "var(--mr-card-2)", padding: "2px 8px", borderRadius: "var(--mr-pill)"}}>
                   开源权重 {model.vendorStats.open}
                 </span>
-                <span style={{ fontSize: 11, color: "var(--mr-text-2)", background: "var(--mr-card-2)", padding: "2px 8px", borderRadius: 4 }}>
+                <span style={{ fontSize: 11, color: "var(--mr-text-2)", background: "var(--mr-card-2)", padding: "2px 8px", borderRadius: "var(--mr-pill)"}}>
                   闭源 {model.vendorStats.closed}
                 </span>
                 {model.vendorStats.rated > 0 && (
-                  <span style={{ fontSize: 11, color: "var(--mr-text-2)", background: "var(--mr-card-2)", padding: "2px 8px", borderRadius: 4 }}>
+                  <span style={{ fontSize: 11, color: "var(--mr-text-2)", background: "var(--mr-card-2)", padding: "2px 8px", borderRadius: "var(--mr-pill)"}}>
                     已评测 {model.vendorStats.rated}
                   </span>
                 )}
@@ -374,7 +374,7 @@ export default async function DetailPage({ params }: Props) {
                 {VENDOR_REGIONS[model.vendor].ok.map((r) => (
                   <div key={r} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 12 }}>
                     <span style={{ color: "var(--mr-text-2)" }}>{r}</span>
-                    <span style={{ color: "var(--mr-up)", background: "var(--mr-up-bg)", padding: "1px 8px", borderRadius: 4, fontWeight: 600 }}>
+                    <span style={{ color: "var(--mr-up)", background: "var(--mr-up-bg)", padding: "1px 8px", borderRadius: "var(--mr-pill)", fontWeight: 600 }}>
                       可直连
                     </span>
                   </div>
@@ -382,7 +382,7 @@ export default async function DetailPage({ params }: Props) {
                 {VENDOR_REGIONS[model.vendor].blocked.map((r) => (
                   <div key={r} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 12 }}>
                     <span style={{ color: "var(--mr-text-2)" }}>{r}</span>
-                    <span style={{ color: "var(--mr-text-3)", background: "var(--mr-card-2)", padding: "1px 8px", borderRadius: 4 }}>
+                    <span style={{ color: "var(--mr-text-3)", background: "var(--mr-card-2)", padding: "1px 8px", borderRadius: "var(--mr-pill)"}}>
                       官方未开放 · 需合规渠道
                     </span>
                   </div>

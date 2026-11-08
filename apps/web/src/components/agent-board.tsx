@@ -144,8 +144,8 @@ function ListView({ list }: { list: AgentProduct[] }) {
       <div className="hidden md:block mr-mx" style={{ marginTop: 18 }}>
         <div
           style={{
-            border: "1px solid var(--mr-border)",
-            borderRadius: 12,
+            border: "0.5px solid var(--mr-hairline)",
+            borderRadius: "var(--mr-radius)",
             overflow: "hidden",
             background: "var(--mr-card)",
           }}
@@ -196,8 +196,8 @@ function ListView({ list }: { list: AgentProduct[] }) {
               style={{
                 display: "block",
                 padding: 14,
-                borderRadius: 12,
-                border: "1px solid var(--mr-border)",
+                borderRadius: "var(--mr-radius)",
+                border: "0.5px solid var(--mr-hairline)",
                 background: "var(--mr-card)",
                 textDecoration: "none",
               }}
@@ -258,8 +258,8 @@ export function AgentBoard() {
             display: "inline-flex",
             padding: 4,
             gap: 4,
-            borderRadius: 12,
-            border: "1px solid var(--mr-border)",
+            borderRadius: "var(--mr-radius)",
+            border: "0.5px solid var(--mr-hairline)",
             background: "var(--mr-card-2)",
           }}
         >
@@ -276,7 +276,7 @@ export function AgentBoard() {
                   border: on ? "1px solid transparent" : "1px solid var(--mr-border)",
                   cursor: "pointer",
                   padding: "8px 16px",
-                  borderRadius: 9,
+                  borderRadius: "var(--mr-radius)",
                   fontSize: 13,
                   fontWeight: on ? 700 : 500,
                   lineHeight: 1.2,
