@@ -6,6 +6,8 @@ build/
 .next/
 .open-next/
 .wrangler/
+# next-on-pages 构建产物（每日重新生成，不入库；.vercel/project.json 保留）
+apps/web/.vercel/output/
 out/
 coverage/
 *.log
