@@ -55,16 +55,31 @@ function DimsGrid({
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: "repeat(3, auto)",
-        columnGap: 8,
-        rowGap: 4,
-        width: "fit-content",
+        /* 2 列固定宽：3 列 auto 会在 150px 列宽里把「财务」「工程」挤成竖排单字 */
+        gridTemplateColumns: "repeat(2, 66px)",
+        columnGap: 10,
+        rowGap: 3,
       }}
     >
       {items.map((it) => (
-        <div key={it.label} style={{ display: "flex", alignItems: "baseline", gap: 3 }}>
+        <div
+          key={it.label}
+          style={{
+            display: "flex",
+            alignItems: "baseline",
+            gap: 4,
+            whiteSpace: "nowrap",
+          }}
+        >
           <span style={{ fontSize: 12, color: "var(--mr-text-4)" }}>{it.label}</span>
-          <span style={{ fontSize: 13, fontWeight: 600, color: "var(--mr-text-2)" }}>
+          <span
+            style={{
+              fontSize: 13,
+              fontWeight: 600,
+              color: "var(--mr-text-2)",
+              fontVariantNumeric: "tabular-nums",
+            }}
+          >
             {it.value != null ? it.value.toFixed(1) : "--"}
           </span>
         </div>
@@ -188,7 +203,7 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
           <div>
             <div>能力</div>
             <div style={{ fontSize: 12, fontWeight: 400, color: "var(--mr-text-4)", marginTop: 1 }}>
-              推理·代码·数学·中文·多模态
+              财务·战略·法律·工程·经济
             </div>
           </div>
         ),
@@ -208,17 +223,31 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
         },
         cell: ({ row }) => {
           const m = row.original;
+          /* 条长按 60 分满值，超出裁到 100%，避免未来出现更高分时溢出 */
+          const pct = Math.max(4, Math.min(100, (m.score / 60) * 100));
           return (
-            <div>
-              <div>
-                <span style={{ fontSize: 16, fontWeight: 600, color: "var(--mr-text)" }}>
+            <div style={{ width: 100 }}>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
+                <span
+                  style={{
+                    fontSize: 16,
+                    fontWeight: 650,
+                    color: "var(--mr-text)",
+                    fontVariantNumeric: "tabular-nums",
+                  }}
+                >
                   {m.score.toFixed(1)}
-                </span>{" "}
-                <DeltaText model={m} />
+                </span>
+                <DeltaText model={m} hideEmpty />
               </div>
-              <div style={{ fontSize: 12, color: "var(--mr-text-3)", marginTop: 2 }}>
-                {m.ci > 0 ? `±${m.ci.toFixed(1)}（CI）` : "暂无置信区间"}
+              <div className="mr-scorebar" style={{ width: 108, marginTop: 5 }} aria-hidden>
+                <i style={{ width: `${pct}%` }} />
               </div>
+              {m.ci > 0 && (
+                <div style={{ fontSize: 11, color: "var(--mr-text-4)", marginTop: 2 }}>
+                  ±{m.ci.toFixed(1)} CI
+                </div>
+              )}
             </div>
           );
         },
@@ -258,7 +287,16 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
             );
           }
           return (
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 8, whiteSpace: "nowrap" }}>
+            /* 竖排两个链接：横排会超出 134px 列宽被容器裁掉 */
+            <span
+              style={{
+                display: "inline-flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                gap: 1,
+                whiteSpace: "nowrap",
+              }}
+            >
               {url && (
                 <a
                   href={url}
@@ -275,9 +313,9 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
                   target="_blank"
                   rel="noopener noreferrer"
                   title="该模型在 Artificial Analysis 的独立评测页（per-model 数据源）"
-                  style={{ fontSize: 12, color: "var(--mr-text-3)", textDecoration: "none" }}
+                  style={{ fontSize: 11, color: "var(--mr-text-4)", textDecoration: "none" }}
                 >
-                  模型页 ↗
+                  AA 评测页 ↗
                 </a>
               )}
             </span>
@@ -297,15 +335,16 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
     getSortedRowModel: getSortedRowModel(),
   });
 
+  /* 列宽合计须 ≤ 容器 1112 - 左右 padding 40，否则「官网」列被裁 */
   const widths: Record<string, number> = {
     select: 40,
-    model: 300,
-    dims: 150,
-    score: 120,
+    model: 276,
+    dims: 176,
+    score: 118,
     price: 160,
     tier: 80,
     source: 80,
-    site: 140,
+    site: 134,
   };
 
   const headerGroups = table.getHeaderGroups();

@@ -71,7 +71,7 @@ function FilterChip({
         height: 32,
         padding: "0 12px",
         border: `1px solid ${active ? "var(--mr-primary)" : "var(--mr-border)"}`,
-        borderRadius: 4,
+        borderRadius: "var(--mr-pill)",
         background: active ? "var(--mr-primary-bg)" : "var(--mr-card)",
         cursor: "pointer",
         whiteSpace: "nowrap",
@@ -264,7 +264,7 @@ export default function LibraryPage() {
                 padding: "0 12px",
                 fontSize: 13,
                 border: "1px solid var(--mr-border)",
-                borderRadius: 4,
+                borderRadius: "var(--mr-pill)",
                 background: "var(--mr-card)",
                 color: "var(--mr-text)",
                 boxSizing: "border-box",
@@ -279,7 +279,7 @@ export default function LibraryPage() {
                 padding: "0 10px",
                 fontSize: 13,
                 border: "1px solid var(--mr-border)",
-                borderRadius: 4,
+                borderRadius: "var(--mr-pill)",
                 background: "var(--mr-card)",
                 color: "var(--mr-text)",
                 boxSizing: "border-box",
@@ -356,8 +356,8 @@ export default function LibraryPage() {
         >
           <div style={{ width: 70, flex: "none", fontSize: 12, fontWeight: 600, color: "var(--mr-text-3)" }}>排名</div>
           <div style={{ width: 320, flex: "none", fontSize: 12, fontWeight: 600, color: "var(--mr-text-3)" }}>模型</div>
-          <div style={{ width: 160, flex: "none", fontSize: 12, fontWeight: 600, color: "var(--mr-text-3)", textAlign: "right" }}>评分（±CI）</div>
-          <div style={{ width: 200, flex: "none", fontSize: 12, fontWeight: 600, color: "var(--mr-text-3)", textAlign: "right" }}>价格 输入/输出（$/M）</div>
+          <div style={{ width: 160, flex: "none", fontSize: 12, fontWeight: 600, color: "var(--mr-text-3)", textAlign: "right", paddingRight: 4 }}>评分（±CI）</div>
+          <div style={{ width: 200, flex: "none", fontSize: 12, fontWeight: 600, color: "var(--mr-text-3)", textAlign: "right", paddingRight: 12 }}>价格 输入/输出（$/M）</div>
           <div style={{ width: 110, flex: "none", fontSize: 12, fontWeight: 600, color: "var(--mr-text-3)" }}>能力档</div>
           <div style={{ flex: 1, fontSize: 12, fontWeight: 600, color: "var(--mr-text-3)", textAlign: "right" }}>操作</div>
         </div>
@@ -390,11 +390,39 @@ export default function LibraryPage() {
                   </div>
                 </div>
               </div>
-              {/* 数值列右对齐 + 等宽数字（P1#24） */}
-              <div style={{ width: 160, flex: "none", fontSize: 13, color: "var(--mr-text)", textAlign: "right", fontVariantNumeric: "tabular-nums" }}>
-                {m.score.toFixed(1)} <span style={{ fontSize: 12, color: "var(--mr-text-3)" }}>±{m.ci.toFixed(1)}</span>
+              {/* 数值列右对齐 + 等宽数字（P1#24）；分数下方配胶囊条，强弱一眼可比 */}
+              <div
+                style={{
+                  width: 160,
+                  flex: "none",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-end",
+                  gap: 5,
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
+                  <span
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 650,
+                      color: "var(--mr-text)",
+                      fontVariantNumeric: "tabular-nums",
+                    }}
+                  >
+                    {m.score.toFixed(1)}
+                  </span>
+                  {m.ci > 0 && (
+                    <span style={{ fontSize: 12, color: "var(--mr-text-3)" }}>
+                      ±{m.ci.toFixed(1)}
+                    </span>
+                  )}
+                </div>
+                <div className="mr-scorebar" style={{ width: 118 }} aria-hidden>
+                  <i style={{ width: `${Math.max(4, Math.min(100, (m.score / 60) * 100))}%` }} />
+                </div>
               </div>
-              <div style={{ width: 200, flex: "none", fontSize: 13, color: "var(--mr-text-2)", textAlign: "right", fontVariantNumeric: "tabular-nums" }}>
+              <div style={{ width: 200, flex: "none", fontSize: 13, color: "var(--mr-text-2)", textAlign: "right", fontVariantNumeric: "tabular-nums", paddingRight: 12 }}>
                 {m.priceInput > 0 ? `$${m.priceInput} / $${m.priceOutput}${m.priceEstimated ? "（估算）" : ""}` : "待核对"}
               </div>
               <div style={{ width: 110, flex: "none", paddingLeft: 12 }}>

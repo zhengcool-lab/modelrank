@@ -89,7 +89,7 @@ export function NavHeader() {
               color: "var(--mr-primary)",
               marginLeft: 10,
               padding: "1px 8px",
-              borderRadius: 4,
+              borderRadius: "var(--mr-pill)",
               background: "var(--mr-primary-bg)",
             }}
           >
@@ -137,7 +137,7 @@ export function NavHeader() {
               : "var(--mr-text-2)",
             background: "var(--mr-card)",
             border: "1px solid var(--mr-border)",
-            borderRadius: 4,
+            borderRadius: "var(--mr-pill)",
             height: 32,
             lineHeight: "30px",
             padding: "0 14px",
@@ -166,7 +166,7 @@ export function NavHeader() {
             width: 36,
             height: 36,
             border: "1px solid var(--mr-border)",
-            borderRadius: 4,
+            borderRadius: "var(--mr-pill)",
             background: "var(--mr-card)",
             cursor: "pointer",
             padding: 0,

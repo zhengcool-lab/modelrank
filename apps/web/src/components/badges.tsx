@@ -103,13 +103,22 @@ export function SourceTag({ source }: { source: ModelSource }) {
 }
 
 /** 周环比 delta 文字 */
-export function DeltaText({ model }: { model: UIModelRecord }) {
-  if (model.trend === "flat" || model.delta === null)
+export function DeltaText({
+  model,
+  hideEmpty = false,
+}: {
+  model: UIModelRecord;
+  /* 表格逐行重复「暂无涨跌」是噪音，由调用方决定省略 */
+  hideEmpty?: boolean;
+}) {
+  if (model.trend === "flat" || model.delta === null) {
+    if (hideEmpty) return null;
     return (
       <span style={{ fontSize: 12, fontWeight: 400, color: "var(--mr-text-3)" }}>
         暂无涨跌
       </span>
     );
+  }
   const up = model.trend === "up";
   return (
     <span

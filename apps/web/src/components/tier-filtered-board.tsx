@@ -56,7 +56,7 @@ export function TierFilteredBoard() {
                 color: active ? s.color : "var(--mr-text-2)",
                 background: active ? s.bg : "var(--mr-card)",
                 border: `1px solid ${active ? s.border : "var(--mr-border)"}`,
-                borderRadius: 4,
+                borderRadius: "var(--mr-pill)",
                 height: 28,
                 minWidth: 36,
                 padding: "0 12px",

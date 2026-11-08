@@ -18,8 +18,12 @@ export function EChart({
     chartRef.current = echarts.init(ref.current);
     const onResize = () => chartRef.current?.resize();
     window.addEventListener("resize", onResize);
+    /* hydration 后容器宽度才确定，首次 init 可能拿到 0 宽导致整图空白，用 ResizeObserver 兜住 */
+    const ro = new ResizeObserver(() => chartRef.current?.resize());
+    ro.observe(ref.current);
     return () => {
       window.removeEventListener("resize", onResize);
+      ro.disconnect();
       chartRef.current?.dispose();
       chartRef.current = null;
     };
@@ -27,6 +31,7 @@ export function EChart({
 
   useEffect(() => {
     chartRef.current?.setOption(option, true);
+    chartRef.current?.resize();
   }, [option]);
 
   return <div ref={ref} style={{ width: "100%", height }} />;

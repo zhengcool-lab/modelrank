@@ -8,6 +8,15 @@
    light: bg #F2F2F7 / card #FFFFFF / text #1D1D1F / primary #2A5CAA
    dark : bg #0F172A / card #1C1C1E / text #F5F7FA / primary #5B8DEF
 --------------------------------------------------------------------------- */
+/* Mona Sans（SIL OFL 1.1，github/mona-sans）：英文与数字走它，中文回落系统字体 */
+@font-face {
+  font-family: "Mona Sans";
+  src: url("/fonts/MonaSans-Variable.woff2") format("woff2-variations");
+  font-weight: 300 900;
+  font-stretch: 75% 125%;
+  font-display: swap;
+}
+
 :root {
   --mr-bg: #f2f2f7;
   --mr-card: #ffffff;
@@ -34,6 +43,15 @@
   --mr-silver: #c0c0c8;
   --mr-bronze: #cd7f32;
   --mr-shadow: 0 2px 8px rgba(29, 33, 41, 0.06);
+  /* 圆角与描边体系：卡片 16px、控件胶囊、描边半像素 */
+  --mr-radius: 16px;
+  --mr-radius-sm: 10px;
+  --mr-pill: 999px;
+  --mr-hairline: rgba(29, 33, 41, 0.09);
+  /* 动效：快出慢停，内容位移与交互相同一曲线 */
+  --mr-ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --mr-dur: 0.44s;
+  --mr-dur-fast: 0.2s;
 }
 
 .dark {
@@ -62,6 +80,7 @@
   /* 深色下金色保持明亮 */
   --mr-gold: #e8b339;
   --mr-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --mr-hairline: rgba(255, 255, 255, 0.12);
 }
 
 html,
@@ -73,24 +92,26 @@ body {
 body {
   background: var(--mr-bg);
   color: var(--mr-text);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC",
-    "Helvetica Neue", "Microsoft YaHei", sans-serif;
+  font-family: "Mona Sans", -apple-system, BlinkMacSystemFont, "SF Pro Display",
+    "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+  font-optical-sizing: auto;
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Reusable component primitives (radius 8px per Arco contract) */
+/* Reusable component primitives（圆角统一走 --mr-radius / --mr-pill） */
 .mr-card {
   background: var(--mr-card);
-  border: 1px solid var(--mr-border);
-  border-radius: 8px;
+  /* 半像素发丝描边：2x 屏是 1 物理像素，比 1px 实线更轻 */
+  border: 0.5px solid var(--mr-hairline);
+  border-radius: var(--mr-radius);
   box-shadow: var(--mr-shadow);
 }
 
 .mr-btn-primary {
   background: var(--mr-primary);
   color: #fff;
-  border-radius: 4px;
+  border-radius: var(--mr-pill);
   font-weight: 600;
   display: inline-flex;
   align-items: center;
@@ -106,8 +127,8 @@ body {
 .mr-btn-outline {
   background: var(--mr-card);
   color: var(--mr-text);
-  border: 1px solid var(--mr-border);
-  border-radius: 4px;
+  border: 0.5px solid var(--mr-hairline);
+  border-radius: var(--mr-pill);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -121,7 +142,7 @@ body {
 .mr-btn-orange {
   background: var(--mr-orange);
   color: #fff;
-  border-radius: 4px;
+  border-radius: var(--mr-pill);
   font-weight: 600;
   display: inline-flex;
   align-items: center;
@@ -146,8 +167,11 @@ body {
 .mr-btn-primary,
 .mr-btn-outline,
 .mr-btn-orange {
-  transition: filter 0.15s ease, background 0.15s ease, border-color 0.15s ease,
-    box-shadow 0.15s ease, transform 0.05s ease;
+  transition: filter var(--mr-dur-fast) var(--mr-ease),
+    background var(--mr-dur-fast) var(--mr-ease),
+    border-color var(--mr-dur-fast) var(--mr-ease),
+    box-shadow var(--mr-dur-fast) var(--mr-ease),
+    transform 0.12s var(--mr-ease);
 }
 .mr-btn-primary:hover,
 .mr-btn-orange:hover {
@@ -171,11 +195,28 @@ body {
 
 /* 可点击的卡片 hover 轻微上浮 */
 .mr-card {
-  transition: box-shadow 0.18s ease, border-color 0.18s ease;
+  transition: box-shadow var(--mr-dur-fast) var(--mr-ease),
+    border-color var(--mr-dur-fast) var(--mr-ease),
+    transform var(--mr-dur-fast) var(--mr-ease);
 }
 a.mr-card:hover,
 button.mr-card:hover {
-  box-shadow: 0 4px 16px rgba(29, 33, 41, 0.1);
+  box-shadow: 0 6px 22px rgba(29, 33, 41, 0.1);
+}
+
+/* 分数胶囊条：宽度按分值比例，用于榜单分数列的视觉化 */
+.mr-scorebar {
+  height: 4px;
+  border-radius: var(--mr-pill);
+  background: color-mix(in srgb, var(--mr-primary) 16%, transparent);
+  overflow: hidden;
+}
+.mr-scorebar > i {
+  display: block;
+  height: 100%;
+  border-radius: var(--mr-pill);
+  background: var(--mr-primary);
+  transition: width var(--mr-dur) var(--mr-ease);
 }
 
 /* 内联 button/input 基础过渡（未走 .mr-btn-* 的按钮） */
