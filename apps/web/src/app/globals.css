@@ -164,6 +164,60 @@ body {
   opacity: 0.82;
 }
 
+/* 列表行 hover：品牌浅底 + 发丝内描边（不用 1px 外边框，避免行高跳动） */
+.mr-row-hover {
+  transition:
+    background var(--mr-dur-fast) var(--mr-ease),
+    box-shadow var(--mr-dur-fast) var(--mr-ease);
+}
+.mr-row-hover:hover {
+  background: var(--mr-primary-bg);
+  box-shadow: inset 0 0 0 1px var(--mr-hairline);
+}
+
+/* 手风琴章节头：折叠时右侧露出摘要，展开时只剩标题 */
+.mr-acc-head {
+  display: flex;
+  width: 100%;
+  align-items: baseline;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+.mr-acc-sum {
+  flex: 1;
+  min-width: 0;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--mr-text-4);
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mr-acc-chevron {
+  flex: none;
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--mr-text-4);
+  transition: transform var(--mr-dur-fast) var(--mr-ease);
+}
+
+/* 方法论左栏章节索引：hover 时竖线亮起 */
+.mr-toc-link {
+  transition:
+    color var(--mr-dur-fast) var(--mr-ease),
+    border-color var(--mr-dur-fast) var(--mr-ease);
+}
+.mr-toc-link:hover {
+  color: var(--mr-text);
+  border-left-color: var(--mr-primary);
+}
+
 .mr-btn-primary,
 .mr-btn-outline,
 .mr-btn-orange {

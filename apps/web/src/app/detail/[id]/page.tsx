@@ -12,6 +12,7 @@ import {
 } from "@/lib/derived-data";
 import { NavHeader } from "@/components/nav-header";
 import { Footer } from "@/components/footer";
+import { CollapsibleCard } from "@/components/collapsible-card";
 import { DetailCharts } from "@/components/detail-charts";
 import { SameVendorModels } from "@/components/lead-form";
 import { DeltaText, OpenTag, TierBadge } from "@/components/badges";
@@ -340,8 +341,7 @@ export default async function DetailPage({ params }: Props) {
 
         {/* sidebar */}
         <div style={{ minWidth: 0 }}>
-          <div className="mr-card" style={{ padding: "18px 20px" }}>
-            <div style={{ fontSize: 13, fontWeight: 600, color: "var(--mr-text)" }}>厂商背景</div>
+          <CollapsibleCard no="01" title="厂商背景" defaultOpen>
             <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginTop: 10 }}>
               <VendorLogo vendor={model.vendor} size={40} radius={8} />
               <div style={{ fontSize: 12, color: "var(--mr-text-2)", lineHeight: 1.7 }}>
@@ -366,9 +366,8 @@ export default async function DetailPage({ params }: Props) {
                 )}
               </div>
             )}
-          </div>
-          <div className="mr-card" style={{ padding: "18px 20px", marginTop: 14 }}>
-            <div style={{ fontSize: 13, fontWeight: 600, color: "var(--mr-text)" }}>地区可用性</div>
+          </CollapsibleCard>
+          <CollapsibleCard no="02" title="地区可用性" summary="查看支持地区">
             {VENDOR_REGIONS[model.vendor] ? (
               <div style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 6 }}>
                 {VENDOR_REGIONS[model.vendor].ok.map((r) => (
@@ -393,13 +392,12 @@ export default async function DetailPage({ params }: Props) {
                 暂无公开的官方地区支持清单。实际可用性以厂商服务条款与 API 开通地区为准。
               </div>
             )}
-          </div>
-          <div className="mr-card" style={{ padding: "18px 20px", marginTop: 14 }}>
-            <div style={{ fontSize: 13, fontWeight: 600, color: "var(--mr-text)" }}>合规资质</div>
+          </CollapsibleCard>
+          <CollapsibleCard no="03" title="合规资质" summary="本站未核验厂商资质">
             <div style={{ fontSize: 12, color: "var(--mr-text-3)", lineHeight: 1.7, marginTop: 8 }}>
               本站未核验厂商的 SOC 2 / ISO 27001 / 算法备案等资质；采购或合规审查请以厂商官网与合同附件为准。
             </div>
-          </div>
+          </CollapsibleCard>
 
           <SameVendorModels vendor={model.vendor} currentId={model.id} siblings={model.siblings} vendorStats={model.vendorStats} />
         </div>

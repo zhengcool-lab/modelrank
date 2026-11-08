@@ -7,7 +7,7 @@
  */
 export const OFFICIAL_SITES: Record<string, string> = {
   OpenAI: "https://openai.com",
-  Anthropic: "https://www.anthropic.com",
+  Anthropic: "https://anthropic.com",
   Google: "https://deepmind.google",
   DeepSeek: "https://www.deepseek.com",
   xAI: "https://x.ai",

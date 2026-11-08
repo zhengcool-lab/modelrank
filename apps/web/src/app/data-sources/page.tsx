@@ -12,31 +12,31 @@ const SOURCES = [
   {
     name: "LMSYS Chatbot Arena (Elo)",
     url: "https://lmarena.ai",
-    用途: "人类盲测 Elo 分，权重 35%",
+    用途: "人类盲测 Elo 分（参照，不计分）",
     污染风险: "高",
   },
   {
     name: "GPQA Diamond",
     url: "https://github.com/gpqa-bench/gpqa",
-    用途: "研究生级科学推理，权重 20%",
+    用途: "研究生级科学推理（参照，不计分）",
     污染风险: "中",
   },
   {
     name: "LiveBench",
     url: "https://livebench.ai",
-    用途: "动态更新的对抗性基准，权重 20%",
+    用途: "动态更新的对抗性基准（参照，不计分）",
     污染风险: "低",
   },
   {
     name: "SWE-bench Verified",
     url: "https://www.swebench.com",
-    用途: "真实 GitHub issue 修复，权重 15%",
+    用途: "真实 GitHub issue 修复（参照，不计分）",
     污染风险: "中",
   },
   {
     name: "C-Eval",
     url: "https://cevalbenchmark.com",
-    用途: "中文综合知识，权重 10%",
+    用途: "中文综合知识（参照，不计分）",
     污染风险: "高",
   },
 ];
@@ -52,7 +52,7 @@ export default function DataSourcesPage() {
           数据来源
         </h1>
         <div style={{ fontSize: 13, color: "var(--mr-text-2)", marginTop: 6 }}>
-          所有榜单分数均可追溯到下列公开来源
+          综合分唯一来源是 Artificial Analysis 智能指数；下列公开评测供交叉参照，不参与本站计分
         </div>
 
         <div className="mr-card" style={{ padding: "22px 24px", marginTop: 18, overflowWrap: "break-word" }}>
@@ -118,7 +118,7 @@ export default function DataSourcesPage() {
             价格更新日期见每个模型详情页。
           </p>
           <p style={{ marginTop: 10, fontSize: 14, color: "var(--mr-text-2)", lineHeight: 1.8 }}>
-            方法论与加权口径见 <Link href="/methodology" className="mr-link">方法论页</Link>。
+            方法论与口径说明见 <Link href="/methodology" className="mr-link">方法论页</Link>。
             如发现数据错误或过期，欢迎通过详情页底部"企业咨询留资"反馈，我们会在 1 周内核实更新。
           </p>
         </div>

@@ -368,6 +368,7 @@ export default function LibraryPage() {
           return (
             <div
               key={m.id}
+              className="mr-row-hover"
               style={{
                 display: "flex",
                 alignItems: "center",

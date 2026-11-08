@@ -26,7 +26,7 @@ export default function Home() {
             大模型能力排行榜
           </div>
           <div style={{ fontSize: 13, color: "var(--mr-text-3)", marginTop: 6 }}>
-            评分来源：Artificial Analysis 智能指数（第三方公开评测 0–100）· 更新于 2026-11-01 · 已收录 {total} 个模型 · 口径见
+            评分来源：Artificial Analysis 智能指数（第三方公开评测 0–100）· 更新于 {lastUpdated} · 已收录 {total} 个模型 · 口径见
             <Link href="/methodology" className="mr-link" style={{ marginLeft: 4 }}>
               方法论
             </Link>

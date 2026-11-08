@@ -392,11 +392,11 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
           })}
         </div>
       ))}
-      {/* body rows：奇偶斑马纹 + hover 品牌浅蓝 */}
+      {/* body rows：奇偶斑马纹 + hover 品牌浅蓝 + 发丝内描边 */}
       <style>{`
         .lb-row:nth-child(even) { background: var(--mr-card-2); }
-        .lb-row { transition: background 0.15s ease; }
-        .lb-row:hover { background: var(--mr-primary-bg); }
+        .lb-row { transition: background var(--mr-dur-fast) var(--mr-ease), box-shadow var(--mr-dur-fast) var(--mr-ease); }
+        .lb-row:hover { background: var(--mr-primary-bg); box-shadow: inset 0 0 0 1px var(--mr-hairline); }
       `}</style>
       <div>
       {rows.map((row, i) => (
