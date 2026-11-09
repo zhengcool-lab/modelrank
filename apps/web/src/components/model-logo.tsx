@@ -37,6 +37,7 @@ const VENDOR_SLUG: Record<string, string> = {
   "LG AI Research": "lg",
   IBM: "ibm",
   "Institute of Foundation Models": "ifm",
+  "Inclusion AI": "inclusion-ai",
 };
 
 /**
@@ -44,6 +45,7 @@ const VENDOR_SLUG: Record<string, string> = {
  * 直接按实际文件加载，避免先请求不存在的 .png 触发 404 裂图后再回退。
  */
 const VENDOR_EXT: Record<string, "png" | "svg"> = {
+  "inclusion-ai": "png",
   alibaba: "png",
   anthropic: "png",
   baichuan: "png",
@@ -122,6 +124,11 @@ const MODEL_LOGO: Record<string, string> = {
   "nemotron-3-nano-4b": "nvidia.svg",
   "command-a": "cohere.png",
   "grok-4-7": "grok.png",
+  // Inclusion AI（蚂蚁集团百灵 Ling / Inkling 家族）：官方站点 logo 裁出的方形标记
+  "ling-3-1-flash-1019": "inclusion-ai.png",
+  "inkling": "inclusion-ai.png",
+  "inkling-small": "inclusion-ai.png",
+  "inkling-2-small": "inclusion-ai.png",
   // Meta 2026-10 起前沿模型改名 Muse 家族，共用 Meta 家族标（meta.svg）；
   // Reflection AI 用官网 icon（reflection.png，96×96）；Nanbeige 无独立品牌标，用中性占位图（nanbeige.svg）。
   "muse-wonder": "meta.svg",

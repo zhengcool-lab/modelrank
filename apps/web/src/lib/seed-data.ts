@@ -1365,7 +1365,7 @@ export const UI_MODELS: UIModelRecord[] = [
     id: "ling-3-1-flash-1019",
     name: "Ling 3.1 Flash 1019",
     vendor: "Inclusion AI",
-    openSource: false,
+    openSource: true,
     score: 30,
     delta: null,
     trend: "flat",

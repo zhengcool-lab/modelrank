@@ -272,9 +272,17 @@ def main() -> None:
         # AA enrich 记录（后续字段与价格都以它为准）
         slug = (m.get("source_url") or "").rstrip("/").split("/")[-1]
         aa = en_by_slug.get(slug) or en_by_name.get(base.lower()) or en_by_name.get(name.lower())
-        # 开源标记：优先用 AA 详情页真实数据（open_source），缺失时用名字匹配兜底
+        # 开源标记：优先用 AA 详情页真实数据（isOpenWeights：详情页「开源权重」徽章与厂商卡
+        # 用的是同一个字段，两者必须同源，否则会出现「卡头 闭源 / 厂商卡 开源权重 14」互斥）；
+        # 其次用管道 open_source；都没有才回退名字规则
+        aa_open = (aa or {}).get("isOpenWeights")
         real_open = m.get("open_source")
-        open_source = real_open if isinstance(real_open, bool) else is_open(name)
+        if isinstance(aa_open, bool):
+            open_source = aa_open
+        elif isinstance(real_open, bool):
+            open_source = real_open
+        else:
+            open_source = is_open(name)
         cost_raw = m.get("cost_per_task_usd") or "--"
         try:
             cost = float(str(cost_raw).replace("$", ""))
