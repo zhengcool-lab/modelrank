@@ -1,4 +1,4 @@
-=== ModelRank 健康巡检 2026-11-09 11:27:39 ===
+=== ModelRank 健康巡检 2026-11-09 12:29:54 ===
 目标: https://modelrank-1br.pages.dev
 
 --- 页面可达性 ---
@@ -16,8 +16,11 @@
 ✅ GET /product-logos/glm.png → HTTP 200
 ✅ GET /product-logos/grok.png → HTTP 200
 ✅ GET /product-logos/hunyuan.png → HTTP 200
+✅ GET /product-logos/ibm.svg → HTTP 200
+✅ GET /product-logos/ifm.svg → HTTP 200
 ✅ GET /product-logos/kimi.png → HTTP 200
 ✅ GET /product-logos/kimi-k2.png → HTTP 200
+✅ GET /product-logos/lg.svg → HTTP 200
 ✅ GET /product-logos/meta.svg → HTTP 200
 ✅ GET /product-logos/minimax.png → HTTP 200
 ✅ GET /product-logos/mistral.png → HTTP 200
@@ -27,6 +30,7 @@
 ✅ GET /product-logos/qwen.png → HTTP 200
 ✅ GET /product-logos/reflection.png → HTTP 200
 ✅ GET /product-logos/step.png → HTTP 200
+✅ GET /product-logos/xiaomi.png → HTTP 200
 ✅ GET /vendor-logos/alibaba.png → HTTP 200
 ✅ GET /vendor-logos/anthropic.png → HTTP 200
 ✅ GET /vendor-logos/baichuan.png → HTTP 200
@@ -99,11 +103,11 @@
 ✅ robots.txt 指向 pages.dev 域
 ✅ 方法论页含 Agent 榜口径段
 --- 数据完整性 ---
-✅ UI_MODELS 模型数量 ≥ 30（实际 42）
+✅ UI_MODELS 模型数量 ≥ 30（实际 50）
 ✅ priceLevel 存在 high 级（实际 11 个，非 0 说明价格分级真实）
-✅ priceEstimated=true 标注 ≤ 模型数（实际 4，属诚实占位标注，非错误）
+✅ priceEstimated=true 标注 ≤ 模型数（实际 9，属诚实占位标注，非错误）
 ✅ news-data.ts 新闻条数 ≥ 10（实际 30）
 --- 性能预算 ---
-✅ 首页 HTML 体积 < 400000 字节（实际 356671）
+✅ 首页传输体积（gzip）< 60000 字节（实际 18573；raw 417148）
 
-=== 巡检结果：通过 99 / 失败 0 ===
+=== 巡检结果：通过 103 / 失败 0 ===

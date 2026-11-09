@@ -121,6 +121,16 @@ const MODEL_LOGO: Record<string, string> = {
   "muse-glimmer": "meta.svg",
   "beam-1-0": "reflection.png",
   "nanbeige4-3-33b": "nanbeige.svg",
+  // 2026-11 扩白名单新增厂商：小米用官网 favicon（橙底 MI，96×96）；
+  // IBM / LG AI Research / IFM 无可用独立品牌标，用中性字标占位（非官方 logo）。
+  "mimo-v2-6-pro": "xiaomi.png",
+  "mimo-v2-6-flash": "xiaomi.png",
+  "granite-4-2-3b": "ibm.svg",
+  "granite-4-2-8b": "ibm.svg",
+  "k-exaone-2-0": "lg.svg",
+  "k2-horizon-375b-a23b": "ifm.svg",
+  "gemma-4-31b": "gemini.png",
+  "north-mini-code": "cohere.png",
 };
 
 /**
