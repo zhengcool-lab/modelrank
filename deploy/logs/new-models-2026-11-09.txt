@@ -1,0 +1,71 @@
+========================================================
+ModelRank 新模型发现报告　　生成时间：2026-11-09 11:20（CST）
+========================================================
+
+【对比基线说明】
+data-pipeline/out/ 被 .gitignore 忽略，无历史快照可比。本次用两条基线：
+  A. 本次 AA 抓取 out/aa_models_full.json（726 模型，captured_at 2026-11-09T02:26:41Z）
+  B. 线上库内基线 apps/web/src/lib/seed-data.ts 的 UI_MODELS（本次修正前 36 条）
+
+【根因（本次已修）】
+AA 榜单行只带模型名、不带厂商，管道靠 pipeline/fetcher_aa.py 的 _vendor_of(name) 做关键词归一化，
+关键词表里 Meta 只匹配 "llama"。Meta 自 2026-10 起把前沿模型改名 Muse 家族（名字不再带 llama），
+Reflection 的 Beam、Nanbeige 也完全不在关键词表，三家全部落入 vendor="Other"（本次 15 条有分数的
+Other 行里占 7 条），随后被 MAJOR_VENDORS / DETAIL_VENDORS 白名单过滤，整家厂商从榜单消失。
+修复：_vendor_of 增加 muse→Meta / beam→Reflection / nanbeige→Nanbeige；
+     gen-ui-models.py 的 VENDOR_CREATOR、MAJOR_VENDORS、OPEN_PATTERNS 同步补齐；
+     fetcher_aa.py 的 DETAIL_VENDORS（两处定义）同步补齐，详情页价格才抓得到。
+
+【已入库：AA 收录 + 官方来源双源确认，本次 6 个基座（UI 模型 36 → 42）】
+1. Meta / Muse Wonder
+   AA 分数 44（intelligenceIndex 43.57）｜每任务成本 $6.95｜单价 $4 / $20 per 1M｜上下文 1,048,576
+   发布 2026-10-12｜闭源
+   官方公告：https://about.fb.com/news/2026/10/introducing-muse-wonder-models/
+   AA 收录：https://artificialanalysis.ai/models/muse-wonder
+2. Meta / Muse Wonder Full
+   AA 分数 50（50.08，与 Gemini 4 Argon 并列全榜第 7）｜单价 AA 未公布（页面显示"待核对"）｜上下文 1,048,576
+   发布 2026-10-12｜闭源
+   官方公告：https://about.fb.com/news/2026/10/introducing-muse-wonder-models/
+   AA 收录：https://artificialanalysis.ai/models/muse-wonder-full
+3. Meta / Muse Spark Open（开源权重 816B 总参 / 42B 激活，1M 上下文）
+   AA 分数 25（24.88）｜每任务成本 $2.02｜单价 $1.25 / $4.25 per 1M｜上下文 1,048,576
+   发布 2026-10-15｜开源
+   Meta 官方（Muse 系列公告）：https://about.fb.com/news/2026/10/introducing-muse-wonder-models/
+   官方技术侧说明（NVIDIA 技术博客，Meta 合作发布）：https://developer.nvidia.com/blog/tag/news/
+   第三方交叉：https://www.marktechpost.com/2026/10/15/meta-muse-spark-open-816b-open-weight-model/
+   AA 收录：https://artificialanalysis.ai/models/muse-spark-open
+4. Meta / Muse Glimmer（开源权重，131K 上下文）
+   AA 分数 6（6.34，2026-08-10 发布，属存量模型，本次因 Meta 家族补收一并入库）
+   每任务成本 $0.16｜单价 $0.3 / $1.2 per 1M
+   官方：https://about.fb.com/news/2026/10/introducing-muse-wonder-models/（Muse 系列）
+   AA 收录：https://artificialanalysis.ai/models/muse-glimmer
+5. Reflection AI / Beam 1.0（开源权重 501B 总参 / 23B 激活，Apache 2.0，1M 上下文 / 128K 输出）
+   AA 分数 18（17.73）｜每任务成本 $0.28｜单价 $0.4 / $1.2 per 1M
+   发布 2026-10-05（预览）/ 2026-10-16 开权重
+   官方开发者文档：https://developers.reflection.ai/models （Model ID: Beam-1.0-501B-A23B，Created 2026-10-05）
+   官方推理参数：https://developers.reflection.ai/reasoning
+   AA 收录：https://artificialanalysis.ai/models/reflection-beam
+6. Nanbeige（BOSS 直聘 · 南北阁）/ Nanbeige4.3-33B（33B dense，512K 上下文，Apache 2.0）
+   AA 分数 20（20.41）｜AA 未公布 API 单价（开源权重，前端标"待核对"，priceEstimated=true）
+   发布 2026-10-25（权重 2026-10-24 上传）
+   官方渠道：https://huggingface.co/Nanbeige （HF 组织页，本机网络不可直连，以 AA 收录 + 媒体报道交叉）
+   交叉报道：https://www.marktechpost.com/category/tech-news/ai-paper-summary/page/39/
+             https://mer.vin/news/nanbeige4-3-33b-open-33b-agent-model-vs-qwen3-8-27b/
+   AA 收录：https://artificialanalysis.ai/models/nanbeige4-3-33b
+
+【图标】
+Reflection：product-logos/reflection.png（reflection.ai/icon1.png，96×96 官方）
+Meta（Muse 家族共用）：product-logos/meta.svg（站点既有 Meta 家族标，去白底描边）
+Nanbeige：product-logos/nanbeige.svg（官网无独立品牌标，用中性占位图，非官方 logo）
+
+【待人工确认：AA 有分数但厂商未纳入白名单，本次未入库】
+MiMo-V2.6-Pro（30）/ MiMo-V2.6-Flash（27）＝小米 MiMo
+K2 Horizon 375B A23B（18）/ K-EXAONE 2.0（8）
+Granite 4.2 3B·8B（5）/ Gemma 4 31B（4）/ North Mini Code（3）
+以上厂商（Xiaomi / LG AI Research / IBM / Google 开源 Gemma / Cohere North）是否纳入需要产品判断，
+本次只记录不改数据。
+
+【备注】
+- Muse Wonder 另有 (high) 变体 AA 41 分、$4.56/任务，按基座去重规则保留最高分 (max) 一条。
+- 本次两轮 run-all.sh 均：管道 REAL（非 mock）→ 构建 → 部署 → 本地 commit；
+  git push 仍失败（代理 127.0.0.1:9090 未开），提交留在本地待补推。

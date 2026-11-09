@@ -1,4 +1,4 @@
-=== ModelRank 健康巡检 2026-11-09 10:29:38 ===
+=== ModelRank 健康巡检 2026-11-09 11:19:56 ===
 目标: https://modelrank-1br.pages.dev
 
 --- 页面可达性 ---
@@ -23,6 +23,7 @@
 ✅ GET /product-logos/nvidia.svg → HTTP 200
 ✅ GET /product-logos/openai.png → HTTP 200
 ✅ GET /product-logos/qwen.png → HTTP 200
+✅ GET /product-logos/reflection.png → HTTP 200
 ✅ GET /product-logos/step.png → HTTP 200
 ✅ GET /vendor-logos/alibaba.png → HTTP 200
 ✅ GET /vendor-logos/anthropic.png → HTTP 200
@@ -96,11 +97,11 @@
 ✅ robots.txt 指向 pages.dev 域
 ✅ 方法论页含 Agent 榜口径段
 --- 数据完整性 ---
-✅ UI_MODELS 模型数量 ≥ 30（实际 36）
-✅ priceLevel 存在 high 级（实际 10 个，非 0 说明价格分级真实）
-✅ priceEstimated=true 标注 ≤ 模型数（实际 2，属诚实占位标注，非错误）
+✅ UI_MODELS 模型数量 ≥ 30（实际 42）
+✅ priceLevel 存在 high 级（实际 11 个，非 0 说明价格分级真实）
+✅ priceEstimated=true 标注 ≤ 模型数（实际 4，属诚实占位标注，非错误）
 ✅ news-data.ts 新闻条数 ≥ 10（实际 30）
 --- 性能预算 ---
-✅ 首页 HTML 体积 < 400000 字节（实际 310557）
+✅ 首页 HTML 体积 < 400000 字节（实际 356947）
 
-=== 巡检结果：通过 96 / 失败 0 ===
+=== 巡检结果：通过 97 / 失败 0 ===
