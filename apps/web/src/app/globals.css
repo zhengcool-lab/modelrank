@@ -5,8 +5,8 @@
 
 /* ---------------------------------------------------------------------------
    Brand token contract (DO NOT change colors without contract approval)
-   light: bg #F2F2F7 / card #FFFFFF / text #1D1D1F / primary #2A5CAA
-   dark : bg #0F172A / card #1C1C1E / text #F5F7FA / primary #5B8DEF
+   light: bg #F2F2F7 / card #FFFFFF / card-2 #F2F3F5 / text #1D1D1F / primary #2A5CAA
+   dark : bg #0F172A / card #16202F / card-2 #1B2637 / text #F5F7FA / primary #5B8DEF
 --------------------------------------------------------------------------- */
 /* Mona Sans（SIL OFL 1.1，github/mona-sans）：英文与数字走它，中文回落系统字体 */
 @font-face {

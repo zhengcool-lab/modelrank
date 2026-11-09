@@ -243,43 +243,59 @@ function CostInner() {
           </div>
         </div>
 
-        {/* right result —— 移动端全宽堆叠，桌面固定 400px 与左卡并排 */}
+        {/* right result —— 浅底强调面：主色只落在核心数字与主按钮，避免整块实心蓝压住页面的轻盈感 */}
         <div
           className="w-full md:w-[400px]"
           style={{
             flex: "0 1 auto",
             alignSelf: "flex-start",
             minWidth: 0,
-            background: "var(--mr-primary)",
+            background: "linear-gradient(168deg, var(--mr-primary-bg) 0%, var(--mr-card) 64%)",
+            border: "1px solid var(--mr-border)",
             borderRadius: "var(--mr-radius)",
-            padding: "22px 24px",
+            padding: "20px 22px",
             boxSizing: "border-box",
+            boxShadow: "var(--mr-shadow)",
           }}
         >
           {/* ① 核心数字区 */}
-          <div style={{ fontSize: 13, color: "rgba(255,255,255,0.85)" }}>
-            预估月成本（{model.name} · 含缓存折算）
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10 }}>
+            <span style={{ fontSize: 12, color: "var(--mr-text-3)", letterSpacing: "0.02em" }}>预估月成本</span>
+            <span
+              style={{
+                fontSize: 11,
+                color: "var(--mr-text-3)",
+                textAlign: "right",
+                minWidth: 0,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {model.name} · 含缓存折算
+            </span>
           </div>
           <div
             style={{
-              marginTop: 8,
-              fontSize: 40,
+              marginTop: 4,
+              fontSize: 42,
               fontWeight: 600,
-              color: hasInput ? "#fff" : "rgba(255,255,255,0.45)",
-              lineHeight: 1.15,
+              letterSpacing: "-0.02em",
+              color: hasInput ? "var(--mr-primary)" : "var(--mr-text-4)",
+              lineHeight: 1.1,
               fontVariant: "tabular-nums",
             }}
           >
             {hasInput ? `$${fmt(result)}` : "—"}
           </div>
           {hasInput ? (
-            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.85)", lineHeight: 1.9, marginTop: 14, fontVariant: "tabular-nums" }}>
+            <div style={{ fontSize: 12, color: "var(--mr-text-2)", lineHeight: 1.8, marginTop: 12, fontVariant: "tabular-nums" }}>
               输入 {fmt(inputTokM)}M × ${model.priceInput}/M × (1 − {cachePct}%) ≈ ${fmt(inputCost)}
               <br />
               输出 {fmt(outputTokM)}M × ${model.priceOutput}/M ≈ ${fmt(outputCost)}
             </div>
           ) : (
-            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.7)", lineHeight: 1.9, marginTop: 14 }}>
+            <div style={{ fontSize: 12, color: "var(--mr-text-3)", lineHeight: 1.9, marginTop: 12 }}>
               输入月 token 用量后计算
             </div>
           )}
@@ -287,8 +303,8 @@ function CostInner() {
           {/* ② 参数快照行 */}
           {hasInput && (
             <>
-              <div style={{ height: 1, background: "rgba(255,255,255,0.2)", margin: "16px 0" }} />
-              <div style={{ fontSize: 12, color: "rgba(255,255,255,0.7)", lineHeight: 1.7, fontVariant: "tabular-nums" }}>
+              <div style={{ height: 1, background: "var(--mr-border)", margin: "14px 0" }} />
+              <div style={{ fontSize: 12, color: "var(--mr-text-3)", lineHeight: 1.7, fontVariant: "tabular-nums" }}>
                 月总量 {fmt(effectiveWan)} 万 = {fmt(totalM)}M · α {Math.round(alpha * 100)}% · 缓存 {cachePct}% · 价格更新于 {formatDate(model.priceUpdatedAt)}
               </div>
             </>
@@ -302,15 +318,15 @@ function CostInner() {
             style={{
               display: "block",
               width: "100%",
-              height: 32,
-              background: "#fff",
-              color: "var(--mr-primary)",
+              height: 34,
+              background: "var(--mr-primary)",
+              color: "#fff",
               fontSize: 13,
               fontWeight: 600,
               borderRadius: "var(--mr-pill)",
               border: "none",
               cursor: "pointer",
-              marginTop: 16,
+              marginTop: 14,
             }}
           >
             ↗ 用该模型发起对比
@@ -319,32 +335,32 @@ function CostInner() {
           {/* 推荐区：可点击小卡片；空输入时隐藏避免显示 ≈$0/月 */}
           {hasInput && (
             <>
-              <div style={{ height: 1, background: "rgba(255,255,255,0.2)", margin: "16px 0 12px 0" }} />
-              <div style={{ fontSize: 12, color: "rgba(255,255,255,0.85)", lineHeight: 1.8 }}>同预算可考虑：</div>
+              <div style={{ height: 1, background: "var(--mr-border)", margin: "14px 0 10px 0" }} />
+              <div style={{ fontSize: 12, color: "var(--mr-text-3)", lineHeight: 1.8 }}>同预算可考虑：</div>
               {others.map((o) => (
                 <button
                   key={o.id}
                   type="button"
                   onClick={() => setModelId(o.id)}
-                  className="hover:bg-white/20"
+                  className="hover:opacity-80"
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
                     width: "100%",
-                    background: "rgba(255,255,255,0.1)",
+                    background: "var(--mr-card-2)",
                     borderRadius: "var(--mr-pill)",
                     padding: "8px 12px",
                     fontSize: 12,
-                    color: "rgba(255,255,255,0.9)",
-                    border: "none",
+                    color: "var(--mr-text-2)",
+                    border: "1px solid var(--mr-border)",
                     cursor: "pointer",
                     marginTop: 8,
                     fontVariant: "tabular-nums",
                   }}
                 >
                   <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{o.name}</span>
-                  <span style={{ flex: "none", whiteSpace: "nowrap", fontVariant: "tabular-nums" }}>≈${fmt(o.cost)}/月</span>
+                  <span style={{ flex: "none", whiteSpace: "nowrap", paddingLeft: 10 }}>≈${fmt(o.cost)}/月</span>
                 </button>
               ))}
             </>
