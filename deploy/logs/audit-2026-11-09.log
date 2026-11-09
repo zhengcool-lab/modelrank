@@ -1445,3 +1445,10 @@ fatal: unable to access 'https://github.com/zhengcool-lab/modelrank.git/': Faile
 [2026-11-09 20:26:00] 用户验收决策（定稿）
 - /cost 右侧结果卡配色定稿：浅底渐变（linear-gradient(168deg, var(--mr-primary-bg) 0%, var(--mr-card) 64%)）+ 主色 42px 大数字 + 主色实心按钮，深色同结构（#5b8def 数字）。后续不再作为「待拍板」项重开。
 - 厂商 logo 接受：IBM 横排字标方卡（256×256，6,814 B）、LG simpleicons 红圆标（256×256）、IFM 48×48 放大图标（256×256，31,300 B），均已在 /detail 与 /library 页面生效，无需替换。
+
+[2026-11-09 21:24:23] 修复：手机窄屏底部对比条挤压
+- 症状：iOS 窄屏下「已选 2 / 4 个模型 + 模型名 + 清空 + 去对比」挤成多行，「清空」被压成竖排两字，模型名换行。
+- 根因：compare-bar.tsx 全用内联样式，左侧信息区与模型名均无 min-width:0 / 省略规则，右侧按钮无 flex:0 0 auto 与 nowrap，窄屏下 flex 收缩把按钮挤扁。
+- 改法：抽出 .mr-compare-bar / -info / -count / -names / -actions / -clear 六个类；模型名单行省略（overflow hidden + text-overflow ellipsis + white-space nowrap），按钮 flex:0 0 auto 且 nowrap，主按钮抬到 34px 触控高度；≤360px 收字号。
+- 验证：WebKit 320 / 390 / 430 / 1280 四档截图，对比条高度恒为 55px 单行，模型名按宽度省略（390px 显示「Gemini 4 Car…」），「清空」恢复横排。
+- 部署 f2008aef；巡检 111 通过 / 0 失败（/tmp/hc8.log，gzip 19,243 B）。

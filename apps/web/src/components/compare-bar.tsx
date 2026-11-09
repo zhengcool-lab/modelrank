@@ -14,43 +14,20 @@ export function CompareBar() {
     .filter(Boolean) as string[];
 
   return (
-    <div
-      className="mr-mx"
-      style={{
-        marginTop: 14,
-        background: "var(--mr-card)",
-        border: "0.5px solid var(--mr-hairline)",
-        borderRadius: "var(--mr-radius)",
-        boxShadow: "var(--mr-shadow)",
-        padding: "10px 16px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        position: "sticky",
-        bottom: 16,
-        zIndex: 30,
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <span style={{ fontSize: 13, fontWeight: 600, color: "var(--mr-text)" }}>
+    <div className="mr-mx mr-compare-bar" style={{ marginTop: 14 }}>
+      <div className="mr-compare-info">
+        <span className="mr-compare-count">
           已选 <span style={{ color: "var(--mr-orange)" }}>{selected.length}</span> / {max} 个模型
         </span>
-        <span style={{ fontSize: 12, color: "var(--mr-text-2)" }}>{names.join(" / ")}</span>
+        <span className="mr-compare-names" title={names.join(" / ")}>
+          {names.join(" / ")}
+        </span>
       </div>
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <button
-          onClick={clear}
-          style={{
-            fontSize: 13,
-            color: "var(--mr-text-3)",
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
+      <div className="mr-compare-actions">
+        <button type="button" onClick={clear} className="mr-compare-clear">
           清空
         </button>
-        <Link href="/compare" className="mr-btn-primary">
+        <Link href="/compare" className="mr-btn-primary" style={{ whiteSpace: "nowrap", flex: "0 0 auto" }}>
           去对比 →
         </Link>
       </div>

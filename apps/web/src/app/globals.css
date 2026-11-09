@@ -326,6 +326,76 @@ input:focus {
   }
 }
 
+/* 底部对比条：单行不换行，模型名占据剩余空间并省略，按钮永不压缩 */
+.mr-compare-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--mr-card);
+  border: 0.5px solid var(--mr-hairline);
+  border-radius: var(--mr-radius);
+  box-shadow: var(--mr-shadow);
+  padding: 10px 14px 10px 16px;
+  position: sticky;
+  bottom: 16px;
+  z-index: 30;
+}
+.mr-compare-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.mr-compare-count {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--mr-text);
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+.mr-compare-names {
+  font-size: 12px;
+  color: var(--mr-text-2);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mr-compare-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+.mr-compare-actions .mr-btn-primary {
+  height: 34px;
+  min-height: 34px;
+  padding: 0 14px;
+  white-space: nowrap;
+}
+.mr-compare-clear {
+  font-size: 13px;
+  color: var(--mr-text-3);
+  background: none;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  padding: 8px 4px;
+  min-height: 34px;
+  line-height: 1;
+  flex: 0 0 auto;
+}
+/* 极窄屏（≤360px）收一号字，模型名继续省略显示，整条仍保持单行 */
+@media (max-width: 360px) {
+  .mr-compare-count {
+    font-size: 12px;
+  }
+  .mr-compare-names {
+    font-size: 11px;
+  }
+}
+
 /* Arco dark-mode overrides for the few components we use */
 .arco-input-wrapper,
 .arco-input {
