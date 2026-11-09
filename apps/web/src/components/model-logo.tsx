@@ -32,6 +32,11 @@ const VENDOR_SLUG: Record<string, string> = {
   百川: "baichuan",
   NVIDIA: "nvidia",
   Cohere: "cohere",
+  // 2026-11 扩白名单新增厂商（小米用官网 favicon，其余为中性字标占位）
+  Xiaomi: "xiaomi",
+  "LG AI Research": "lg",
+  IBM: "ibm",
+  "Institute of Foundation Models": "ifm",
 };
 
 /**
@@ -59,6 +64,10 @@ const VENDOR_EXT: Record<string, "png" | "svg"> = {
   zhipu: "png",
   nvidia: "svg",
   cohere: "png",
+  xiaomi: "png",
+  lg: "svg",
+  ibm: "svg",
+  ifm: "svg",
 };
 
 /**
