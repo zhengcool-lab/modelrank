@@ -1,6 +1,6 @@
 # ModelRank
 
-Monorepo (pnpm + Turborepo) skeleton. 当前仅 hello-world：`apps/web` (Next.js) + `apps/api` (NestJS) + `packages/shared`。
+Monorepo (pnpm + Turborepo) skeleton. 站点真相源：`apps/web`（Next.js，静态部署到 Cloudflare Pages，`/api/*` 路由读 `src/lib/repo.ts` 的真实数据）。`apps/api`（NestJS）是早期原型，只保留作本地演示，不对外提供服务。
 
 ## 启动
 

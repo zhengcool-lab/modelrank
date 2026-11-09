@@ -19,6 +19,13 @@ export class InMemoryRepository implements IRepository {
   private readonly benchmarks: BenchmarkRecord[];
 
   constructor() {
+    // 这里的 SEED_* 是 v7.1 的手写演示数据，只允许本地原型跑，
+    // 生产环境必须走 PrismaRepository，避免把演示数据伪装成线上真实数据。
+    if (process.env.NODE_ENV === "production") {
+      throw new Error(
+        "[modelrank/api] InMemoryRepository 仅用于本地原型；生产请配置 DATABASE_URL 使用 PrismaRepository。",
+      );
+    }
     // 深拷贝避免外部误改
     this.models = SEED_MODELS.map((m) => ({ ...m }));
     this.news = SEED_NEWS.map((n) => ({ ...n }));

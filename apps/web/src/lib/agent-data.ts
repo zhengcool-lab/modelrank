@@ -106,7 +106,7 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
     name: "Cursor",
     vendor: "Anysphere",
     category: "coding",
-    tagline: "IDE 形态的编码 Agent；Plus 起步，Pro / Super / Ultra 按 4x / 15x / 50x 用量倍数分档",
+    tagline: "IDE 形态的编码 Agent；Plus 起步，Premium / Super / Ultra 按 4x / 15x / 50x 用量倍数分档",
     grades: { coding: "S", automation: "A", research: "B" },
     gradeBasis: "官方定价页与模型文档：IDE 内联补全与 Agent 模式成熟；档位差异主要体现在用量倍数与第三方模型计费方式",
     bestModel: { name: "Claude Opus 5.5", score: 59.0, slug: "claude-opus-5-5" },
@@ -115,15 +115,15 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
     plans: [
       { name: "免费", monthly: 0, currency: "USD", quota: "有限 AI 用量" },
       { name: "Plus", monthly: 8, currency: "USD", quota: "共享 AI 用量池，入门档" },
-      { name: "高级版", monthly: 30, currency: "USD", quota: "Plus 的 4 倍用量" },
+      { name: "Premium", monthly: 30, currency: "USD", quota: "Plus 的 4 倍用量" },
       { name: "Super", monthly: 100, currency: "USD", quota: "Plus 的 15 倍用量" },
       { name: "Ultra", monthly: 200, currency: "USD", quota: "Plus 的 50 倍用量" },
       { name: "团队版", monthly: 30, currency: "USD", perSeat: true, note: "起，4–50 倍用量" },
       { name: "企业版", monthly: 0, currency: "USD", quote: true },
     ],
     multipliers: [
-      { model: "档位用量倍数", note: "官方：Pro 为 Plus 的 4 倍用量、Super 15 倍、Ultra 50 倍，团队版按席位 4–50 倍（用量倍数，非价格折扣）" },
-      { model: "第三方模型", note: "高级版起可按 API 标价调用第三方模型，用量单独计费、不含在月费内" },
+      { model: "档位用量倍数", note: "官方：Premium 为 Plus 的 4 倍用量、Super 15 倍、Ultra 50 倍，团队版按席位 4–50 倍（用量倍数，非价格折扣）" },
+      { model: "第三方模型", note: "Premium 起可按 API 标价调用第三方模型，用量单独计费、不含在月费内" },
     ],
     priceCheckedAt: "2026-11-09",
     sources: [

@@ -1,0 +1,1443 @@
+[2026-11-09 10:25:01] === ModelRank 自动化任务开始 ===
+[2026-11-09 10:25:01] 1/5 运行数据管道 ...
+2026-11-09 10:25:01,958 INFO pipeline: === ModelRank data-pipeline run (dry_run=True, write_db=False) ===
+2026-11-09 10:25:01,959 INFO pipeline: fetching lmarena ...
+2026-11-09 10:25:05,068 WARNING pipeline.arena: arena fetch failed (no rows contributed): timed out
+2026-11-09 10:25:05,072 INFO pipeline: fetching artificialanalysis ...
+2026-11-09 10:26:36,631 INFO pipeline.aa: AA detail fill: 75 rows with real token prices
+2026-11-09 10:26:37,800 INFO pipeline.aa: AA enrich: wrote out/aa_models_full.json (726 models)
+2026-11-09 10:26:37,800 INFO pipeline.aa: AA capability: decrypted 726 models, 124 with dims (manifest 8bcfe416eb9bf19e.txt)
+2026-11-09 10:26:37,802 INFO pipeline.aa: AA capability fill: 106 rows with real 5-dim scores
+2026-11-09 10:26:37,805 INFO pipeline: fetching huggingface ...
+2026-11-09 10:26:40,827 WARNING pipeline.hf: HF fetch failed (no rows contributed): timed out
+2026-11-09 10:26:40,832 INFO pipeline: fetching vendor pricing pages ...
+2026-11-09 10:26:41,405 INFO httpx: HTTP Request: GET https://openrouter.ai/api/v1/models "HTTP/1.1 200 OK"
+2026-11-09 10:26:41,677 INFO pipeline.vendors: vendor Google: 30 live rows (openrouter)
+2026-11-09 10:26:41,677 INFO pipeline.vendors: vendor OpenAI: 58 live rows (openrouter)
+2026-11-09 10:26:41,677 INFO pipeline.vendors: vendor DeepSeek: 14 live rows (openrouter)
+2026-11-09 10:26:41,677 INFO pipeline.vendors: vendor Anthropic: 15 live rows (openrouter)
+2026-11-09 10:26:41,677 INFO pipeline.vendors: vendor Alibaba: 41 live rows (openrouter)
+2026-11-09 10:26:41,678 INFO pipeline: fetching news feeds ...
+2026-11-09 10:26:41,761 INFO httpx: HTTP Request: GET https://www.jiqizhixin.com/rss "HTTP/1.1 302 Found"
+2026-11-09 10:26:41,776 INFO httpx: HTTP Request: GET https://www.jiqizhixin.com/data-service "HTTP/1.1 200 OK"
+2026-11-09 10:26:41,779 WARNING pipeline.news: feed 机器之心 failed: not well-formed (invalid token): line 7, column 82
+2026-11-09 10:26:42,009 INFO httpx: HTTP Request: GET https://36kr.com/feed "HTTP/1.1 200 OK"
+2026-11-09 10:26:42,051 WARNING pipeline.news: feed 36氪 failed: not well-formed (invalid token): line 10, column 168
+2026-11-09 10:26:42,353 INFO httpx: HTTP Request: GET https://openai.com/news/rss.xml "HTTP/1.1 200 OK"
+2026-11-09 10:26:42,471 INFO pipeline.news: news: OpenAI -> 12 items (real)
+2026-11-09 10:26:43,431 INFO httpx: HTTP Request: GET https://www.anthropic.com/feed.xml "HTTP/1.1 404 Not Found"
+2026-11-09 10:26:43,436 WARNING pipeline.news: feed Anthropic failed: Client error '404 Not Found' for url 'https://www.anthropic.com/feed.xml'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404
+2026-11-09 10:26:44,283 INFO httpx: HTTP Request: GET https://blog.google/technology/ai/rss/ "HTTP/1.1 301 Moved Permanently"
+2026-11-09 10:26:44,572 INFO httpx: HTTP Request: GET https://blog.google/innovation-and-ai/technology/ai/rss/ "HTTP/1.1 200 OK"
+2026-11-09 10:26:44,612 INFO pipeline.news: news: Google AI Blog -> 12 items (real)
+
+=== Fetch report ===
+  [REAL] lmarena                  rows=0    err=unavailable: ConnectTimeout: timed out
+  [REAL] artificialanalysis       rows=282
+  [REAL] huggingface              rows=0    err=unavailable: ConnectTimeout: timed out
+  [REAL] vendor:OpenAI            rows=58 
+  [REAL] vendor:Anthropic         rows=15 
+  [REAL] vendor:Google            rows=30 
+  [REAL] vendor:DeepSeek          rows=14 
+  [REAL] vendor:Alibaba           rows=41 
+  [REAL] news                     rows=39 
+  merged models: 430  (raw real=440, mock=0)
+
+2026-11-09 10:26:44,618 INFO pipeline: wrote /Users/zhengyingbo/development/ModelRank/data-pipeline/out/models.json (430 records)
+2026-11-09 10:26:44,619 INFO pipeline: wrote /Users/zhengyingbo/development/ModelRank/data-pipeline/out/news.json (4 records)
+dry-run: wrote /Users/zhengyingbo/development/ModelRank/data-pipeline/out/models.json and /Users/zhengyingbo/development/ModelRank/data-pipeline/out/news.json
+review the JSON, then re-run with --write-db to push to Postgres.
+[2026-11-09 10:26:44] 2/5 生成前端数据 ...
+// picked 36 models from AA real rows
+// ⚠️ 4 个模型缺 MODEL_LOGO 图标映射: inkling-2-small, ling-3-1-flash-1019, inkling-small, inkling
+// 巡检任务需为这些 id 补充 model-logo.tsx 映射（或家族图标）
+// 写回 apps/web/src/lib/seed-data.ts: 已更新
+[update-news] 已写入 /Users/zhengyingbo/development/ModelRank/apps/web/src/lib/news-data.ts（30 条，mock=false）
+[2026-11-09 10:26:44] 2.5/5 Agent 产品定价核对 ...
+通道：直连 + 代理(http://127.0.0.1:9090) + 浏览器(python)
+✅ claude-code     verified    [direct]   页面仍列出 4/4 个已记录价位
+✅ cursor          verified    [direct]   页面仍列出 4/4 个已记录价位
+❌ github-copilot  unreachable            RuntimeError: render failed: Error: Page.goto: net::ERR_PROXY_CONNECTION_FAILED at https://github.com/feature
+❌ codex           unreachable            RuntimeError: render failed: Error: Page.goto: net::ERR_PROXY_CONNECTION_FAILED at https://developers.openai.
+✅ devin           verified    [direct]   页面仍列出 2/2 个已记录价位
+✅ trae            verified    [direct]   页面仍列出 4/8 个已记录价位
+❌ workbuddy       unreachable            RuntimeError: render failed: Error: Page.goto: net::ERR_PROXY_CONNECTION_FAILED at https://www.workbuddy.cn/p
+❌ chatgpt         unreachable            RuntimeError: render failed: Error: Page.goto: net::ERR_PROXY_CONNECTION_FAILED at https://help.openai.com/zh
+❌ gemini          unreachable            RuntimeError: render failed: Error: Page.goto: net::ERR_PROXY_CONNECTION_FAILED at https://one.google.com/abo
+✅ coze            verified    [direct]   页面仍列出 5/7 个已记录价位
+✅ manus           verified    [direct]   页面仍列出 1/1 个已记录价位
+✅ windsurf        verified    [direct]   页面仍列出 3/3 个已记录价位
+✅ kiro            verified    [direct]   页面仍列出 4/4 个已记录价位
+✅ augment         verified    [direct]   页面仍列出 2/2 个已记录价位
+✅ replit          verified    [direct]   页面仍列出 4/4 个已记录价位
+✅ bolt            verified    [direct]   页面仍列出 2/2 个已记录价位
+✅ v0              verified    [direct]   页面仍列出 2/2 个已记录价位
+✅ warp            verified    [direct]   页面仍列出 2/2 个已记录价位
+✅ zed             verified    [direct]   页面仍列出 2/2 个已记录价位
+✅ notion          verified    [direct]   页面仍列出 2/2 个已记录价位
+✅ claude          verified    [direct]   页面仍列出 4/4 个已记录价位
+
+核对汇总：verified 16 / weak 0 / unverified 0 / unreachable 5
+通过通道：direct 16 家
+报告已写入 /Users/zhengyingbo/development/ModelRank/data-pipeline/out/agent_pricing_report.json
+✅ 已把 16 个产品的 priceCheckedAt 刷成 2026-11-09：claude-code, cursor, devin, trae, coze, manus, windsurf, kiro, augment, replit, bolt, v0, warp, zed, notion, claude
+   保持原核对日（未核对上）：chatgpt, codex, gemini, github-copilot, workbuddy
+[2026-11-09 10:27:35] 3/5 数据有变化，开始构建 ...
+
+> @modelrank/web@0.0.0 build /Users/zhengyingbo/development/ModelRank/apps/web
+> next build
+
+   ▲ Next.js 15.5.28
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 7.1s
+   Linting and checking validity of types ...
+   Collecting page data ...
+ ⚠ Using edge runtime on a page currently disables static generation for that page
+   Generating static pages (0/15) ...
+   Generating static pages (3/15) 
+   Generating static pages (7/15) 
+   Generating static pages (11/15) 
+ ✓ Generating static pages (15/15)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+┌ ○ /                                    19.7 kB         154 kB
+├ ○ /_not-found                            153 B         103 kB
+├ ○ /about                               1.83 kB         109 kB
+├ ƒ /agent/[id]                          3.37 kB         111 kB
+├ ƒ /agents                              13.1 kB         121 kB
+├ ƒ /api/cost/calculate                    153 B         103 kB
+├ ƒ /api/methodology/benchmarks            153 B         103 kB
+├ ƒ /api/models                            153 B         103 kB
+├ ƒ /api/models/[id]                       153 B         103 kB
+├ ƒ /api/news                              153 B         103 kB
+├ ○ /compare                             7.22 kB         142 kB
+├ ○ /cost                                18.8 kB         149 kB
+├ ○ /data-sources                        1.83 kB         109 kB
+├ ƒ /detail/[id]                          377 kB         492 kB
+├ ○ /disclaimer                          1.83 kB         109 kB
+├ ○ /library                             5.45 kB         121 kB
+├ ○ /methodology                         1.83 kB         109 kB
+├ ○ /news                                2.53 kB         123 kB
+├ ○ /robots.txt                            153 B         103 kB
+├ ○ /search                              5.42 kB         126 kB
+└ ○ /sitemap.xml                           153 B         103 kB
++ First Load JS shared by all             103 kB
+  ├ chunks/372-a3acc2614ebe8471.js       46.5 kB
+  ├ chunks/d02de58d-4922b2630c75b8c8.js  54.2 kB
+  └ other shared chunks (total)          1.97 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+⚡️ @cloudflare/next-on-pages CLI v.1.13.16
+⚡️ Detected Package Manager: pnpm (9.15.0)
+⚡️ Preparing project...
+⚡️ Project is ready
+⚡️ Building project...
+▲  Vercel CLI 47.0.4
+▲  WARN! Build not running on Vercel. System environment variables will not be available.
+▲  Detected `pnpm-lock.yaml` 9 which may be generated by pnpm@9.x or pnpm@10.x
+▲  Using pnpm@9.x based on project creation date
+▲  To use pnpm@10.x, manually opt in using corepack (https://vercel.com/docs/deployments/configure-a-build#corepack)
+▲  WARNING: You should not upload the `.next` directory.
+▲  Installing dependencies...
+▲  Scope: all 4 workspace projects
+▲  
+▲  Done in 2.5s
+▲  Detected Next.js version: 15.5.28
+▲  Running "pnpm run build"
+▲  > @modelrank/web@0.0.0 build /Users/zhengyingbo/development/ModelRank/apps/web
+▲  > next build
+▲  ▲ Next.js 15.5.28
+▲  
+▲  Creating an optimized production build ...
+▲  ✓ Compiled successfully in 5.5s
+▲  Linting and checking validity of types ...
+▲  Collecting page data ...
+▲  ⚠ Using edge runtime on a page currently disables static generation for that page
+▲  Generating static pages (0/15) ...
+▲  Generating static pages (3/15)
+▲  Generating static pages (7/15)
+▲  Generating static pages (11/15)
+▲  ✓ Generating static pages (15/15)
+▲  Finalizing page optimization ...
+▲  Collecting build traces ...
+▲  
+▲  Route (app)                                 Size  First Load JS
+▲  ┌ ○ /                                    19.7 kB         154 kB
+▲  ├ ○ /_not-found                            153 B         103 kB
+▲  ├ ○ /about                               1.83 kB         109 kB
+▲  ├ ƒ /agent/[id]                          3.37 kB         111 kB
+▲  ├ ƒ /agents                              13.1 kB         121 kB
+▲  ├ ƒ /api/cost/calculate                    153 B         103 kB
+▲  ├ ƒ /api/methodology/benchmarks            153 B         103 kB
+▲  ├ ƒ /api/models                            153 B         103 kB
+▲  ├ ƒ /api/models/[id]                       153 B         103 kB
+▲  ├ ƒ /api/news                              153 B         103 kB
+▲  ├ ○ /compare                             7.22 kB         142 kB
+▲  ├ ○ /cost                                18.8 kB         149 kB
+▲  ├ ○ /data-sources                        1.83 kB         109 kB
+▲  ├ ƒ /detail/[id]                          377 kB         492 kB
+▲  ├ ○ /disclaimer                          1.83 kB         109 kB
+▲  ├ ○ /library                             5.45 kB         121 kB
+▲  ├ ○ /methodology                         1.83 kB         109 kB
+▲  ├ ○ /news                                2.53 kB         123 kB
+▲  ├ ○ /robots.txt                            153 B         103 kB
+▲  ├ ○ /search                              5.42 kB         126 kB
+▲  └ ○ /sitemap.xml                           153 B         103 kB
+▲  + First Load JS shared by all             103 kB
+▲  ├ chunks/372-a3acc2614ebe8471.js       46.5 kB
+▲  ├ chunks/d02de58d-4922b2630c75b8c8.js  54.2 kB
+▲  └ other shared chunks (total)          1.97 kB
+▲  ○  (Static)   prerendered as static content
+▲  ƒ  (Dynamic)  server-rendered on demand
+▲  Traced Next.js server files in: 11.484ms
+▲  Created all serverless functions in: 29.85ms
+▲  Collected static files (public/, static/, .next/static): 5.562ms
+▲  Build Completed in .vercel/output [15s]
+⚡️ Completed `pnpm exec vercel build`.
+
+⚡️ Build Summary (@cloudflare/next-on-pages v1.13.16)
+⚡️ 
+⚡️ Edge Function Routes (8)
+⚡️   ┌ /agent/[id]
+⚡️   ├ /agents
+⚡️   ├ /api/cost/calculate
+⚡️   ├ /api/methodology/benchmarks
+⚡️   ├ /api/models
+⚡️   ├ /api/models/[id]
+⚡️   ├ /api/news
+⚡️   └ /detail/[id]
+⚡️ 
+⚡️ Prerendered Routes (24)
+⚡️   ┌ /
+⚡️   ├ /_not-found
+⚡️   ├ /_not-found.rsc
+⚡️   ├ /about
+⚡️   ├ /about.rsc
+⚡️   ├ /compare
+⚡️   ├ /compare.rsc
+⚡️   ├ /cost
+⚡️   ├ /cost.rsc
+⚡️   ├ /data-sources
+⚡️   ├ /data-sources.rsc
+⚡️   ├ /disclaimer
+⚡️   ├ /disclaimer.rsc
+⚡️   ├ /index.rsc
+⚡️   ├ /library
+⚡️   ├ /library.rsc
+⚡️   ├ /methodology
+⚡️   ├ /methodology.rsc
+⚡️   ├ /news
+⚡️   └ ... 5 more
+⚡️ 
+⚡️ Other Static Assets (149)
+⚡️   ┌ /_app.rsc.json
+⚡️   ├ /_document.rsc.json
+⚡️   ├ /_error.rsc.json
+⚡️   ├ /404.html
+⚡️   └ ... 145 more
+
+⚡️ Build log saved to '.vercel/output/static/_worker.js/nop-build-log.json'
+⚡️ Generated '.vercel/output/static/_worker.js/index.js'.
+⚡️ Build completed in 1.46s
+[2026-11-09 10:28:23] 4/5 部署到 Cloudflare Pages ...
+
+ ⛅️ wrangler 4.152.0
+────────────────────
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mPages now has wrangler.toml support.[0m
+
+  We detected a configuration file at /Users/zhengyingbo/development/ModelRank/apps/web/wrangler.toml but it is missing the "pages_build_output_dir" field, required by Pages.
+  If you would like to use this configuration file to deploy your project, please use "pages_build_output_dir" to specify the directory of static files to upload.
+  Ignoring configuration file for now, and proceeding with project deploy.
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mWarning: Your working directory is a git repo and has uncommitted changes[0m
+
+  To silence this warning, pass in --commit-dirty=true
+
+
+Uploading... (148/174)
+Uploading... (157/174)
+Uploading... (166/174)
+Uploading... (174/174)
+✨ Success! Uploaded 26 files (148 already uploaded) (3.13 sec)
+
+✨ Uploading _headers
+Attaching additional modules:
+┌─────────────────────────────────────────────────────────────────────┬──────┬─────────────┐
+│ Name                                                                │ Type │ Size        │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/cache/adaptor.js                             │ esm  │ 2.29 KiB    │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/cache/cache-api.js                           │ esm  │ 0.43 KiB    │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/cache/kv.js                                  │ esm  │ 0.35 KiB    │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/agent/[id].func.js                 │ esm  │ 65.76 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/agents.func.js                     │ esm  │ 102.68 KiB  │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/api/cost/calculate.func.js         │ esm  │ 39.43 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/api/methodology/benchmarks.func.js │ esm  │ 38.74 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/api/models/[id].func.js            │ esm  │ 38.74 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/api/models.func.js                 │ esm  │ 38.72 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/api/news.func.js                   │ esm  │ 38.54 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/detail/[id].func.js                │ esm  │ 1241.33 KiB │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/manifest/88a389dd6c068190adb2efc795e4063c.js │ esm  │ 0.37 KiB    │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/webpack/0c4bf98eb1f060aed93494338b729a88.js  │ esm  │ 251.89 KiB  │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/webpack/122.js                               │ esm  │ 34.60 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/webpack/1931.js                              │ esm  │ 0.42 KiB    │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/webpack/7e274edb969f09eb662e2f3eff54eecf.js  │ esm  │ 1.73 KiB    │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/webpack/9ed5562f57a27c87dd0ec7d390b1a519.js  │ esm  │ 570.76 KiB  │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/webpack/f5ec28eeaed1d76849e07f4af5d5a9e3.js  │ esm  │ 110.79 KiB  │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ Total (18 modules)                                                  │      │ 2577.56 KiB │
+└─────────────────────────────────────────────────────────────────────┴──────┴─────────────┘
+✨ Compiled Worker successfully
+✨ Uploading Worker bundle
+✨ Uploading _routes.json
+🌎 Deploying...
+✨ Deployment complete! Take a peek over at https://42423ed5.modelrank-1br.pages.dev
+[2026-11-09 10:28:40] ✅ 部署完成 https://modelrank-1br.pages.dev
+[2026-11-09 10:28:40] 5/5 git 提交 ...
+[main 4702a09] chore: 每日数据更新 2026-11-09
+ Committer: 郑英博 <zhengyingbo@zhengyingbodeMacBook-Pro.local>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly:
+
+    git config --global user.name "Your Name"
+    git config --global user.email you@example.com
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 3 files changed, 128 insertions(+), 128 deletions(-)
+fatal: unable to access 'https://github.com/zhengcool-lab/modelrank.git/': Failed to connect to 127.0.0.1 port 9090 after 0 ms: Couldn't connect to server
+[2026-11-09 10:28:40] ⚠️ git push 失败（代理 127.0.0.1:9090 可能未开），已本地 commit，待代理可用后补推
+[2026-11-09 10:28:40] === 任务完成 ✅ ===
+[2026-11-09 11:10:52] === ModelRank 自动化任务开始 ===
+[2026-11-09 11:10:52] 1/5 运行数据管道 ...
+2026-11-09 11:10:52,516 INFO pipeline: === ModelRank data-pipeline run (dry_run=True, write_db=False) ===
+2026-11-09 11:10:52,516 INFO pipeline: fetching lmarena ...
+2026-11-09 11:10:52,583 WARNING pipeline.arena: arena fetch failed (no rows contributed): [Errno 61] Connection refused
+2026-11-09 11:10:52,584 INFO pipeline: fetching artificialanalysis ...
+2026-11-09 11:12:23,686 INFO pipeline.aa: AA detail fill: 76 rows with real token prices
+2026-11-09 11:12:25,131 INFO pipeline.aa: AA enrich: wrote out/aa_models_full.json (726 models)
+2026-11-09 11:12:25,132 INFO pipeline.aa: AA capability: decrypted 726 models, 124 with dims (manifest 8bcfe416eb9bf19e.txt)
+2026-11-09 11:12:25,133 INFO pipeline.aa: AA capability fill: 106 rows with real 5-dim scores
+2026-11-09 11:12:25,136 INFO pipeline: fetching huggingface ...
+2026-11-09 11:12:28,159 WARNING pipeline.hf: HF fetch failed (no rows contributed): timed out
+2026-11-09 11:12:28,159 INFO pipeline: fetching vendor pricing pages ...
+2026-11-09 11:12:28,747 INFO httpx: HTTP Request: GET https://openrouter.ai/api/v1/models "HTTP/1.1 200 OK"
+2026-11-09 11:12:28,925 INFO pipeline.vendors: vendor Google: 30 live rows (openrouter)
+2026-11-09 11:12:28,925 INFO pipeline.vendors: vendor OpenAI: 58 live rows (openrouter)
+2026-11-09 11:12:28,925 INFO pipeline.vendors: vendor DeepSeek: 14 live rows (openrouter)
+2026-11-09 11:12:28,925 INFO pipeline.vendors: vendor Anthropic: 15 live rows (openrouter)
+2026-11-09 11:12:28,925 INFO pipeline.vendors: vendor Alibaba: 41 live rows (openrouter)
+2026-11-09 11:12:28,926 INFO pipeline: fetching news feeds ...
+2026-11-09 11:12:29,008 INFO httpx: HTTP Request: GET https://www.jiqizhixin.com/rss "HTTP/1.1 302 Found"
+2026-11-09 11:12:29,020 INFO httpx: HTTP Request: GET https://www.jiqizhixin.com/data-service "HTTP/1.1 200 OK"
+2026-11-09 11:12:29,023 WARNING pipeline.news: feed 机器之心 failed: not well-formed (invalid token): line 7, column 82
+2026-11-09 11:12:29,271 INFO httpx: HTTP Request: GET https://36kr.com/feed "HTTP/1.1 200 OK"
+2026-11-09 11:12:29,306 WARNING pipeline.news: feed 36氪 failed: not well-formed (invalid token): line 10, column 168
+2026-11-09 11:12:29,796 INFO httpx: HTTP Request: GET https://openai.com/news/rss.xml "HTTP/1.1 200 OK"
+2026-11-09 11:12:29,888 INFO pipeline.news: news: OpenAI -> 12 items (real)
+2026-11-09 11:12:30,869 INFO httpx: HTTP Request: GET https://www.anthropic.com/feed.xml "HTTP/1.1 404 Not Found"
+2026-11-09 11:12:30,880 WARNING pipeline.news: feed Anthropic failed: Client error '404 Not Found' for url 'https://www.anthropic.com/feed.xml'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404
+2026-11-09 11:12:37,199 WARNING pipeline.news: feed Google AI Blog failed: _ssl.c:1064: The handshake operation timed out
+
+=== Fetch report ===
+  [REAL] lmarena                  rows=0    err=unavailable: ConnectError: [Errno 61] Connection refused
+  [REAL] artificialanalysis       rows=282
+  [REAL] huggingface              rows=0    err=unavailable: ConnectTimeout: timed out
+  [REAL] vendor:OpenAI            rows=58 
+  [REAL] vendor:Anthropic         rows=15 
+  [REAL] vendor:Google            rows=30 
+  [REAL] vendor:DeepSeek          rows=14 
+  [REAL] vendor:Alibaba           rows=41 
+  [REAL] news                     rows=39 
+  merged models: 430  (raw real=440, mock=0)
+
+2026-11-09 11:12:37,204 INFO pipeline: wrote /Users/zhengyingbo/development/ModelRank/data-pipeline/out/models.json (430 records)
+2026-11-09 11:12:37,205 INFO pipeline: wrote /Users/zhengyingbo/development/ModelRank/data-pipeline/out/news.json (4 records)
+dry-run: wrote /Users/zhengyingbo/development/ModelRank/data-pipeline/out/models.json and /Users/zhengyingbo/development/ModelRank/data-pipeline/out/news.json
+review the JSON, then re-run with --write-db to push to Postgres.
+[2026-11-09 11:12:37] 2/5 生成前端数据 ...
+// picked 42 models from AA real rows
+// ⚠️ 9 个模型缺 MODEL_LOGO 图标映射: muse-wonder-full, muse-wonder, inkling-2-small, ling-3-1-flash-1019, muse-spark-open, nanbeige4-3-33b, inkling-small, inkling, muse-glimmer
+// 巡检任务需为这些 id 补充 model-logo.tsx 映射（或家族图标）
+// 写回 apps/web/src/lib/seed-data.ts: 已更新
+[update-news] 已写入 /Users/zhengyingbo/development/ModelRank/apps/web/src/lib/news-data.ts（30 条，mock=false）
+[2026-11-09 11:12:37] 2.5/5 Agent 产品定价核对 ...
+通道：直连 + 代理(http://127.0.0.1:9090) + 浏览器(python)
+✅ claude-code     verified    [direct]   页面仍列出 4/4 个已记录价位
+✅ cursor          verified    [direct]   页面仍列出 4/4 个已记录价位
+❌ github-copilot  unreachable            RuntimeError: render failed: Error: Page.goto: net::ERR_PROXY_CONNECTION_FAILED at https://github.com/feature
+❌ codex           unreachable            RuntimeError: render failed: Error: Page.goto: net::ERR_PROXY_CONNECTION_FAILED at https://developers.openai.
+✅ devin           verified    [direct]   页面仍列出 2/2 个已记录价位
+✅ trae            verified    [direct]   页面仍列出 4/8 个已记录价位
+❌ workbuddy       unreachable            RuntimeError: render failed: Error: Page.goto: net::ERR_PROXY_CONNECTION_FAILED at https://www.workbuddy.cn/p
+❌ chatgpt         unreachable            RuntimeError: render failed: Error: Page.goto: net::ERR_PROXY_CONNECTION_FAILED at https://help.openai.com/zh
+❌ gemini          unreachable            RuntimeError: render failed: Error: Page.goto: net::ERR_PROXY_CONNECTION_FAILED at https://one.google.com/abo
+✅ coze            verified    [direct]   页面仍列出 5/7 个已记录价位
+✅ manus           verified    [direct]   页面仍列出 1/1 个已记录价位
+✅ windsurf        verified    [direct]   页面仍列出 3/3 个已记录价位
+✅ kiro            verified    [direct]   页面仍列出 4/4 个已记录价位
+✅ augment         verified    [direct]   页面仍列出 2/2 个已记录价位
+✅ replit          verified    [direct]   页面仍列出 4/4 个已记录价位
+✅ bolt            verified    [direct]   页面仍列出 2/2 个已记录价位
+✅ v0              verified    [direct]   页面仍列出 2/2 个已记录价位
+✅ warp            verified    [direct]   页面仍列出 2/2 个已记录价位
+✅ zed             verified    [direct]   页面仍列出 2/2 个已记录价位
+✅ notion          verified    [direct]   页面仍列出 2/2 个已记录价位
+✅ claude          verified    [direct]   页面仍列出 4/4 个已记录价位
+
+核对汇总：verified 16 / weak 0 / unverified 0 / unreachable 5
+通过通道：direct 16 家
+报告已写入 /Users/zhengyingbo/development/ModelRank/data-pipeline/out/agent_pricing_report.json
+核对日已是 2026-11-09，无需改动
+[2026-11-09 11:13:27] 3/5 数据有变化，开始构建 ...
+
+> @modelrank/web@0.0.0 build /Users/zhengyingbo/development/ModelRank/apps/web
+> next build
+
+   ▲ Next.js 15.5.28
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 6.1s
+   Linting and checking validity of types ...
+   Collecting page data ...
+ ⚠ Using edge runtime on a page currently disables static generation for that page
+   Generating static pages (0/15) ...
+   Generating static pages (3/15) 
+   Generating static pages (7/15) 
+   Generating static pages (11/15) 
+ ✓ Generating static pages (15/15)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+┌ ○ /                                    19.7 kB         155 kB
+├ ○ /_not-found                            153 B         103 kB
+├ ○ /about                               1.83 kB         109 kB
+├ ƒ /agent/[id]                          3.39 kB         111 kB
+├ ƒ /agents                              13.1 kB         121 kB
+├ ƒ /api/cost/calculate                    153 B         103 kB
+├ ƒ /api/methodology/benchmarks            153 B         103 kB
+├ ƒ /api/models                            153 B         103 kB
+├ ƒ /api/models/[id]                       153 B         103 kB
+├ ƒ /api/news                              153 B         103 kB
+├ ○ /compare                             7.24 kB         142 kB
+├ ○ /cost                                18.8 kB         149 kB
+├ ○ /data-sources                        1.83 kB         109 kB
+├ ƒ /detail/[id]                          377 kB         493 kB
+├ ○ /disclaimer                          1.83 kB         109 kB
+├ ○ /library                             5.47 kB         122 kB
+├ ○ /methodology                         1.83 kB         109 kB
+├ ○ /news                                2.53 kB         124 kB
+├ ○ /robots.txt                            153 B         103 kB
+├ ○ /search                              5.44 kB         127 kB
+└ ○ /sitemap.xml                           153 B         103 kB
++ First Load JS shared by all             103 kB
+  ├ chunks/372-a3acc2614ebe8471.js       46.5 kB
+  ├ chunks/d02de58d-4922b2630c75b8c8.js  54.2 kB
+  └ other shared chunks (total)          1.97 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+⚡️ @cloudflare/next-on-pages CLI v.1.13.16
+⚡️ Detected Package Manager: pnpm (9.15.0)
+⚡️ Preparing project...
+⚡️ Project is ready
+⚡️ Building project...
+▲  Vercel CLI 47.0.4
+▲  WARN! Build not running on Vercel. System environment variables will not be available.
+▲  Detected `pnpm-lock.yaml` 9 which may be generated by pnpm@9.x or pnpm@10.x
+▲  Using pnpm@9.x based on project creation date
+▲  To use pnpm@10.x, manually opt in using corepack (https://vercel.com/docs/deployments/configure-a-build#corepack)
+▲  WARNING: You should not upload the `.next` directory.
+▲  Installing dependencies...
+▲  Scope: all 4 workspace projects
+▲  
+▲  Done in 2.5s
+▲  Detected Next.js version: 15.5.28
+▲  Running "pnpm run build"
+▲  > @modelrank/web@0.0.0 build /Users/zhengyingbo/development/ModelRank/apps/web
+▲  > next build
+▲  ▲ Next.js 15.5.28
+▲  
+▲  Creating an optimized production build ...
+▲  ✓ Compiled successfully in 5.4s
+▲  Linting and checking validity of types ...
+▲  Collecting page data ...
+▲  ⚠ Using edge runtime on a page currently disables static generation for that page
+▲  Generating static pages (0/15) ...
+▲  Generating static pages (3/15)
+▲  Generating static pages (7/15)
+▲  Generating static pages (11/15)
+▲  ✓ Generating static pages (15/15)
+▲  Finalizing page optimization ...
+▲  Collecting build traces ...
+▲  
+▲  Route (app)                                 Size  First Load JS
+▲  ┌ ○ /                                    19.7 kB         155 kB
+▲  ├ ○ /_not-found                            153 B         103 kB
+▲  ├ ○ /about                               1.83 kB         109 kB
+▲  ├ ƒ /agent/[id]                          3.39 kB         111 kB
+▲  ├ ƒ /agents                              13.1 kB         121 kB
+▲  ├ ƒ /api/cost/calculate                    153 B         103 kB
+▲  ├ ƒ /api/methodology/benchmarks            153 B         103 kB
+▲  ├ ƒ /api/models                            153 B         103 kB
+▲  ├ ƒ /api/models/[id]                       153 B         103 kB
+▲  ├ ƒ /api/news                              153 B         103 kB
+▲  ├ ○ /compare                             7.24 kB         142 kB
+▲  ├ ○ /cost                                18.8 kB         149 kB
+▲  ├ ○ /data-sources                        1.83 kB         109 kB
+▲  ├ ƒ /detail/[id]                          377 kB         493 kB
+▲  ├ ○ /disclaimer                          1.83 kB         109 kB
+▲  ├ ○ /library                             5.47 kB         122 kB
+▲  ├ ○ /methodology                         1.83 kB         109 kB
+▲  ├ ○ /news                                2.53 kB         124 kB
+▲  ├ ○ /robots.txt                            153 B         103 kB
+▲  ├ ○ /search                              5.44 kB         127 kB
+▲  └ ○ /sitemap.xml                           153 B         103 kB
+▲  + First Load JS shared by all             103 kB
+▲  ├ chunks/372-a3acc2614ebe8471.js       46.5 kB
+▲  ├ chunks/d02de58d-4922b2630c75b8c8.js  54.2 kB
+▲  └ other shared chunks (total)          1.97 kB
+▲  
+▲  ○  (Static)   prerendered as static content
+▲  ƒ  (Dynamic)  server-rendered on demand
+▲  Traced Next.js server files in: 10.469ms
+▲  Created all serverless functions in: 25.253ms
+▲  Collected static files (public/, static/, .next/static): 5.932ms
+▲  Build Completed in .vercel/output [16s]
+⚡️ Completed `pnpm exec vercel build`.
+
+⚡️ Build Summary (@cloudflare/next-on-pages v1.13.16)
+⚡️ 
+⚡️ Edge Function Routes (8)
+⚡️   ┌ /agent/[id]
+⚡️   ├ /agents
+⚡️   ├ /api/cost/calculate
+⚡️   ├ /api/methodology/benchmarks
+⚡️   ├ /api/models
+⚡️   ├ /api/models/[id]
+⚡️   ├ /api/news
+⚡️   └ /detail/[id]
+⚡️ 
+⚡️ Prerendered Routes (24)
+⚡️   ┌ /
+⚡️   ├ /_not-found
+⚡️   ├ /_not-found.rsc
+⚡️   ├ /about
+⚡️   ├ /about.rsc
+⚡️   ├ /compare
+⚡️   ├ /compare.rsc
+⚡️   ├ /cost
+⚡️   ├ /cost.rsc
+⚡️   ├ /data-sources
+⚡️   ├ /data-sources.rsc
+⚡️   ├ /disclaimer
+⚡️   ├ /disclaimer.rsc
+⚡️   ├ /index.rsc
+⚡️   ├ /library
+⚡️   ├ /library.rsc
+⚡️   ├ /methodology
+⚡️   ├ /methodology.rsc
+⚡️   ├ /news
+⚡️   └ ... 5 more
+⚡️ 
+⚡️ Other Static Assets (150)
+⚡️   ┌ /_app.rsc.json
+⚡️   ├ /_document.rsc.json
+⚡️   ├ /_error.rsc.json
+⚡️   ├ /404.html
+⚡️   └ ... 146 more
+
+⚡️ Build log saved to '.vercel/output/static/_worker.js/nop-build-log.json'
+⚡️ Generated '.vercel/output/static/_worker.js/index.js'.
+⚡️ Build completed in 1.50s
+[2026-11-09 11:14:14] 4/5 部署到 Cloudflare Pages ...
+
+ ⛅️ wrangler 4.152.0
+────────────────────
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mPages now has wrangler.toml support.[0m
+
+  We detected a configuration file at /Users/zhengyingbo/development/ModelRank/apps/web/wrangler.toml but it is missing the "pages_build_output_dir" field, required by Pages.
+  If you would like to use this configuration file to deploy your project, please use "pages_build_output_dir" to specify the directory of static files to upload.
+  Ignoring configuration file for now, and proceeding with project deploy.
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mWarning: Your working directory is a git repo and has uncommitted changes[0m
+
+  To silence this warning, pass in --commit-dirty=true
+
+
+Uploading... (141/175)
+Uploading... (152/175)
+Uploading... (163/175)
+Uploading... (175/175)
+✨ Success! Uploaded 34 files (141 already uploaded) (3.27 sec)
+
+✨ Uploading _headers
+Attaching additional modules:
+┌─────────────────────────────────────────────────────────────────────┬──────┬─────────────┐
+│ Name                                                                │ Type │ Size        │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/cache/adaptor.js                             │ esm  │ 2.29 KiB    │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/cache/cache-api.js                           │ esm  │ 0.43 KiB    │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/cache/kv.js                                  │ esm  │ 0.35 KiB    │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/agent/[id].func.js                 │ esm  │ 65.76 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/agents.func.js                     │ esm  │ 102.68 KiB  │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/api/cost/calculate.func.js         │ esm  │ 39.43 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/api/methodology/benchmarks.func.js │ esm  │ 38.74 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/api/models/[id].func.js            │ esm  │ 38.74 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/api/models.func.js                 │ esm  │ 38.72 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/api/news.func.js                   │ esm  │ 38.54 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/detail/[id].func.js                │ esm  │ 1250.96 KiB │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/manifest/88a389dd6c068190adb2efc795e4063c.js │ esm  │ 0.37 KiB    │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/webpack/0c4bf98eb1f060aed93494338b729a88.js  │ esm  │ 261.52 KiB  │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/webpack/122.js                               │ esm  │ 34.60 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/webpack/1931.js                              │ esm  │ 0.42 KiB    │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/webpack/7e274edb969f09eb662e2f3eff54eecf.js  │ esm  │ 1.73 KiB    │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/webpack/9ed5562f57a27c87dd0ec7d390b1a519.js  │ esm  │ 570.78 KiB  │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/webpack/f5ec28eeaed1d76849e07f4af5d5a9e3.js  │ esm  │ 110.79 KiB  │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ Total (18 modules)                                                  │      │ 2596.85 KiB │
+└─────────────────────────────────────────────────────────────────────┴──────┴─────────────┘
+✨ Compiled Worker successfully
+✨ Uploading Worker bundle
+✨ Uploading _routes.json
+🌎 Deploying...
+✨ Deployment complete! Take a peek over at https://dad4f999.modelrank-1br.pages.dev
+[2026-11-09 11:14:29] ✅ 部署完成 https://modelrank-1br.pages.dev
+[2026-11-09 11:14:29] 5/5 git 提交 ...
+[main 6758c4c] chore: 每日数据更新 2026-11-09
+ Committer: 郑英博 <zhengyingbo@zhengyingbodeMacBook-Pro.local>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly:
+
+    git config --global user.name "Your Name"
+    git config --global user.email you@example.com
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 8 files changed, 477 insertions(+), 7 deletions(-)
+ create mode 100644 apps/web/public/product-logos/reflection.png
+ create mode 100644 deploy/logs/health-2026-11-09.txt
+fatal: unable to access 'https://github.com/zhengcool-lab/modelrank.git/': Failed to connect to 127.0.0.1 port 9090 after 0 ms: Couldn't connect to server
+[2026-11-09 11:14:30] ⚠️ git push 失败（代理 127.0.0.1:9090 可能未开），已本地 commit，待代理可用后补推
+[2026-11-09 11:14:30] === 任务完成 ✅ ===
+[2026-11-09 11:16:00] === ModelRank 自动化任务开始 ===
+[2026-11-09 11:16:00] 1/5 运行数据管道 ...
+2026-11-09 11:16:00,543 INFO pipeline: === ModelRank data-pipeline run (dry_run=True, write_db=False) ===
+2026-11-09 11:16:00,543 INFO pipeline: fetching lmarena ...
+2026-11-09 11:16:03,604 WARNING pipeline.arena: arena fetch failed (no rows contributed): timed out
+2026-11-09 11:16:03,606 INFO pipeline: fetching artificialanalysis ...
+2026-11-09 11:17:51,365 INFO pipeline.aa: AA detail fill: 83 rows with real token prices
+2026-11-09 11:18:03,062 INFO pipeline.aa: AA enrich: wrote out/aa_models_full.json (726 models)
+2026-11-09 11:18:03,063 INFO pipeline.aa: AA capability: decrypted 726 models, 124 with dims (manifest 8bcfe416eb9bf19e.txt)
+2026-11-09 11:18:03,065 INFO pipeline.aa: AA capability fill: 106 rows with real 5-dim scores
+2026-11-09 11:18:03,067 INFO pipeline: fetching huggingface ...
+2026-11-09 11:18:06,089 WARNING pipeline.hf: HF fetch failed (no rows contributed): timed out
+2026-11-09 11:18:06,090 INFO pipeline: fetching vendor pricing pages ...
+2026-11-09 11:18:06,801 INFO httpx: HTTP Request: GET https://openrouter.ai/api/v1/models "HTTP/1.1 200 OK"
+2026-11-09 11:18:07,008 INFO pipeline.vendors: vendor Google: 30 live rows (openrouter)
+2026-11-09 11:18:07,008 INFO pipeline.vendors: vendor OpenAI: 58 live rows (openrouter)
+2026-11-09 11:18:07,008 INFO pipeline.vendors: vendor DeepSeek: 14 live rows (openrouter)
+2026-11-09 11:18:07,009 INFO pipeline.vendors: vendor Anthropic: 15 live rows (openrouter)
+2026-11-09 11:18:07,009 INFO pipeline.vendors: vendor Alibaba: 41 live rows (openrouter)
+2026-11-09 11:18:07,009 INFO pipeline: fetching news feeds ...
+2026-11-09 11:18:07,098 INFO httpx: HTTP Request: GET https://www.jiqizhixin.com/rss "HTTP/1.1 302 Found"
+2026-11-09 11:18:07,113 INFO httpx: HTTP Request: GET https://www.jiqizhixin.com/data-service "HTTP/1.1 200 OK"
+2026-11-09 11:18:07,115 WARNING pipeline.news: feed 机器之心 failed: not well-formed (invalid token): line 7, column 82
+2026-11-09 11:18:07,323 INFO httpx: HTTP Request: GET https://36kr.com/feed "HTTP/1.1 200 OK"
+2026-11-09 11:18:07,429 WARNING pipeline.news: feed 36氪 failed: not well-formed (invalid token): line 10, column 168
+2026-11-09 11:18:08,013 INFO httpx: HTTP Request: GET https://openai.com/news/rss.xml "HTTP/1.1 200 OK"
+2026-11-09 11:18:08,491 INFO pipeline.news: news: OpenAI -> 12 items (real)
+2026-11-09 11:18:09,242 INFO httpx: HTTP Request: GET https://www.anthropic.com/feed.xml "HTTP/1.1 404 Not Found"
+2026-11-09 11:18:09,248 WARNING pipeline.news: feed Anthropic failed: Client error '404 Not Found' for url 'https://www.anthropic.com/feed.xml'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404
+2026-11-09 11:18:13,025 INFO httpx: HTTP Request: GET https://blog.google/technology/ai/rss/ "HTTP/1.1 301 Moved Permanently"
+2026-11-09 11:18:13,321 INFO httpx: HTTP Request: GET https://blog.google/innovation-and-ai/technology/ai/rss/ "HTTP/1.1 200 OK"
+2026-11-09 11:18:13,347 INFO pipeline.news: news: Google AI Blog -> 12 items (real)
+
+=== Fetch report ===
+  [REAL] lmarena                  rows=0    err=unavailable: ConnectTimeout: timed out
+  [REAL] artificialanalysis       rows=282
+  [REAL] huggingface              rows=0    err=unavailable: ConnectTimeout: timed out
+  [REAL] vendor:OpenAI            rows=58 
+  [REAL] vendor:Anthropic         rows=15 
+  [REAL] vendor:Google            rows=30 
+  [REAL] vendor:DeepSeek          rows=14 
+  [REAL] vendor:Alibaba           rows=41 
+  [REAL] news                     rows=39 
+  merged models: 430  (raw real=440, mock=0)
+
+2026-11-09 11:18:13,351 INFO pipeline: wrote /Users/zhengyingbo/development/ModelRank/data-pipeline/out/models.json (430 records)
+2026-11-09 11:18:13,352 INFO pipeline: wrote /Users/zhengyingbo/development/ModelRank/data-pipeline/out/news.json (4 records)
+dry-run: wrote /Users/zhengyingbo/development/ModelRank/data-pipeline/out/models.json and /Users/zhengyingbo/development/ModelRank/data-pipeline/out/news.json
+review the JSON, then re-run with --write-db to push to Postgres.
+[2026-11-09 11:18:13] 2/5 生成前端数据 ...
+// picked 42 models from AA real rows
+// ⚠️ 9 个模型缺 MODEL_LOGO 图标映射: muse-wonder-full, muse-wonder, inkling-2-small, ling-3-1-flash-1019, muse-spark-open, nanbeige4-3-33b, inkling-small, inkling, muse-glimmer
+// 巡检任务需为这些 id 补充 model-logo.tsx 映射（或家族图标）
+// 写回 apps/web/src/lib/seed-data.ts: 已更新
+[update-news] 已写入 /Users/zhengyingbo/development/ModelRank/apps/web/src/lib/news-data.ts（30 条，mock=false）
+[2026-11-09 11:18:13] 2.5/5 Agent 产品定价核对 ...
+通道：直连 + 代理(http://127.0.0.1:9090) + 浏览器(python)
+✅ claude-code     verified    [direct]   页面仍列出 4/4 个已记录价位
+✅ cursor          verified    [direct]   页面仍列出 4/4 个已记录价位
+❌ github-copilot  unreachable            RuntimeError: render failed: Error: Page.goto: net::ERR_PROXY_CONNECTION_FAILED at https://github.com/feature
+❌ codex           unreachable            RuntimeError: render failed: Error: Page.goto: net::ERR_PROXY_CONNECTION_FAILED at https://developers.openai.
+✅ devin           verified    [direct]   页面仍列出 2/2 个已记录价位
+✅ trae            verified    [direct]   页面仍列出 4/8 个已记录价位
+❌ workbuddy       unreachable            RuntimeError: render failed: Error: Page.goto: net::ERR_PROXY_CONNECTION_FAILED at https://www.workbuddy.cn/p
+🟡 chatgpt         weak        [direct]   仅 3/7 个价位可见，覆盖率不足 50%，不刷新核对日
+❌ gemini          unreachable            RuntimeError: render failed: Error: Page.goto: net::ERR_PROXY_CONNECTION_FAILED at https://one.google.com/abo
+✅ coze            verified    [direct]   页面仍列出 5/7 个已记录价位
+✅ manus           verified    [direct]   页面仍列出 1/1 个已记录价位
+✅ windsurf        verified    [direct]   页面仍列出 3/3 个已记录价位
+✅ kiro            verified    [direct]   页面仍列出 4/4 个已记录价位
+✅ augment         verified    [direct]   页面仍列出 2/2 个已记录价位
+✅ replit          verified    [direct]   页面仍列出 4/4 个已记录价位
+✅ bolt            verified    [direct]   页面仍列出 2/2 个已记录价位
+✅ v0              verified    [direct]   页面仍列出 2/2 个已记录价位
+✅ warp            verified    [direct]   页面仍列出 2/2 个已记录价位
+✅ zed             verified    [direct]   页面仍列出 2/2 个已记录价位
+✅ notion          verified    [direct]   页面仍列出 2/2 个已记录价位
+✅ claude          verified    [direct]   页面仍列出 4/4 个已记录价位
+
+核对汇总：verified 16 / weak 1 / unverified 0 / unreachable 4
+通过通道：direct 17 家
+报告已写入 /Users/zhengyingbo/development/ModelRank/data-pipeline/out/agent_pricing_report.json
+核对日已是 2026-11-09，无需改动
+[2026-11-09 11:18:31] 3/5 数据有变化，开始构建 ...
+
+> @modelrank/web@0.0.0 build /Users/zhengyingbo/development/ModelRank/apps/web
+> next build
+
+   ▲ Next.js 15.5.28
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 5.9s
+   Linting and checking validity of types ...
+   Collecting page data ...
+ ⚠ Using edge runtime on a page currently disables static generation for that page
+   Generating static pages (0/15) ...
+   Generating static pages (3/15) 
+   Generating static pages (7/15) 
+   Generating static pages (11/15) 
+ ✓ Generating static pages (15/15)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+┌ ○ /                                    19.7 kB         155 kB
+├ ○ /_not-found                            153 B         103 kB
+├ ○ /about                               1.83 kB         109 kB
+├ ƒ /agent/[id]                          3.39 kB         111 kB
+├ ƒ /agents                              13.1 kB         121 kB
+├ ƒ /api/cost/calculate                    153 B         103 kB
+├ ƒ /api/methodology/benchmarks            153 B         103 kB
+├ ƒ /api/models                            153 B         103 kB
+├ ƒ /api/models/[id]                       153 B         103 kB
+├ ƒ /api/news                              153 B         103 kB
+├ ○ /compare                             7.24 kB         142 kB
+├ ○ /cost                                18.8 kB         149 kB
+├ ○ /data-sources                        1.83 kB         109 kB
+├ ƒ /detail/[id]                          377 kB         493 kB
+├ ○ /disclaimer                          1.83 kB         109 kB
+├ ○ /library                             5.47 kB         122 kB
+├ ○ /methodology                         1.83 kB         109 kB
+├ ○ /news                                2.53 kB         124 kB
+├ ○ /robots.txt                            153 B         103 kB
+├ ○ /search                              5.44 kB         127 kB
+└ ○ /sitemap.xml                           153 B         103 kB
++ First Load JS shared by all             103 kB
+  ├ chunks/372-a3acc2614ebe8471.js       46.5 kB
+  ├ chunks/d02de58d-4922b2630c75b8c8.js  54.2 kB
+  └ other shared chunks (total)          1.97 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+⚡️ @cloudflare/next-on-pages CLI v.1.13.16
+⚡️ Detected Package Manager: pnpm (9.15.0)
+⚡️ Preparing project...
+⚡️ Project is ready
+⚡️ Building project...
+▲  Vercel CLI 47.0.4
+▲  WARN! Build not running on Vercel. System environment variables will not be available.
+▲  Detected `pnpm-lock.yaml` 9 which may be generated by pnpm@9.x or pnpm@10.x
+▲  Using pnpm@9.x based on project creation date
+▲  To use pnpm@10.x, manually opt in using corepack (https://vercel.com/docs/deployments/configure-a-build#corepack)
+▲  WARNING: You should not upload the `.next` directory.
+▲  Installing dependencies...
+▲  Scope: all 4 workspace projects
+▲  
+▲  Done in 2.5s
+▲  Detected Next.js version: 15.5.28
+▲  Running "pnpm run build"
+▲  > @modelrank/web@0.0.0 build /Users/zhengyingbo/development/ModelRank/apps/web
+▲  > next build
+▲  ▲ Next.js 15.5.28
+▲  
+▲  Creating an optimized production build ...
+▲  ✓ Compiled successfully in 5.3s
+▲  Linting and checking validity of types ...
+▲  Collecting page data ...
+▲  ⚠ Using edge runtime on a page currently disables static generation for that page
+▲  Generating static pages (0/15) ...
+▲  Generating static pages (3/15)
+▲  Generating static pages (7/15)
+▲  Generating static pages (11/15)
+▲  ✓ Generating static pages (15/15)
+▲  Finalizing page optimization ...
+▲  Collecting build traces ...
+▲  
+▲  Route (app)                                 Size  First Load JS
+▲  ┌ ○ /                                    19.7 kB         155 kB
+▲  ├ ○ /_not-found                            153 B         103 kB
+▲  ├ ○ /about                               1.83 kB         109 kB
+▲  ├ ƒ /agent/[id]                          3.39 kB         111 kB
+▲  ├ ƒ /agents                              13.1 kB         121 kB
+▲  ├ ƒ /api/cost/calculate                    153 B         103 kB
+▲  ├ ƒ /api/methodology/benchmarks            153 B         103 kB
+▲  ├ ƒ /api/models                            153 B         103 kB
+▲  ├ ƒ /api/models/[id]                       153 B         103 kB
+▲  ├ ƒ /api/news                              153 B         103 kB
+▲  ├ ○ /compare                             7.24 kB         142 kB
+▲  ├ ○ /cost                                18.8 kB         149 kB
+▲  ├ ○ /data-sources                        1.83 kB         109 kB
+▲  ├ ƒ /detail/[id]                          377 kB         493 kB
+▲  ├ ○ /disclaimer                          1.83 kB         109 kB
+▲  ├ ○ /library                             5.47 kB         122 kB
+▲  ├ ○ /methodology                         1.83 kB         109 kB
+▲  ├ ○ /news                                2.53 kB         124 kB
+▲  ├ ○ /robots.txt                            153 B         103 kB
+▲  ├ ○ /search                              5.44 kB         127 kB
+▲  └ ○ /sitemap.xml                           153 B         103 kB
+▲  + First Load JS shared by all             103 kB
+▲  ├ chunks/372-a3acc2614ebe8471.js       46.5 kB
+▲  ├ chunks/d02de58d-4922b2630c75b8c8.js  54.2 kB
+▲  └ other shared chunks (total)          1.97 kB
+▲  ○  (Static)   prerendered as static content
+▲  ƒ  (Dynamic)  server-rendered on demand
+▲  Traced Next.js server files in: 11.075ms
+▲  Created all serverless functions in: 31.384ms
+▲  Collected static files (public/, static/, .next/static): 6.035ms
+▲  Build Completed in .vercel/output [16s]
+⚡️ Completed `pnpm exec vercel build`.
+
+⚡️ Build Summary (@cloudflare/next-on-pages v1.13.16)
+⚡️ 
+⚡️ Edge Function Routes (8)
+⚡️   ┌ /agent/[id]
+⚡️   ├ /agents
+⚡️   ├ /api/cost/calculate
+⚡️   ├ /api/methodology/benchmarks
+⚡️   ├ /api/models
+⚡️   ├ /api/models/[id]
+⚡️   ├ /api/news
+⚡️   └ /detail/[id]
+⚡️ 
+⚡️ Prerendered Routes (24)
+⚡️   ┌ /
+⚡️   ├ /_not-found
+⚡️   ├ /_not-found.rsc
+⚡️   ├ /about
+⚡️   ├ /about.rsc
+⚡️   ├ /compare
+⚡️   ├ /compare.rsc
+⚡️   ├ /cost
+⚡️   ├ /cost.rsc
+⚡️   ├ /data-sources
+⚡️   ├ /data-sources.rsc
+⚡️   ├ /disclaimer
+⚡️   ├ /disclaimer.rsc
+⚡️   ├ /index.rsc
+⚡️   ├ /library
+⚡️   ├ /library.rsc
+⚡️   ├ /methodology
+⚡️   ├ /methodology.rsc
+⚡️   ├ /news
+⚡️   └ ... 5 more
+⚡️ 
+⚡️ Other Static Assets (150)
+⚡️   ┌ /_app.rsc.json
+⚡️   ├ /_document.rsc.json
+⚡️   ├ /_error.rsc.json
+⚡️   ├ /404.html
+⚡️   └ ... 146 more
+
+⚡️ Build log saved to '.vercel/output/static/_worker.js/nop-build-log.json'
+⚡️ Generated '.vercel/output/static/_worker.js/index.js'.
+⚡️ Build completed in 1.43s
+[2026-11-09 11:19:18] 4/5 部署到 Cloudflare Pages ...
+
+ ⛅️ wrangler 4.152.0
+────────────────────
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mPages now has wrangler.toml support.[0m
+
+  We detected a configuration file at /Users/zhengyingbo/development/ModelRank/apps/web/wrangler.toml but it is missing the "pages_build_output_dir" field, required by Pages.
+  If you would like to use this configuration file to deploy your project, please use "pages_build_output_dir" to specify the directory of static files to upload.
+  Ignoring configuration file for now, and proceeding with project deploy.
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mWarning: Your working directory is a git repo and has uncommitted changes[0m
+
+  To silence this warning, pass in --commit-dirty=true
+
+
+Uploading... (150/175)
+Uploading... (159/175)
+Uploading... (167/175)
+Uploading... (175/175)
+✨ Success! Uploaded 25 files (150 already uploaded) (2.63 sec)
+
+✨ Uploading _headers
+Attaching additional modules:
+┌─────────────────────────────────────────────────────────────────────┬──────┬─────────────┐
+│ Name                                                                │ Type │ Size        │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/cache/adaptor.js                             │ esm  │ 2.29 KiB    │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/cache/cache-api.js                           │ esm  │ 0.43 KiB    │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/cache/kv.js                                  │ esm  │ 0.35 KiB    │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/agent/[id].func.js                 │ esm  │ 65.76 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/agents.func.js                     │ esm  │ 102.68 KiB  │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/api/cost/calculate.func.js         │ esm  │ 39.43 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/api/methodology/benchmarks.func.js │ esm  │ 38.74 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/api/models/[id].func.js            │ esm  │ 38.74 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/api/models.func.js                 │ esm  │ 38.72 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/api/news.func.js                   │ esm  │ 38.54 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/detail/[id].func.js                │ esm  │ 1250.96 KiB │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/manifest/88a389dd6c068190adb2efc795e4063c.js │ esm  │ 0.37 KiB    │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/webpack/0c4bf98eb1f060aed93494338b729a88.js  │ esm  │ 261.52 KiB  │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/webpack/122.js                               │ esm  │ 34.60 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/webpack/1931.js                              │ esm  │ 0.42 KiB    │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/webpack/7e274edb969f09eb662e2f3eff54eecf.js  │ esm  │ 1.73 KiB    │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/webpack/9ed5562f57a27c87dd0ec7d390b1a519.js  │ esm  │ 570.78 KiB  │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/webpack/f5ec28eeaed1d76849e07f4af5d5a9e3.js  │ esm  │ 110.79 KiB  │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ Total (18 modules)                                                  │      │ 2596.85 KiB │
+└─────────────────────────────────────────────────────────────────────┴──────┴─────────────┘
+✨ Compiled Worker successfully
+✨ Uploading Worker bundle
+✨ Uploading _routes.json
+🌎 Deploying...
+✨ Deployment complete! Take a peek over at https://3c68d967.modelrank-1br.pages.dev
+[2026-11-09 11:19:31] ✅ 部署完成 https://modelrank-1br.pages.dev
+[2026-11-09 11:19:31] 5/5 git 提交 ...
+[main e810709] chore: 每日数据更新 2026-11-09
+ Committer: 郑英博 <zhengyingbo@zhengyingbodeMacBook-Pro.local>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly:
+
+    git config --global user.name "Your Name"
+    git config --global user.email you@example.com
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 3 files changed, 5 insertions(+), 3 deletions(-)
+fatal: unable to access 'https://github.com/zhengcool-lab/modelrank.git/': Failed to connect to 127.0.0.1 port 9090 after 0 ms: Couldn't connect to server
+[2026-11-09 11:19:31] ⚠️ git push 失败（代理 127.0.0.1:9090 可能未开），已本地 commit，待代理可用后补推
+[2026-11-09 11:19:31] === 任务完成 ✅ ===
+[2026-11-09 12:20:12] === ModelRank 自动化任务开始 ===
+[2026-11-09 12:20:12] 1/5 运行数据管道 ...
+2026-11-09 12:20:12,560 INFO pipeline: === ModelRank data-pipeline run (dry_run=True, write_db=False) ===
+2026-11-09 12:20:12,560 INFO pipeline: fetching lmarena ...
+2026-11-09 12:20:15,657 WARNING pipeline.arena: arena fetch failed (no rows contributed): timed out
+2026-11-09 12:20:15,658 INFO pipeline: fetching artificialanalysis ...
+2026-11-09 12:22:11,708 INFO pipeline.aa: AA detail fill: 91 rows with real token prices
+2026-11-09 12:22:19,300 INFO pipeline.aa: AA enrich: wrote out/aa_models_full.json (726 models)
+2026-11-09 12:22:19,301 INFO pipeline.aa: AA capability: decrypted 726 models, 124 with dims (manifest 8bcfe416eb9bf19e.txt)
+2026-11-09 12:22:19,303 INFO pipeline.aa: AA capability fill: 106 rows with real 5-dim scores
+2026-11-09 12:22:19,306 INFO pipeline: fetching huggingface ...
+2026-11-09 12:22:22,329 WARNING pipeline.hf: HF fetch failed (no rows contributed): timed out
+2026-11-09 12:22:22,333 INFO pipeline: fetching vendor pricing pages ...
+2026-11-09 12:22:22,932 INFO httpx: HTTP Request: GET https://openrouter.ai/api/v1/models "HTTP/1.1 200 OK"
+2026-11-09 12:22:23,193 INFO pipeline.vendors: vendor Google: 30 live rows (openrouter)
+2026-11-09 12:22:23,193 INFO pipeline.vendors: vendor OpenAI: 58 live rows (openrouter)
+2026-11-09 12:22:23,193 INFO pipeline.vendors: vendor DeepSeek: 14 live rows (openrouter)
+2026-11-09 12:22:23,193 INFO pipeline.vendors: vendor Anthropic: 15 live rows (openrouter)
+2026-11-09 12:22:23,193 INFO pipeline.vendors: vendor Alibaba: 41 live rows (openrouter)
+2026-11-09 12:22:23,194 INFO pipeline: fetching news feeds ...
+2026-11-09 12:22:23,284 INFO httpx: HTTP Request: GET https://www.jiqizhixin.com/rss "HTTP/1.1 302 Found"
+2026-11-09 12:22:23,302 INFO httpx: HTTP Request: GET https://www.jiqizhixin.com/data-service "HTTP/1.1 200 OK"
+2026-11-09 12:22:23,305 WARNING pipeline.news: feed 机器之心 failed: not well-formed (invalid token): line 7, column 82
+2026-11-09 12:22:23,642 INFO httpx: HTTP Request: GET https://36kr.com/feed "HTTP/1.1 200 OK"
+2026-11-09 12:22:23,680 WARNING pipeline.news: feed 36氪 failed: not well-formed (invalid token): line 10, column 168
+2026-11-09 12:22:24,119 INFO httpx: HTTP Request: GET https://openai.com/news/rss.xml "HTTP/1.1 200 OK"
+2026-11-09 12:22:24,313 INFO pipeline.news: news: OpenAI -> 12 items (real)
+2026-11-09 12:22:25,023 INFO httpx: HTTP Request: GET https://www.anthropic.com/feed.xml "HTTP/1.1 404 Not Found"
+2026-11-09 12:22:25,035 WARNING pipeline.news: feed Anthropic failed: Client error '404 Not Found' for url 'https://www.anthropic.com/feed.xml'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404
+2026-11-09 12:22:25,818 INFO httpx: HTTP Request: GET https://blog.google/technology/ai/rss/ "HTTP/1.1 301 Moved Permanently"
+2026-11-09 12:22:26,106 INFO httpx: HTTP Request: GET https://blog.google/innovation-and-ai/technology/ai/rss/ "HTTP/1.1 200 OK"
+2026-11-09 12:22:26,135 INFO pipeline.news: news: Google AI Blog -> 12 items (real)
+
+=== Fetch report ===
+  [REAL] lmarena                  rows=0    err=unavailable: ConnectTimeout: timed out
+  [REAL] artificialanalysis       rows=282
+  [REAL] huggingface              rows=0    err=unavailable: ConnectTimeout: timed out
+  [REAL] vendor:OpenAI            rows=58 
+  [REAL] vendor:Anthropic         rows=15 
+  [REAL] vendor:Google            rows=30 
+  [REAL] vendor:DeepSeek          rows=14 
+  [REAL] vendor:Alibaba           rows=41 
+  [REAL] news                     rows=39 
+  merged models: 428  (raw real=440, mock=0)
+
+2026-11-09 12:22:26,141 INFO pipeline: wrote /Users/zhengyingbo/development/ModelRank/data-pipeline/out/models.json (428 records)
+2026-11-09 12:22:26,141 INFO pipeline: wrote /Users/zhengyingbo/development/ModelRank/data-pipeline/out/news.json (4 records)
+dry-run: wrote /Users/zhengyingbo/development/ModelRank/data-pipeline/out/models.json and /Users/zhengyingbo/development/ModelRank/data-pipeline/out/news.json
+review the JSON, then re-run with --write-db to push to Postgres.
+[2026-11-09 12:22:26] 2/5 生成前端数据 ...
+// picked 50 models from AA real rows
+// ⚠️ 12 个模型缺 MODEL_LOGO 图标映射: inkling-2-small, ling-3-1-flash-1019, mimo-v2-6-pro, mimo-v2-6-flash, k2-horizon-375b-a23b, inkling-small, inkling, k-exaone-2-0, granite-4-2-3b, granite-4-2-8b, gemma-4-31b, north-mini-code
+// 巡检任务需为这些 id 补充 model-logo.tsx 映射（或家族图标）
+// 写回 apps/web/src/lib/seed-data.ts: 已更新
+[update-news] 已写入 /Users/zhengyingbo/development/ModelRank/apps/web/src/lib/news-data.ts（30 条，mock=false）
+[2026-11-09 12:22:27] 2.5/5 Agent 产品定价核对 ...
+通道：直连 + 代理(http://127.0.0.1:9090) + 浏览器(python)
+✅ claude-code     verified    [direct]   页面仍列出 4/4 个已记录价位
+✅ cursor          verified    [direct]   页面仍列出 4/4 个已记录价位
+❌ github-copilot  unreachable            RuntimeError: render failed: Error: Page.goto: net::ERR_PROXY_CONNECTION_FAILED at https://github.com/feature
+❌ codex           unreachable            RuntimeError: render failed: Error: Page.goto: net::ERR_PROXY_CONNECTION_FAILED at https://developers.openai.
+✅ devin           verified    [direct]   页面仍列出 2/2 个已记录价位
+✅ trae            verified    [direct]   页面仍列出 4/8 个已记录价位
+❌ workbuddy       unreachable            RuntimeError: render failed: Error: Page.goto: net::ERR_PROXY_CONNECTION_FAILED at https://www.workbuddy.cn/p
+❌ chatgpt         unreachable            RuntimeError: render failed: Error: Page.goto: net::ERR_PROXY_CONNECTION_FAILED at https://help.openai.com/zh
+❌ gemini          unreachable            RuntimeError: render failed: Error: Page.goto: net::ERR_PROXY_CONNECTION_FAILED at https://one.google.com/abo
+✅ coze            verified    [direct]   页面仍列出 5/7 个已记录价位
+✅ manus           verified    [direct]   页面仍列出 1/1 个已记录价位
+✅ windsurf        verified    [direct]   页面仍列出 3/3 个已记录价位
+✅ kiro            verified    [direct]   页面仍列出 4/4 个已记录价位
+✅ augment         verified    [direct]   页面仍列出 2/2 个已记录价位
+✅ replit          verified    [direct]   页面仍列出 4/4 个已记录价位
+✅ bolt            verified    [direct]   页面仍列出 2/2 个已记录价位
+✅ v0              verified    [direct]   页面仍列出 2/2 个已记录价位
+✅ warp            verified    [direct]   页面仍列出 2/2 个已记录价位
+✅ zed             verified    [direct]   页面仍列出 2/2 个已记录价位
+✅ notion          verified    [direct]   页面仍列出 2/2 个已记录价位
+✅ claude          verified    [direct]   页面仍列出 4/4 个已记录价位
+
+核对汇总：verified 16 / weak 0 / unverified 0 / unreachable 5
+通过通道：direct 16 家
+报告已写入 /Users/zhengyingbo/development/ModelRank/data-pipeline/out/agent_pricing_report.json
+核对日已是 2026-11-09，无需改动
+[2026-11-09 12:23:18] 3/5 数据有变化，开始构建 ...
+
+> @modelrank/web@0.0.0 build /Users/zhengyingbo/development/ModelRank/apps/web
+> next build
+
+   ▲ Next.js 15.5.28
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 6.6s
+   Linting and checking validity of types ...
+   Collecting page data ...
+ ⚠ Using edge runtime on a page currently disables static generation for that page
+   Generating static pages (0/15) ...
+   Generating static pages (3/15) 
+   Generating static pages (7/15) 
+   Generating static pages (11/15) 
+ ✓ Generating static pages (15/15)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+┌ ○ /                                    19.8 kB         156 kB
+├ ○ /_not-found                            153 B         103 kB
+├ ○ /about                               1.83 kB         109 kB
+├ ƒ /agent/[id]                          3.41 kB         111 kB
+├ ƒ /agents                              13.1 kB         121 kB
+├ ƒ /api/cost/calculate                    153 B         103 kB
+├ ƒ /api/methodology/benchmarks            153 B         103 kB
+├ ƒ /api/models                            153 B         103 kB
+├ ƒ /api/models/[id]                       153 B         103 kB
+├ ƒ /api/news                              153 B         103 kB
+├ ○ /compare                             7.25 kB         144 kB
+├ ○ /cost                                18.8 kB         151 kB
+├ ○ /data-sources                        1.83 kB         109 kB
+├ ƒ /detail/[id]                          377 kB         495 kB
+├ ○ /disclaimer                          1.83 kB         109 kB
+├ ○ /library                             5.49 kB         124 kB
+├ ○ /methodology                         1.83 kB         109 kB
+├ ○ /news                                2.53 kB         125 kB
+├ ○ /robots.txt                            153 B         103 kB
+├ ○ /search                              5.46 kB         128 kB
+└ ○ /sitemap.xml                           153 B         103 kB
++ First Load JS shared by all             103 kB
+  ├ chunks/372-a3acc2614ebe8471.js       46.5 kB
+  ├ chunks/d02de58d-4922b2630c75b8c8.js  54.2 kB
+  └ other shared chunks (total)          1.97 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+⚡️ @cloudflare/next-on-pages CLI v.1.13.16
+⚡️ Detected Package Manager: pnpm (9.15.0)
+⚡️ Preparing project...
+⚡️ Project is ready
+⚡️ Building project...
+▲  Vercel CLI 47.0.4
+▲  WARN! Build not running on Vercel. System environment variables will not be available.
+▲  Detected `pnpm-lock.yaml` 9 which may be generated by pnpm@9.x or pnpm@10.x
+▲  Using pnpm@9.x based on project creation date
+▲  To use pnpm@10.x, manually opt in using corepack (https://vercel.com/docs/deployments/configure-a-build#corepack)
+▲  WARNING: You should not upload the `.next` directory.
+▲  Installing dependencies...
+▲  Scope: all 4 workspace projects
+▲  
+▲  Done in 2.6s
+▲  Detected Next.js version: 15.5.28
+▲  Running "pnpm run build"
+▲  > @modelrank/web@0.0.0 build /Users/zhengyingbo/development/ModelRank/apps/web
+▲  > next build
+▲  ▲ Next.js 15.5.28
+▲  
+▲  Creating an optimized production build ...
+▲  ✓ Compiled successfully in 6.0s
+▲  Linting and checking validity of types ...
+▲  Collecting page data ...
+▲  ⚠ Using edge runtime on a page currently disables static generation for that page
+▲  Generating static pages (0/15) ...
+▲  Generating static pages (3/15) 
+▲  Generating static pages (7/15)
+▲  Generating static pages (11/15)
+▲  ✓ Generating static pages (15/15)
+▲  Finalizing page optimization ...
+▲  Collecting build traces ...
+▲  
+▲  Route (app)                                 Size  First Load JS
+▲  ┌ ○ /                                    19.8 kB         156 kB
+▲  ├ ○ /_not-found                            153 B         103 kB
+▲  ├ ○ /about                               1.83 kB         109 kB
+▲  ├ ƒ /agent/[id]                          3.41 kB         111 kB
+▲  ├ ƒ /agents                              13.1 kB         121 kB
+▲  ├ ƒ /api/cost/calculate                    153 B         103 kB
+▲  ├ ƒ /api/methodology/benchmarks            153 B         103 kB
+▲  ├ ƒ /api/models                            153 B         103 kB
+▲  ├ ƒ /api/models/[id]                       153 B         103 kB
+▲  ├ ƒ /api/news                              153 B         103 kB
+▲  ├ ○ /compare                             7.25 kB         144 kB
+▲  ├ ○ /cost                                18.8 kB         151 kB
+▲  ├ ○ /data-sources                        1.83 kB         109 kB
+▲  ├ ƒ /detail/[id]                          377 kB         495 kB
+▲  ├ ○ /disclaimer                          1.83 kB         109 kB
+▲  ├ ○ /library                             5.49 kB         124 kB
+▲  ├ ○ /methodology                         1.83 kB         109 kB
+▲  ├ ○ /news                                2.53 kB         125 kB
+▲  ├ ○ /robots.txt                            153 B         103 kB
+▲  ├ ○ /search                              5.46 kB         128 kB
+▲  └ ○ /sitemap.xml                           153 B         103 kB
+▲  + First Load JS shared by all             103 kB
+▲  ├ chunks/372-a3acc2614ebe8471.js       46.5 kB
+▲  ├ chunks/d02de58d-4922b2630c75b8c8.js  54.2 kB
+▲  └ other shared chunks (total)          1.97 kB
+▲  ○  (Static)   prerendered as static content
+▲  ƒ  (Dynamic)  server-rendered on demand
+▲  Traced Next.js server files in: 15.174ms
+▲  Created all serverless functions in: 28.357ms
+▲  Collected static files (public/, static/, .next/static): 7.173ms
+▲  Build Completed in .vercel/output [21s]
+⚡️ Completed `pnpm exec vercel build`.
+
+⚡️ Build Summary (@cloudflare/next-on-pages v1.13.16)
+⚡️ 
+⚡️ Edge Function Routes (8)
+⚡️   ┌ /agent/[id]
+⚡️   ├ /agents
+⚡️   ├ /api/cost/calculate
+⚡️   ├ /api/methodology/benchmarks
+⚡️   ├ /api/models
+⚡️   ├ /api/models/[id]
+⚡️   ├ /api/news
+⚡️   └ /detail/[id]
+⚡️ 
+⚡️ Prerendered Routes (24)
+⚡️   ┌ /
+⚡️   ├ /_not-found
+⚡️   ├ /_not-found.rsc
+⚡️   ├ /about
+⚡️   ├ /about.rsc
+⚡️   ├ /compare
+⚡️   ├ /compare.rsc
+⚡️   ├ /cost
+⚡️   ├ /cost.rsc
+⚡️   ├ /data-sources
+⚡️   ├ /data-sources.rsc
+⚡️   ├ /disclaimer
+⚡️   ├ /disclaimer.rsc
+⚡️   ├ /index.rsc
+⚡️   ├ /library
+⚡️   ├ /library.rsc
+⚡️   ├ /methodology
+⚡️   ├ /methodology.rsc
+⚡️   ├ /news
+⚡️   └ ... 5 more
+⚡️ 
+⚡️ Other Static Assets (152)
+⚡️   ┌ /_app.rsc.json
+⚡️   ├ /_document.rsc.json
+⚡️   ├ /_error.rsc.json
+⚡️   ├ /404.html
+⚡️   └ ... 148 more
+
+⚡️ Build log saved to '.vercel/output/static/_worker.js/nop-build-log.json'
+⚡️ Generated '.vercel/output/static/_worker.js/index.js'.
+⚡️ Build completed in 1.52s
+[2026-11-09 12:24:16] 4/5 部署到 Cloudflare Pages ...
+
+ ⛅️ wrangler 4.152.0 (update available 4.158.0)
+───────────────────────────────────────────────
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mPages now has wrangler.toml support.[0m
+
+  We detected a configuration file at /Users/zhengyingbo/development/ModelRank/apps/web/wrangler.toml but it is missing the "pages_build_output_dir" field, required by Pages.
+  If you would like to use this configuration file to deploy your project, please use "pages_build_output_dir" to specify the directory of static files to upload.
+  Ignoring configuration file for now, and proceeding with project deploy.
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mWarning: Your working directory is a git repo and has uncommitted changes[0m
+
+  To silence this warning, pass in --commit-dirty=true
+
+
+Uploading... (144/177)
+Uploading... (155/177)
+Uploading... (166/177)
+Uploading... (177/177)
+✨ Success! Uploaded 33 files (144 already uploaded) (3.75 sec)
+
+✨ Uploading _headers
+Attaching additional modules:
+┌─────────────────────────────────────────────────────────────────────┬──────┬─────────────┐
+│ Name                                                                │ Type │ Size        │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/cache/adaptor.js                             │ esm  │ 2.29 KiB    │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/cache/cache-api.js                           │ esm  │ 0.43 KiB    │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/cache/kv.js                                  │ esm  │ 0.35 KiB    │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/agent/[id].func.js                 │ esm  │ 65.76 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/agents.func.js                     │ esm  │ 102.68 KiB  │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/api/cost/calculate.func.js         │ esm  │ 39.43 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/api/methodology/benchmarks.func.js │ esm  │ 38.74 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/api/models/[id].func.js            │ esm  │ 38.74 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/api/models.func.js                 │ esm  │ 38.72 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/api/news.func.js                   │ esm  │ 38.54 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/functions/detail/[id].func.js                │ esm  │ 1265.46 KiB │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/manifest/88a389dd6c068190adb2efc795e4063c.js │ esm  │ 0.37 KiB    │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/webpack/0c4bf98eb1f060aed93494338b729a88.js  │ esm  │ 276.03 KiB  │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/webpack/122.js                               │ esm  │ 34.60 KiB   │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/webpack/1931.js                              │ esm  │ 0.42 KiB    │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/webpack/7e274edb969f09eb662e2f3eff54eecf.js  │ esm  │ 1.73 KiB    │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/webpack/9ed5562f57a27c87dd0ec7d390b1a519.js  │ esm  │ 570.85 KiB  │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ __next-on-pages-dist__/webpack/f5ec28eeaed1d76849e07f4af5d5a9e3.js  │ esm  │ 110.79 KiB  │
+├─────────────────────────────────────────────────────────────────────┼──────┼─────────────┤
+│ Total (18 modules)                                                  │      │ 2625.93 KiB │
+└─────────────────────────────────────────────────────────────────────┴──────┴─────────────┘
+✨ Compiled Worker successfully
+✨ Uploading Worker bundle
+✨ Uploading _routes.json
+🌎 Deploying...
+✨ Deployment complete! Take a peek over at https://871c54b1.modelrank-1br.pages.dev
+[2026-11-09 12:24:35] ✅ 部署完成 https://modelrank-1br.pages.dev
+[2026-11-09 12:24:35] 5/5 git 提交 ...
+[main a9d6320] chore: 每日数据更新 2026-11-09
+ Committer: 郑英博 <zhengyingbo@zhengyingbodeMacBook-Pro.local>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly:
+
+    git config --global user.name "Your Name"
+    git config --global user.email you@example.com
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 7 files changed, 538 insertions(+), 33 deletions(-)
+fatal: unable to access 'https://github.com/zhengcool-lab/modelrank.git/': Failed to connect to 127.0.0.1 port 9090 after 0 ms: Couldn't connect to server
+[2026-11-09 12:24:35] ⚠️ git push 失败（代理 127.0.0.1:9090 可能未开），已本地 commit，待代理可用后补推
+[2026-11-09 12:24:35] === 任务完成 ✅ ===
+
+[2026-11-09 14:36:00] === AI 巡检修复任务（定时触发）===
+[2026-11-09 14:36:00] 1/6 线上全量巡检 bash deploy/health-check.sh
+[2026-11-09 14:36:30] 结果：通过 107 / 失败 0（页面可达性、图标资源、sitemap/robots、数据完整性、体积预算全绿）
+[2026-11-09 14:36:30] 结论：无 404 资源、无数据缺失，无需重跑数据管道
+[2026-11-09 14:37:00] 2/6 核对 gen-ui-models.py 的「缺 MODEL_LOGO 图标映射」清单
+[2026-11-09 14:37:00] 脚本口径（UI_MODELS 50 条）缺映射 4 个：
+[2026-11-09 14:37:00]   inkling-2-small / ling-3-1-flash-1019 / inkling-small / inkling（均属 Inclusion AI，线上为首字母蓝块）
+[2026-11-09 14:37:30] 取源：https://inclusionai.github.io/img/logo_head.png（官方站点 528×58 字标，HTTP 200）
+[2026-11-09 14:39:00] 处理：从官方字标裁出图形标记（x 0-79）→ 256×256 正方形 PNG
+[2026-11-09 14:40:00] 落盘：apps/web/public/product-logos/inclusion-ai.png（10,794 B）、apps/web/public/vendor-logos/inclusion-ai.png（同源）
+[2026-11-09 14:41:00] 映射：model-logo.tsx 增加 4 条 MODEL_LOGO（家族图标复用）+ VENDOR_SLUG["Inclusion AI"]="inclusion-ai" + VENDOR_EXT
+[2026-11-09 14:42:00] 构建：pnpm build ✅ + pnpm exec next-on-pages ✅
+[2026-11-09 14:42:40] 部署：https://879cb60d.modelrank-1br.pages.dev
+[2026-11-09 14:43:00] 3/6 巡检未覆盖但页面可见的数据矛盾复核
+[2026-11-09 14:43:00] 现象：/detail/ling-3-1-flash-1019 卡头徽章「闭源」，同屏厂商卡「开源权重 14 / 闭源 0」，license=MIT + HF 权重链接
+[2026-11-09 14:43:20] 根因：gen-ui-models.py 开源标记取 models.json 的 open_source（该字段恒 null）→ 回退 OPEN_PATTERNS 名字规则（缺 Ling/Inkling）
+[2026-11-09 14:43:20]      未使用 AA enrich 的 isOpenWeights（详情页厂商卡用的正是这个字段），两处口径不同源
+[2026-11-09 14:43:40] 修复：优先级改为 AA isOpenWeights > 管道 open_source > 名字规则
+[2026-11-09 14:44:00] 重生成：scripts/gen-ui-models.py --write，git diff 仅 1 行（ling-3-1-flash-1019 openSource false→true）
+[2026-11-09 14:44:00] 全量校验：50 条中仅该条变化，开源 32 / 闭源 18，无其他字段漂移
+[2026-11-09 14:44:30] 构建 ✅ / 部署 https://fcac1b79.modelrank-1br.pages.dev ✅
+[2026-11-09 14:44:40] 4/6 部署后重跑巡检
+[2026-11-09 14:45:00] 结果：通过 108 / 失败 0（首页 gzip 18,983 B < 60,000）
+[2026-11-09 14:45:10] 5/6 线上回读
+[2026-11-09 14:45:10]   /product-logos/inclusion-ai.png 200 (10,794 B)、/vendor-logos/inclusion-ai.png 200
+[2026-11-09 14:45:10]   /detail/ling-3-1-flash-1019 HTTP 200，徽章「开源」与厂商卡「开源权重 14」一致
+[2026-11-09 14:45:10]   主域 modelrank-1br.pages.dev 已同版本（HTML 含 inclusion-ai.png 引用）
+[2026-11-09 14:45:30] 6/6 遗留（本轮未修，原因）
+[2026-11-09 14:45:30]   - Claude 套餐仍写 Max 5x $100 / Max 20x $200 / Team 询价，官方为 Max $100 + Ultra $200 + Team $20/席年付（需逐条改 agent-data.ts，未在本轮巡检范围内动数据）
+[2026-11-09 14:45:30]   - /api/models、/api/news 等 5 个路由仍读 lib/repo.ts 原型假数据（改造需重写数据层，属独立需求）
+[2026-11-09 14:45:30]   - layout.tsx metadataBase 指向已失效域 modelrank.zheng-cool.workers.dev（HTTP 000）
+[2026-11-09 14:45:30]   - IBM / LG AI Research / IFM 仍为中性字标占位（无可用官方方形 logo）
+[2026-11-09 14:45:30]   - 深色 --mr-card #1c1c1e 与 --mr-page #0f172a 色相不一致（token 级遗留）
+
+==============================================================================
+[2026-11-09 15:00:00]
+【审计】用户拍板「五项一律按最优方案执行，套餐过时纳入巡检自动修复范围」
+[2026-11-09 15:01:00]
+[1/5] Claude 套餐重定价：逐档核对 https://claude.com/pricing（HTTP 200，1.32MB）。官方档位为 Free $0 / Pro $20（年付折合 $17）/ Max $100 / Ultra $200 / Team Standard $25（年付 $20，per seat）/ Team Premium $125（年付 $100，per seat）/ Enterprise $20（per seat，用量按 API 价）。原页面 Max 5x·Max 20x·Team-Enterprise 询价三档全部作废。
+[2026-11-09 15:02:00]
+[1/5] 写入 agent-data.ts 两份条目：id=claude-code（编码，6 档，无 Free）与 id=claude（通用，7 档含 Free）。首次只改 claude-code 导致 /agent/claude 仍显示旧档，复核后补齐第二份，两页均以 $17/$100/$200/$125 等实价渲染。priceCheckedAt 统一 2026-11-09；sources 去掉第三方 PDF，换官方 docs.claude.com/claude-code/overview。
+[2026-11-09 15:03:00]
+[1/5-机制] 巡检自动修复三件套：① 基准 data-pipeline/reference/agent-pricing.json（checkedAt + 每产品 plans + sourceUrl + verifyTokens）；② 脚本 data-pipeline/scripts/sync-agent-pricing.py，--check 比对源码与基准（漂移 rc=2、逐字段打印 diff）、--write 幂等回写 plans 与 priceCheckedAt、--verify-page 校验官方页仍含基准价位/档位（缺失 rc=3）；③ deploy/health-check.sh 新增「--- Agent 套餐价格 ---」段（2c）：抓官方定价页 → verify-page → --check，漂移则自动 --write 再 check，两次 rc=0 记「已自动修复（需构建部署后线上生效）」，官方页自身改价只告警不猜测。
+[2026-11-09 15:04:00]
+[1/5-验证] 模拟漂移（Max monthly 100→101）：--check rc=2 精确报「Max.monthly 源码=101 基准=100」→ --write 回写 → --check rc=0，diff 结果与基准版逐字节一致（幂等）。线上巡检三项全绿：官方页可达 1,321,839 B、仍含全部基准价位、套餐价与基准一致。
+[2026-11-09 15:05:00]
+[2/5] /api/* 去原型假数据：repo.ts 整文件重写，数据源改为 UI_MODELS/UI_NEWS（AA 真实抓取），删除 sin() 编造的 12 周趋势 mockTrend() 与按 1.2/1.05 倍伪造的 priceHistory；types.ts 三个 DTO 同步真实字段（priceInput/priceOutput 为 USD·1M tokens、contextLabel、priceEstimated、priceCheckedAt、openSource、releaseDate、dataUpdatedAt），ListModelsQuery.sort 由 publishedAt 改为 contextLength|releaseDate；seed-data.ts 删除 SEED_MODELS/SEED_BENCHMARKS/SEED_NEWS 三块死数据（5,659 B / 239 行）；derived-data.ts 删零引用的 MethodologyWeightMap（0.35/0.25/0.20/0.12/0.08 幻造权重 + LMSYS/LiveBench 伪拆分比例，38 行）。
+[2026-11-09 15:06:00]
+[2/5-验证] 线上回读：/api/models?pageSize=2 返回 gemini-4-carbon（priceInput 4 / priceOutput 20 / contextLength 1000000 / releaseDate 2026-10-28）；/api/models/gemini-4-carbon 无 priceHistory、dims 存在、scoreTrend=0 条（该模型无真实采样，留空不补造）；/api/news 30 条；/api/methodology/benchmarks total=9（LCR 47/50 覆盖、coverage 0.94、top 88.3、median 80），并新增 source 说明「AA 官方子项真实成绩，本站不对子项设权重」；/api/cost/calculate 返回 monthlyCost 800 + 3 个更便宜替代，assumptions 增加 currency=USD 与计价单位说明。
+[2026-11-09 15:07:00]
+[3/5] layout.tsx metadataBase：https://modelrank.zheng-cool.workers.dev（实测 HTTP 000 死域）→ https://modelrank-1br.pages.dev；description 中「性价比」改为「能力档分级」。线上回读 og:url = https://modelrank-1br.pages.dev。
+[2026-11-09 15:08:00]
+[4/5] IBM/LG/IFM 官方 logo 替换中性字标：IBM 取官方品牌 PNG（1034×780 RGBA）去白底裁 bbox、切掉右下 ®、等比缩至宽 240 居中 256×256 → 6,814 B；LG 取 cdn.simpleicons.org/lg 矢量经 Playwright 渲染 600×600 后取红圆标缩至 199×199 → 18,806 B；IFM 仅有 favicon 48×48 点阵簇，放大至 230 居中 → 31,300 B。六份文件（product-logos + vendor-logos 各 3）落盘，删除旧 {ibm,lg,ifm}.svg 首字母方块；model-logo.tsx 的 VENDOR_EXT/三条 MODEL_LOGO 改 png，LOGO_VERSION 2→3 破缓存。
+[2026-11-09 15:09:00]
+[4/5-验证] 线上 6 个 png 全 200；WebKit @2x 截图肉眼确认 /detail/granite-4-2-3b 为 IBM 蓝色 8 条纹字标、/detail/k-exaone-2-0 为 LG 红圆标、/detail/k2-horizon-375b-a23b 为 IFM 点阵簇，浅色/深色两套均正常。已知限制：IFM 源图仅 48×48，放大后细节有限，属源侧上限。
+[2026-11-09 15:10:00]
+[5/5] 深色 token 色相统一：--mr-bg #0f172a（HSL 215）下，--mr-card #1c1c1e（中性近黑）与 --mr-card-2 #171c28 色相割裂 → 改 #16202f / #1b2637（同属蓝灰 HSL 215，卡片比背景亮一档）；文字 #9aa4b2 在新卡面对比度约 5.2:1，达 WCAG AA。grep 确认全站无其余硬编码残留；线上 CSS 回读 --mr-card:#16202f、--mr-card-2:#1b2637，浅色仍 #fff/#f2f3f5。
+[2026-11-09 15:11:00]
+[构建] 首轮 pnpm build 因 types.ts 的 ListModelsQuery.sort 未同步（仍含 publishedAt）类型失败，改 contextLength|releaseDate 后重建全绿；pnpm exec next-on-pages 全绿；两次上线：5b176d7c（API/metadataBase/logo/深色 token）→ 5206fbd0（补通用 Claude 产品条目）→ 5ba470a9（最终版，仅注释整理）。构建失败期间未部署，线上始终保留可用版本。
+[2026-11-09 15:17:00]
+[巡检] bash deploy/health-check.sh 终检：通过 111 / 失败 0（新增 3 项套餐价巡检全绿）；数据完整性 UI_MODELS 50 / priceLevel high 11 / priceEstimated=true 9 / 新闻 30；首页 gzip 18,970 B（预算 60,000）。
+[2026-11-09 15:18:00]
+[遗留] ① IBM/LG/IFM 三张合成图标为源资产最佳可得版本（IFM 受 48×48 源限制），如需更高清需拿到官方 SVG/品牌包；② 巡检对「官方页改价」只告警不自动猜测新价，需人工确认后更新基准，这是刻意边界（避免把年付折算价写错）；③ grok-4-7 仍无官方图标源，保留首字母方块（任务已列为已知例外）；④ Inkling 2 Small 的 license 矛盾疑来自 AA 源数据、新闻单一信源，均需上游修复；⑤ git push 仍连 127.0.0.1:9090 不通，本轮仅本地提交。
+
+
+[2026-11-09 16:02:11] /cost 右侧结果卡改「浅底主色渐变 + 主色大数字」
+- 问题：右侧 400px 结果区整块实心 --mr-primary 品牌蓝，与页面浅底卡片的轻盈感冲突，视觉重量压过左卡。
+- 方案（最优解，保留数字锚点、去掉色块锚点）：background linear-gradient(168deg, var(--mr-primary-bg), var(--mr-card) 64%) + 1px var(--mr-border) + var(--mr-shadow)；核心数字 fontSize 42 / weight 600 / color var(--mr-primary)（空态 --mr-text-4）；标题行改左右分布（「预估月成本」+「{model} · 含缓存折算」11px --mr-text-3 单行省略）；分隔线 rgba(255,255,255,.2) → var(--mr-border)；对比按钮白底蓝字 → var(--mr-primary) 底白字 高 34；「同预算可考虑」推荐项 rgba(255,255,255,.1) → var(--mr-card-2) + --mr-border 描边 + --mr-text-2。
+- 保留：数字仍是页面上唯一的 42px 大号字，锚点位置不变；主色改为「强调色」而非「底色」，深浅两套均只靠 token。
+
+[2026-11-09 16:02:11] globals.css 品牌 token 契约注释补齐 card-2
+- 原注释仍写 dark card #1C1C1E，与已上线的 #16202F / #1B2637 不符（P0 遗留 token 口述与代码不一致）。
+- 现注释：light: bg #F2F2F7 / card #FFFFFF / card-2 #F2F3F5 / text #1D1D1F / primary #2A5CAA；dark : bg #0F172A / card #16202F / card-2 #1B2637 / text #F5F7FA / primary #5B8DEF。
+
+[2026-11-09 16:02:11] 用户复述的五项「仍存在」逐项线上回读（均为已修复态）
+- Claude 套餐：/agent/claude `Max 5x` 计数 0；现为 Pro $17（原价 $20）/ Max $100 / Ultra $200 / Team Standard $20（原价 $25）/ Team Premium $100（原价 $125）/ Enterprise $20。
+- Ling 3.1 Flash 1019：详情页徽章「开源」，厂商卡「开源权重 14 / 闭源 0」，许可证 MIT + HF 权重链接三者自洽；seed-data openSource=true。
+- /api/*：/api/models?pageSize=1 返 gemini-4-carbon，priceInput 4 / priceOutput 20 / contextLength 1000000，真实 AA 字段，非原型假数据。
+- metadataBase：首页 `modelrank.zheng-cool.workers.dev` 计数 0，og:url = https://modelrank-1br.pages.dev。
+- 深色 token：--mr-bg #0f172a / --mr-card #16202f / --mr-card-2 #1b2637 已在线，色相同为蓝灰（HSL 215）。
+- 结论：用户看到的是更早的审计快照（缓存页/旧截图），线上无对应缺陷；本轮只补了注释一致性。
+
+[2026-11-09 16:02:11] 构建与验证
+- pnpm build rc=0；pnpm exec next-on-pages rc=0；wrangler pages deploy → https://0c7de905.modelrank-1br.pages.dev（主域 https://modelrank-1br.pages.dev 同版本）。
+- WebKit 1400×1000 dsf=2 截图浅/深两套，浅色为淡蓝渐变卡 + $628 主色大数字 + 主色胶囊按钮；深色同结构、主色 #5b8def 数字可读、卡片与背景同色相。
+- 部署后重跑 deploy/health-check.sh：通过 111 / 失败 0（首页 gzip 18,966 B）。
+
+[2026-11-09 16:40:22] 未解决项收口（本轮）
+- 闭源挂开源许可：derived-data.ts 许可证行改为 openSource === false 输出「专有（权重未公开）」，seed-data.ts 删除 inkling-2-small 的 license；回读 /detail/inkling-2-small：专有文案 1 处、Apache 2.0 0 处。
+- 新闻分类误判：news.py 分类改为正则 + 英文词边界（反例 Corporate/LifeVal/cost-effective），修掉「Appoints...Corporate Affairs→价格」「LifeVal→评测」「cost-effective→价格」。
+- 新闻单一信源：FEEDS 换为实测可解析的 6 源（雷峰网/极客公园/OpenAI/Google/TechCrunch/The Verge），移除机器之心、36氪（302 到 data-service / 非良构 XML）与 Anthropic（404）；新增单源占比上限与历史条目让位本次抓取。
+- Atom 时间 bug：The Verge 的 updated 为 ISO-8601，旧逻辑 parsedate_to_datetime 解析失败全部回退 now，10 条同秒霸榜；改为 RFC822→ISO 双解析，时间恢复 +08:00 正确排序。
+- Cursor 档位命名对齐官方：高级版→Premium，tagline 与倍数说明同步；数值（Free 0/Plus 8/Premium 30/Super 100/Ultra 200/Teams 30 起每席）与 cursor.com/pricing 一致，无过时。
+- apps/api 原型降级：InMemoryRepository 在 NODE_ENV=production 直接抛错（演示数据不得当线上数据）；README 明确 apps/web 为唯一真相源。站点 /api 五个路由已复核均走 src/lib/repo.ts 真实数据。
+- 构建/部署：pnpm build rc=0（/tmp/b7.log）、next-on-pages rc=0（/tmp/n7.log）、wrangler 部署 e78eed6d。
+- 巡检：bash deploy/health-check.sh 111 通过 / 0 失败（/tmp/hc7.log，gzip 19,240 B / raw 419,703）。

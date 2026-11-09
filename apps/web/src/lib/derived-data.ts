@@ -74,8 +74,10 @@ export function getModelSpecs(model: UIModelRecord): SpecRow[] {
     }
   }
 
-  // 许可证
-  if (model.license) {
+  // 许可证：闭源模型的权重未公开，开源许可条款不适用，不能展示 OSS 许可证
+  if (model.openSource === false) {
+    rows.push({ label: "许可证", value: "专有（权重未公开）" });
+  } else if (model.license) {
     rows.push({ label: "许可证", value: model.license });
   }
 

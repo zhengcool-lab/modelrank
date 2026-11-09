@@ -1096,7 +1096,6 @@ export const UI_MODELS: UIModelRecord[] = [
     releaseDate: "2026-11-05",
     params: "594B（激活 17B）",
     isReasoning: true,
-    license: "Apache 2.0",
     modalities: {
       in: ["文本", "图像"],
       out: ["文本"],

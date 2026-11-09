@@ -32,22 +32,71 @@ from .common import make_client, now_iso
 log = logging.getLogger("pipeline.news")
 
 # 中文媒体优先（国内网络稳定），官方 RSS 尽量补
+# 单一信源会让"新闻"变成某家公司的通稿列表，因此显式保留中文 + 英文多源。
+# 2026-11-09 实测（逐个抓正文首字节确认是真 RSS）：
+#   机器之心 /rss 302 到 data-service、36氪 /feed 返回非良构 XML → 不是真 feed，已移除；
+#   Anthropic 官方 feed 404、HuggingFace / Meta / NVIDIA feed 不可达 → 未收录。
+#   雷峰网、极客公园、OpenAI、Google、TechCrunch、The Verge 可用。
 FEEDS = [
-    ("机器之心", "https://www.jiqizhixin.com/rss"),
-    ("36氪", "https://36kr.com/feed"),
+    ("雷峰网", "https://www.leiphone.com/feed"),
+    ("极客公园", "https://www.geekpark.net/rss"),
     ("OpenAI", "https://openai.com/news/rss.xml"),
-    ("Anthropic", "https://www.anthropic.com/feed.xml"),
-    ("Google AI Blog", "https://blog.google/technology/ai/rss/"),
+    ("Google AI Blog", "https://blog.google/innovation-and-ai/technology/ai/rss/"),
+    ("TechCrunch AI", "https://techcrunch.com/category/artificial-intelligence/feed/"),
+    ("The Verge AI", "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml"),
 ]
 
 ALLOWED_CATEGORIES = {"发布", "评测", "融资", "政策", "价格"}
 
-# 标题关键词 -> 分类（命中优先，按顺序判断）
+# 标题关键词 -> 分类（正则，英文一律要求词边界）
+# 反例教训：旧的裸子串匹配把 "Corporate"（含 rate）判成价格、把 "LifeVal"（含 eval）
+# 判成评测、把 "cost-effective"（含 cost）判成价格。这里改为词边界 + 明确的定价短语。
 CATEGORY_KEYWORDS: list[tuple[str, tuple[str, ...]]] = [
-    ("价格", ("price", "pricing", "cost", "cut", "reduce", "discount", "rate", "降价", "涨价", "下调", "价格", "收费", "成本", "定价")),
-    ("评测", ("benchmark", "eval", "arena", "ranking", "score", "blind", "胜率", "评测", "榜单", "跑分", "排行")),
-    ("融资", ("funding", "raise", "series", "valuation", "invest", "融资", "估值", "投资", "轮")),
-    ("政策", ("policy", "regulation", "act", "compliance", "oversight", "政策", "监管", "合规", "备案", "法案", "治理")),
+    (
+        "价格",
+        (
+            r"\bpric(e|es|ed|ing)\b",
+            r"\bprice\s+(cut|drop|increase|hike|change)\b",
+            r"\bcost\s*-?\s*(cut|reduction|saving)\b",
+            r"\bsubscription\s+(fee|price|tier)\b",
+            r"\bper\s+(month|seat)\b",
+            r"降价|涨价|调价|定价|提价|计费|收费|价格|订阅费|月费",
+        ),
+    ),
+    (
+        "评测",
+        (
+            r"\bbenchmark(s|ed|ing)?\b",
+            r"\beval(uation)?s?\b",
+            r"\bleaderboard\b",
+            r"\barena\b",
+            r"\branking(s)?\b",
+            r"\bscore(s|d)?\b",
+            r"评测|测评|实测|横评|跑分|榜单|排行|基准测试",
+        ),
+    ),
+    (
+        "融资",
+        (
+            r"\bfunding\b",
+            r"\braise(s|d)?\s+(a\s+)?\$",
+            r"\bseries\s+[a-e]\b",
+            r"\bvaluation\b",
+            r"\bipo\b",
+            r"融资|估值|轮融资|领投|募资",
+        ),
+    ),
+    (
+        "政策",
+        (
+            r"\bpolicy\b",
+            r"\bregulat(ion|ions|ory|e|es)\b",
+            r"\bai\s+act\b",
+            r"\bcompliance\b",
+            r"\b(governments?|senate|congress|parliament)\b",
+            r"政策|监管|合规|备案|法案|立法|治理",
+        ),
+    ),
 ]
 
 # 模型名关键词 -> relatedModel（标题命中即关联）
@@ -116,10 +165,11 @@ def _summary_from_description(desc: str | None, max_len: int = 110) -> str:
 
 
 def _classify(title: str) -> str:
+    """标题分类。命中顺序：价格 > 评测 > 融资 > 政策，未命中归为发布。"""
     low = title.lower()
-    for cat, kws in CATEGORY_KEYWORDS:
-        for kw in kws:
-            if kw in low:
+    for cat, patterns in CATEGORY_KEYWORDS:
+        for pat in patterns:
+            if re.search(pat, low):
                 return cat
     return "发布"
 
@@ -164,20 +214,48 @@ def _parse_atom(entry, ns: dict[str, str]) -> dict[str, Any] | None:
 
 
 def _to_iso(pub_raw: str) -> str:
-    """RSS pubDate / Atom updated -> ISO-8601 with +08:00 offset."""
-    try:
-        dt = parsedate_to_datetime(pub_raw)
+    """RSS pubDate / Atom updated -> ISO-8601 with +08:00 offset.
+
+    Atom 的 updated 是 ISO-8601（2026-11-09T08:31:18Z），parsedate_to_datetime
+    只认 RFC822，解析失败会让整批条目回退成 now，从而全部堆到列表顶部。
+    这里按 RFC822 → ISO-8601 顺序尝试，只有都失败才回退 now。
+    """
+    raw = (pub_raw or "").strip()
+    dt: datetime | None = None
+    if raw:
+        try:
+            dt = parsedate_to_datetime(raw)
+        except Exception:  # noqa: BLE001 - RFC822 失败后按 ISO 再试
+            dt = None
         if dt is None:
-            raise ValueError("unparseable")
-        if dt.tzinfo is None:
-            dt = dt.replace(tzinfo=timezone.utc)
-        return dt.astimezone(timezone(timedelta(hours=8))).strftime("%Y-%m-%dT%H:%M:%S+08:00")
-    except Exception:
+            try:
+                dt = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+            except Exception:  # noqa: BLE001
+                dt = None
+    if dt is None:
         return now_iso()
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(timezone(timedelta(hours=8))).strftime("%Y-%m-%dT%H:%M:%S+08:00")
+
+
+def _sanitize_xml(xml_text: str) -> str:
+    """把常见不合法的 XML 修到可解析：控制字符、裸 &、多余 BOM。
+
+    国内 rss（机器之心 / 36氪）经常在 description 里塞未转义的 & 或 HTML 实体，
+    ElementTree 会直接 not well-formed。先做最小清洗再重试，不静默丢整源。
+    """
+    text = re.sub(r"[\x00-\x08\x0b\x0c\x0e-\x1f]", "", xml_text)
+    text = re.sub(r"&(?!#?\w+;)", "&amp;", text)
+    text = text.lstrip("\ufeff").strip()
+    return text
 
 
 def _parse_feed(xml_text: str, source_label: str) -> list[dict[str, Any]]:
-    root = ET.fromstring(xml_text)
+    try:
+        root = ET.fromstring(xml_text)
+    except ET.ParseError:
+        root = ET.fromstring(_sanitize_xml(xml_text))
     items: list[dict[str, Any]] = []
     for item in root.findall("./channel/item"):
         parsed = _parse_rss2(item)
@@ -259,6 +337,12 @@ def fetch() -> dict[str, Any]:
     # 按时间降序、按标题去重，保留上限 60 条。
     history = _load_history()
     merged = deduped + [h for h in history if h.get("title")]
+    # 本次抓取优先：历史条目里可能残留旧版本时间戳（例如 Atom 解析失败被写成 now），
+    # 若先按时间排序再去重，这些假时间会压过刚抓到的同标题条目。
+    fresh_titles = {
+        re.sub(r"[^a-z0-9\u4e00-\u9fff]", "", n["title"].lower()) for n in deduped
+    }
+    merged = [h for h in history if h.get("title") and re.sub(r"[^a-z0-9\u4e00-\u9fff]", "", h["title"].lower()) not in fresh_titles] + deduped
     merged.sort(key=lambda n: n.get("time", ""), reverse=True)
     final: list[dict[str, Any]] = []
     seen_titles: set[str] = set()
@@ -274,4 +358,20 @@ def fetch() -> dict[str, Any]:
         seen_ids.add(nid)
         n["id"] = nid
         final.append(n)
-    return {"source": "news", "news": final[:60], "is_mock": False, "error": None}
+    # 信源多样性：逐条按时间挑选时给每个信源设上限，避免单个 feed 占满列表；
+    # 上限不满足总数时再按时间回填，保证条数不因限流而缩水。
+    limit = 60
+    per_source_cap = max(6, limit // 3)
+    picked: list[dict[str, Any]] = []
+    overflow: list[dict[str, Any]] = []
+    counts: dict[str, int] = {}
+    for n in final:
+        src = str(n.get("source") or "")
+        if counts.get(src, 0) >= per_source_cap:
+            overflow.append(n)
+            continue
+        counts[src] = counts.get(src, 0) + 1
+        picked.append(n)
+    picked.extend(overflow[: max(0, limit - len(picked))])
+    picked.sort(key=lambda n: n.get("time", ""), reverse=True)
+    return {"source": "news", "news": picked[:limit], "is_mock": False, "error": None}
