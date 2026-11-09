@@ -113,6 +113,9 @@ const MODEL_LOGO: Record<string, string> = {
   "nemotron-3-nano-4b": "nvidia.svg",
   "command-a": "cohere.png",
   "grok-4-7": "grok.png",
+  // Reflection AI 官方站点 icon（96×96，reflection.ai/icon1.png）；
+  // Meta（Muse 家族）与 Nanbeige 官网只提供 16px favicon / 无独立标，暂走首字母方块兜底。
+  "beam-1-0": "reflection.png",
 };
 
 /**

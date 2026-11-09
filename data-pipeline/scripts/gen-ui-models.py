@@ -31,6 +31,7 @@ VENDOR_CREATOR = {
     "StepFun": "stepfun", "MiniMax": "minimax", "Tencent": "tencent",
     "Thinking Machines": "thinking-machines", "Inclusion AI": "inclusionai",
     "Mistral": "mistral", "NVIDIA": "nvidia", "Cohere": "cohere",
+    "Meta": "meta", "Reflection": "reflection", "Nanbeige": "nanbeige",
 }
 # AA 评测子项（真实数据）：pct = 0-1 概率转百分比，pts = 原始分
 BENCH_SPECS = [
@@ -52,10 +53,11 @@ MAJOR_VENDORS = {
     "OpenAI", "Anthropic", "Google", "DeepSeek", "Alibaba", "Moonshot",
     "xAI", "Zhipu", "StepFun", "MiniMax", "Tencent", "Mistral", "NVIDIA", "Cohere",
     "Thinking Machines", "Inclusion AI",
+    "Meta", "Reflection", "Nanbeige",
 }
 # 开源权重模型（名字规则判断）
 OPEN_PATTERNS = ["gpt-oss", "Qwen3.8 27B", "Qwen3.5 Omni Plus", "Llama", "Phi",
-                 "Nemotron", "DeepHermes", "Command A"]
+                 "Nemotron", "DeepHermes", "Command A", "Muse Spark Open", "Nanbeige", "Beam"]
 
 
 def base_of(name: str) -> str:

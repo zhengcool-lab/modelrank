@@ -17,10 +17,11 @@ export const OFFICIAL_SITES: Record<string, string> = {
   Zhipu: "https://www.zhipuai.cn",
   MiniMax: "https://www.minimaxi.com",
   Mistral: "https://mistral.ai",
-  Meta: "https://llama.meta.com",
+  Meta: "https://about.fb.com",
   Moonshot: "https://www.kimi.com",
   StepFun: "https://www.stepfun.com",
   Cohere: "https://cohere.com",
+  Reflection: "https://reflection.ai",
 };
 
 /** 从 URL 提取裸域名用于展示（去掉 https:// 与路径）。 */

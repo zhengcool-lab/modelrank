@@ -271,6 +271,15 @@ def _vendor_of(name: str) -> str:
         return "Thinking Machines"
     if n.startswith("ling"):
         return "Inclusion AI"
+    # Meta 从 2026-10 起把前沿模型改名为 Muse 家族（Muse Wonder / Muse Spark / Muse Glimmer），
+    # 名字里不再带 llama，只按 llama 匹配会把整家 Meta 判成 Other 而漏收。
+    if n.startswith("muse"):
+        return "Meta"
+    # Reflection AI 的 Beam 1.0 是开源权重模型，名字不带厂商名。
+    if n.startswith("beam"):
+        return "Reflection"
+    if "nanbeige" in n:
+        return "Nanbeige"
     for v, keys in [
         ("OpenAI", ["gpt", "openai", "o1", "o3", "o4", "codex", "chatgpt"]),
         ("Anthropic", ["claude"]),
