@@ -1,0 +1,140 @@
+{
+  "checkedAt": "2026-11-09",
+  "note": "人工逐档核对官方定价页的结果，作为巡检基准。health-check.sh 每次巡检先用官方页校验这些价位是否仍出现（漂移即告警），再把 apps/web/src/lib/agent-data.ts 与本源比对，不一致时自动回写源码。",
+  "products": [
+    {
+      "id": "claude-code",
+      "vendor": "Anthropic",
+      "sourceUrl": "https://claude.com/pricing",
+      "verifyTokens": [
+        "$17",
+        "$200",
+        "$20",
+        "$100",
+        "$125",
+        "$25",
+        "Ultra",
+        "Team",
+        "Standard seat",
+        "Premium seat",
+        "Enterprise"
+      ],
+      "plans": [
+        {
+          "name": "Pro",
+          "monthly": 20,
+          "promo": 17,
+          "currency": "USD",
+          "quota": "含 Claude Code",
+          "note": "年付 $200 一次性，折合 $17/月；月付 $20"
+        },
+        {
+          "name": "Max",
+          "monthly": 100,
+          "currency": "USD",
+          "quota": "Pro 的 5 倍用量",
+          "note": "含每月 $100 Claude Platform API 额度"
+        },
+        {
+          "name": "Ultra",
+          "monthly": 200,
+          "currency": "USD",
+          "quota": "无 5 小时上限",
+          "note": "含 Max 全部权益，每月 API 额度提至 $200"
+        },
+        {
+          "name": "Team Standard",
+          "monthly": 25,
+          "promo": 20,
+          "currency": "USD",
+          "perSeat": true,
+          "quota": "不含 Claude Code",
+          "note": "年付 $20/席/月、月付 $25；2–150 人；要用 Claude Code 需 Premium 席位"
+        },
+        {
+          "name": "Team Premium",
+          "monthly": 125,
+          "promo": 100,
+          "currency": "USD",
+          "perSeat": true,
+          "quota": "含 Claude Code + Claude Cowork",
+          "note": "年付 $100/席/月、月付 $125；用量为标准席位的 5 倍"
+        },
+        {
+          "name": "Enterprise",
+          "monthly": 20,
+          "currency": "USD",
+          "perSeat": true,
+          "quota": "另按 API 价计用量",
+          "note": "年付 $20/席/月 + 使用量按 API 价计费；含 SCIM、审计日志、RBAC"
+        }
+      ]
+    },
+    {
+      "id": "claude",
+      "vendor": "Anthropic",
+      "sourceUrl": "https://claude.com/pricing",
+      "verifyTokens": [
+        "Ultra",
+        "Team",
+        "Enterprise"
+      ],
+      "plans": [
+        {
+          "name": "Free",
+          "monthly": 0,
+          "currency": "USD",
+          "quota": "每 5 小时有限用量"
+        },
+        {
+          "name": "Pro",
+          "monthly": 20,
+          "promo": 17,
+          "currency": "USD",
+          "quota": "含 Claude Code / Projects / Artifacts",
+          "note": "年付 $200 一次性，折合 $17/月；月付 $20"
+        },
+        {
+          "name": "Max",
+          "monthly": 100,
+          "currency": "USD",
+          "quota": "Pro 的 5 倍用量",
+          "note": "含每月 $100 Claude Platform API 额度"
+        },
+        {
+          "name": "Ultra",
+          "monthly": 200,
+          "currency": "USD",
+          "quota": "无 5 小时上限",
+          "note": "含 Max 全部权益，每月 API 额度提至 $200"
+        },
+        {
+          "name": "Team Standard",
+          "monthly": 25,
+          "promo": 20,
+          "currency": "USD",
+          "perSeat": true,
+          "quota": "标准席位",
+          "note": "年付 $20/席/月、月付 $25；2–150 人"
+        },
+        {
+          "name": "Team Premium",
+          "monthly": 125,
+          "promo": 100,
+          "currency": "USD",
+          "perSeat": true,
+          "quota": "含 Claude Code + Claude Cowork",
+          "note": "年付 $100/席/月、月付 $125；用量为标准席位的 5 倍"
+        },
+        {
+          "name": "Enterprise",
+          "monthly": 20,
+          "currency": "USD",
+          "perSeat": true,
+          "quota": "另按 API 价计用量",
+          "note": "年付 $20/席/月 + 使用量按 API 价计费；含 SCIM、审计日志、RBAC"
+        }
+      ]
+    }
+  ]
+}

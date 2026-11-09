@@ -67,15 +67,15 @@ const VENDOR_EXT: Record<string, "png" | "svg"> = {
   nvidia: "svg",
   cohere: "png",
   xiaomi: "png",
-  lg: "svg",
-  ibm: "svg",
-  ifm: "svg",
+  lg: "png",
+  ibm: "png",
+  ifm: "png",
 };
 
 /**
  * 图标资源版本号：logo 文件替换 / 补齐后递增，强制客户端绕开旧的失败缓存。
  */
-const LOGO_VERSION = "2";
+const LOGO_VERSION = "3";
 
 /**
  * 模型 id → 产品 logo 家族文件名（public/product-logos/ 下）。
@@ -141,10 +141,10 @@ const MODEL_LOGO: Record<string, string> = {
   // IBM / LG AI Research / IFM 无可用独立品牌标，用中性字标占位（非官方 logo）。
   "mimo-v2-6-pro": "xiaomi.png",
   "mimo-v2-6-flash": "xiaomi.png",
-  "granite-4-2-3b": "ibm.svg",
-  "granite-4-2-8b": "ibm.svg",
-  "k-exaone-2-0": "lg.svg",
-  "k2-horizon-375b-a23b": "ifm.svg",
+  "granite-4-2-3b": "ibm.png",
+  "granite-4-2-8b": "ibm.png",
+  "k-exaone-2-0": "lg.png",
+  "k2-horizon-375b-a23b": "ifm.png",
   "gemma-4-31b": "gemini.png",
   "north-mini-code": "cohere.png",
 };

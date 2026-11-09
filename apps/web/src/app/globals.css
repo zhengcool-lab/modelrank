@@ -56,11 +56,12 @@
 
 .dark {
   --mr-bg: #0f172a;
-  --mr-card: #1c1c1e;
-  --mr-card-2: #171c28;
+  /* 深色层次统一到 --mr-bg 的蓝灰色相（HSL 215）：卡片比背景亮一档，不再用中性近黑 */
+  --mr-card: #16202f;
+  --mr-card-2: #1b2637;
   --mr-text: #f5f7fa;
   --mr-text-2: #c9cdd4;
-  /* 深色辅助灰字：#9aa4b2 在 #1c1c1e 上对比度约 5.5:1 */
+  /* 深色辅助灰字：#9aa4b2 在 #16202f 卡片上对比度约 5.2:1，达 WCAG AA */
   --mr-text-3: #9aa4b2;
   --mr-text-4: #6b7488;
   --mr-border: #2b3446;

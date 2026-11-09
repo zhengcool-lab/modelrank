@@ -54,5 +54,14 @@ export async function POST(req: NextRequest) {
     })
     .slice(0, 3);
 
-  return NextResponse.json({ requested, alternatives, assumptions: { alpha, cacheRatio } });
+  return NextResponse.json({
+    requested,
+    alternatives,
+    assumptions: {
+      alpha,
+      cacheRatio,
+      currency: "USD",
+      unit: "priceInput / priceOutput 为 USD / 1M tokens（AA 实测单价）",
+    },
+  });
 }

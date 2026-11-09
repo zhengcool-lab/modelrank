@@ -273,44 +273,6 @@ export function getVendorBackground(vendor: string): string | undefined {
 // 9. 方法论权重口径
 // ---------------------------------------------------------------------------
 
-export interface MethodologyWeightMap {
-  dimensionWeights: Record<string, number>;
-  benchmarkMap: { benchmark: string; dimension: string; weight: number }[];
-  note: string;
-}
-
-/**
- * 整理方法论口径：维度权重与基准映射。
- * 维度权重：推理 0.35 / 代码 0.25 / 数学 0.20 / 中文 0.12 / 多模态 0.08。
- * 基准按维度归并，权重与维度权重自洽（推理维度内两个基准按原始 SEED_BENCHMARKS 权重比例拆分）。
- */
-export function getMethodologyWeightMap(): MethodologyWeightMap {
-  const dimensionWeights: Record<string, number> = {
-    推理: 0.35,
-    代码: 0.25,
-    数学: 0.2,
-    中文: 0.12,
-    多模态: 0.08,
-  };
-
-  // 推理维度 0.35 由 LMSYS Arena 与 LiveBench 按 0.35:0.20 比例拆分
-  const lmsysWeight = 0.35 * (0.35 / (0.35 + 0.2));
-  const livebenchWeight = 0.35 * (0.2 / (0.35 + 0.2));
-
-  const benchmarkMap = [
-    { benchmark: "LMSYS Chatbot Arena", dimension: "推理", weight: Number(lmsysWeight.toFixed(2)) },
-    { benchmark: "LiveBench", dimension: "推理", weight: Number(livebenchWeight.toFixed(2)) },
-    { benchmark: "GPQA Diamond", dimension: "数学", weight: 0.2 },
-    { benchmark: "SWE-bench Verified", dimension: "代码", weight: 0.25 },
-    { benchmark: "C-Eval", dimension: "中文", weight: 0.12 },
-  ];
-
-  const note =
-    "多模态维度 8% 由专家评测补充，不依赖公开基准；公开基准覆盖推理/代码/数学/中文四个维度，合计 92%。";
-
-  return { dimensionWeights, benchmarkMap, note };
-}
-
 // ---------------------------------------------------------------------------
 // 9. 模型搜索匹配（品牌别名扩展）
 // ---------------------------------------------------------------------------

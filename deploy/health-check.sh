@@ -140,6 +140,50 @@ ckf "robots.txt 指向 pages.dev 域" "$AGENT_TMP/robots.txt" "modelrank-1br.pag
 curl -s -m 25 "$BASE/methodology" 2>/dev/null | strip_html > "$AGENT_TMP/methodology.txt"
 ckf "方法论页含 Agent 榜口径段" "$AGENT_TMP/methodology.txt" "Agent 产品榜口径"
 
+# ---- 2c. Agent 套餐价格（纳入自动修复：官方页比对 + 源码漂移回写） ----
+# 机制：data-pipeline/reference/agent-pricing.json 是人工逐档核对的基准。
+#   (a) 抓官方定价页，校验基准里的价位/档位名是否仍出现 → 页面改价则告警（不盲改，价格语义需人工确认）
+#   (b) 比对 agent-data.ts 与基准 → 源码漂移直接自动回写（这是可确定的机械修复）
+echo "--- Agent 套餐价格 ---" | tee -a "$OUT"
+PRICING_REF="$REPO/data-pipeline/reference/agent-pricing.json"
+PRICING_SYNC="$REPO/data-pipeline/scripts/sync-agent-pricing.py"
+if [ -f "$PRICING_REF" ] && [ -f "$PRICING_SYNC" ]; then
+  if curl -s -m 25 -A "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)" "https://claude.com/pricing" -o "$AGENT_TMP/claude-pricing.html" 2>/dev/null && [ -s "$AGENT_TMP/claude-pricing.html" ]; then
+    ckf "官方定价页可达（claude.com/pricing，$(wc -c < "$AGENT_TMP/claude-pricing.html" | tr -d ' ') B）" "$AGENT_TMP/claude-pricing.html" "claude"
+    python3 "$PRICING_SYNC" --verify-page "$AGENT_TMP/claude-pricing.html" > "$AGENT_TMP/pricing-page.txt" 2>&1
+    page_rc=$?
+    if [ "$page_rc" = "0" ]; then
+      ck "官方定价页仍含全部基准价位/档位（无改价告警）" "true"
+    else
+      sed 's/^/    /' "$AGENT_TMP/pricing-page.txt" | tee -a "$OUT"
+      ck "官方定价页出现基准外价位或档位（需人工确认后更新基准）" "false"
+    fi
+  else
+    ck "官方定价页可达（claude.com/pricing）" "false"
+  fi
+
+  python3 "$PRICING_SYNC" --check > "$AGENT_TMP/pricing-drift.txt" 2>&1
+  drift_rc=$?
+  if [ "$drift_rc" = "0" ]; then
+    ck "套餐价与核对基准一致（agent-data.ts ↔ agent-pricing.json）" "true"
+  else
+    echo "🛠 检测到套餐价漂移，自动回写 agent-data.ts：" | tee -a "$OUT"
+    sed 's/^/    /' "$AGENT_TMP/pricing-drift.txt" | tee -a "$OUT"
+    python3 "$PRICING_SYNC" --write > "$AGENT_TMP/pricing-fix.txt" 2>&1
+    fix_rc=$?
+    python3 "$PRICING_SYNC" --check > "$AGENT_TMP/pricing-recheck.txt" 2>&1
+    recheck_rc=$?
+    sed 's/^/    /' "$AGENT_TMP/pricing-fix.txt" | tee -a "$OUT"
+    if [ "$fix_rc" = "0" ] && [ "$recheck_rc" = "0" ]; then
+      ck "套餐价漂移已自动修复（源码已回写，需构建部署后线上生效）" "true"
+    else
+      ck "套餐价漂移自动修复失败（见上方输出）" "false"
+    fi
+  fi
+else
+  ck "套餐价基准文件与同步脚本存在" "false"
+fi
+
 # ---- 3. 数据完整性（本地源码） ----
 echo "--- 数据完整性 ---" | tee -a "$OUT"
 SEED="$REPO/apps/web/src/lib/seed-data.ts"

@@ -1,4 +1,4 @@
-=== ModelRank 健康巡检 2026-11-09 14:44:25 ===
+=== ModelRank 健康巡检 2026-11-09 15:15:18 ===
 目标: https://modelrank-1br.pages.dev
 
 --- 页面可达性 ---
@@ -16,12 +16,12 @@
 ✅ GET /product-logos/glm.png → HTTP 200
 ✅ GET /product-logos/grok.png → HTTP 200
 ✅ GET /product-logos/hunyuan.png → HTTP 200
-✅ GET /product-logos/ibm.svg → HTTP 200
-✅ GET /product-logos/ifm.svg → HTTP 200
+✅ GET /product-logos/ibm.png → HTTP 200
+✅ GET /product-logos/ifm.png → HTTP 200
 ✅ GET /product-logos/inclusion-ai.png → HTTP 200
 ✅ GET /product-logos/kimi.png → HTTP 200
 ✅ GET /product-logos/kimi-k2.png → HTTP 200
-✅ GET /product-logos/lg.svg → HTTP 200
+✅ GET /product-logos/lg.png → HTTP 200
 ✅ GET /product-logos/meta.svg → HTTP 200
 ✅ GET /product-logos/minimax.png → HTTP 200
 ✅ GET /product-logos/mistral.png → HTTP 200
@@ -40,9 +40,9 @@
 ✅ GET /vendor-logos/cohere.png → HTTP 200
 ✅ GET /vendor-logos/deepseek.svg → HTTP 200
 ✅ GET /vendor-logos/google.svg → HTTP 200
-✅ GET /vendor-logos/ibm.svg → HTTP 200
-✅ GET /vendor-logos/ifm.svg → HTTP 200
-✅ GET /vendor-logos/lg.svg → HTTP 200
+✅ GET /vendor-logos/ibm.png → HTTP 200
+✅ GET /vendor-logos/ifm.png → HTTP 200
+✅ GET /vendor-logos/lg.png → HTTP 200
 ✅ GET /vendor-logos/meituan.png → HTTP 200
 ✅ GET /vendor-logos/meta.svg → HTTP 200
 ✅ GET /vendor-logos/microsoft.png → HTTP 200
@@ -107,12 +107,16 @@
 ✅ sitemap 含模型详情页
 ✅ robots.txt 指向 pages.dev 域
 ✅ 方法论页含 Agent 榜口径段
+--- Agent 套餐价格 ---
+✅ 官方定价页可达（claude.com/pricing，1321839 B）
+✅ 官方定价页仍含全部基准价位/档位（无改价告警）
+✅ 套餐价与核对基准一致（agent-data.ts ↔ agent-pricing.json）
 --- 数据完整性 ---
 ✅ UI_MODELS 模型数量 ≥ 30（实际 50）
 ✅ priceLevel 存在 high 级（实际 11 个，非 0 说明价格分级真实）
 ✅ priceEstimated=true 标注 ≤ 模型数（实际 9，属诚实占位标注，非错误）
 ✅ news-data.ts 新闻条数 ≥ 10（实际 30）
 --- 性能预算 ---
-✅ 首页传输体积（gzip）< 60000 字节（实际 18983；raw 419353）
+✅ 首页传输体积（gzip）< 60000 字节（实际 18970；raw 419359）
 
-=== 巡检结果：通过 108 / 失败 0 ===
+=== 巡检结果：通过 111 / 失败 0 ===

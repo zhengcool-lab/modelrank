@@ -3,22 +3,37 @@
 
 export type ModelTier = "S" | "A" | "B" | "C";
 
+/**
+ * API 对外 DTO。数据源与页面完全同源（lib/seed-data.ts 的 UI_MODELS，来自
+ * Artificial Analysis 真实抓取），不含任何原型假数据；只保留能溯源到真实字段的列。
+ * 无法溯源的列（如「是否支持中文」「是否擅长编码」这类无官方字段的布尔）一律不下发。
+ */
 export interface ModelRecord {
   id: string; // slug
   name: string;
   vendor: string;
+  /** 综合能力分 0–100（站内口径，见 /methodology） */
   score: number;
-  priceInput: number; // 元 / 1M tokens
+  /** USD / 1M tokens（AA 实测单价，非官方标价；是否估算见 priceEstimated） */
+  priceInput: number;
   priceOutput: number;
+  priceEstimated: boolean;
+  /** 价格最后核对日期（YYYY-MM-DD） */
+  priceCheckedAt: string;
+  /** AA 实测输出速度（tokens/s），0 = 未测 */
   throughputTps: number;
-  contextLength: number;
+  /** 上下文档位解析值；null = 未披露 */
+  contextLength: number | null;
+  /** 上下文档位原始文案，如 "1M"、"128K" */
+  contextLabel: string;
   tier: ModelTier;
-  multimodal: boolean;
-  coding: boolean;
-  chinese: boolean;
+  openSource: boolean;
   reasoning: boolean;
-  publishedAt: string; // ISO
-  priceUpdatedAt: string; // 价格最后核对日期（ISO date，YYYY-MM-DD）
+  /** 输出模态是否含非文本（图像/语音/视频） */
+  multimodal: boolean;
+  releaseDate: string | null;
+  /** 数据更新日期（MM-DD） */
+  dataUpdatedAt: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -120,12 +135,25 @@ export interface UINewsItem {
   url: string;
 }
 
+/**
+ * 测评子项清单。本榜不对子项设权重（能力分只由五维指数聚合，见 /methodology），
+ * 因此这里只发布真实子项与覆盖度统计，不编造 weight / 污染风险评级。
+ */
 export interface BenchmarkRecord {
   id: string;
+  /** AA 子项原始标签 */
   name: string;
-  weight: number;
+  unit: "pct" | "pts";
+  /** 有该子项成绩的模型数 */
+  modelsCovered: number;
+  /** 覆盖率 = modelsCovered / 榜单模型总数 */
+  coverage: number;
+  /** 该子项在榜内的最高分；null = 无数据 */
+  top: number | null;
+  /** 该子项在榜内的中位数；null = 无数据 */
+  median: number | null;
+  /** 数据源（AA 官方） */
   sourceUrl: string;
-  contaminationRisk: "low" | "med" | "high";
 }
 
 export interface NewsRecord {
@@ -144,12 +172,22 @@ export interface ModelTrendPoint {
 }
 
 export interface ModelDetail extends ModelRecord {
-  priceHistory: Array<{ capturedAt: string; priceInput: number; priceOutput: number }>;
-  scoreTrend: ModelTrendPoint[]; // 12 周
+  /** 能力五维（AA Capability Indexes，0–100），缺省表示该模型无该维数据 */
+  dims?: UIModelRecord["dims"];
+  /** AA 官方评测子项（真实分数） */
+  benchmarks?: { label: string; value: number; unit: "pct" | "pts" }[];
+  license?: string;
+  weightsUrl?: string;
+  /** AA 每任务成本（USD）；null = 无数据 */
+  costPerTask: number | null;
+  /** AA 中位响应延迟（秒）；null = 无数据 */
+  latencyS: number | null;
+  /** 综合分趋势采样（站内真实采样序列） */
+  scoreTrend: ModelTrendPoint[];
 }
 
 export interface ListModelsQuery {
-  sort?: "score" | "priceInput" | "priceOutput" | "throughputTps" | "publishedAt";
+  sort?: "score" | "priceInput" | "priceOutput" | "throughputTps" | "contextLength" | "releaseDate";
   order?: "asc" | "desc";
   page?: number;
   pageSize?: number;

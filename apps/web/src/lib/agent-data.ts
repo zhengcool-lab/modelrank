@@ -82,19 +82,23 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
     bestModel: { name: "Claude Opus 5.5", score: 59.0, slug: "claude-opus-5-5" },
     billingMode: "订阅额度",
     models: ["Claude Opus 5.5", "Claude Sonnet 5.5", "Claude Fable 5.1", "Claude Haiku 5.5"],
+    // 2026-11-09 按 claude.com/pricing 逐档核对：官方档位名为 Free / Pro / Max / Ultra / Team / Enterprise。
+    // Max 下方已分出 Ultra（原「Max 20x」实为 Ultra 档，命名与价格都已变），Team 拆 Standard / Premium 双席位。
     plans: [
-      { name: "Pro", monthly: 20, promo: 17, currency: "USD", quota: "含 Claude Code", note: "年付 $200 折合 $17/月" },
-      { name: "Max 5x", monthly: 100, currency: "USD", quota: "5 倍用量" },
-      { name: "Max 20x", monthly: 200, currency: "USD", quota: "20 倍用量" },
-      { name: "Team Premium", monthly: 100, currency: "USD", perSeat: true, note: "年付价，5 席起；Team Standard 不含 Claude Code" },
+      { name: "Pro", monthly: 20, promo: 17, currency: "USD", quota: "含 Claude Code", note: "年付 $200 一次性，折合 $17/月；月付 $20" },
+      { name: "Max", monthly: 100, currency: "USD", quota: "Pro 的 5 倍用量", note: "含每月 $100 Claude Platform API 额度" },
+      { name: "Ultra", monthly: 200, currency: "USD", quota: "无 5 小时上限", note: "含 Max 全部权益，每月 API 额度提至 $200" },
+      { name: "Team Standard", monthly: 25, promo: 20, currency: "USD", perSeat: true, quota: "不含 Claude Code", note: "年付 $20/席/月、月付 $25；2–150 人；要用 Claude Code 需 Premium 席位" },
+      { name: "Team Premium", monthly: 125, promo: 100, currency: "USD", perSeat: true, quota: "含 Claude Code + Claude Cowork", note: "年付 $100/席/月、月付 $125；用量为标准席位的 5 倍" },
+      { name: "Enterprise", monthly: 20, currency: "USD", perSeat: true, quota: "另按 API 价计用量", note: "年付 $20/席/月 + 使用量按 API 价计费；含 SCIM、审计日志、RBAC" },
     ],
     multipliers: [
       { model: "全部 Claude 模型", note: "不按模型算倍率，共用同一个月度额度池；超额后降速或需升级档位" },
     ],
     priceCheckedAt: "2026-11-09",
     sources: [
-      { label: "Claude 定价", url: "https://claude.com/pricing" },
-      { label: "Claude Code 套餐说明", url: "https://www.codetalenthub.io/wp-content/uploads/Best-AI-Coding-Assistants.pdf" },
+      { label: "Claude 定价页（逐档核对）", url: "https://claude.com/pricing" },
+      { label: "Claude Code 官方文档", url: "https://docs.claude.com/en/docs/claude-code/overview" },
     ],
   },
   {
@@ -590,10 +594,12 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
     models: ["Claude Opus 5.5", "Claude Sonnet 5.5", "Claude Fable 5.1", "Claude Haiku 5.5"],
     plans: [
       { name: "Free", monthly: 0, currency: "USD", quota: "每 5 小时有限用量" },
-      { name: "Pro", monthly: 20, promo: 17, currency: "USD", quota: "含 Projects / Artifacts / 更多模型", note: "年付 $200 折合 $17/月" },
-      { name: "Max 5x", monthly: 100, currency: "USD", quota: "5 倍用量 + $100 API credits" },
-      { name: "Max 20x", monthly: 200, currency: "USD", quota: "20 倍用量" },
-      { name: "Team / Enterprise", monthly: 0, currency: "USD", quote: true },
+      { name: "Pro", monthly: 20, promo: 17, currency: "USD", quota: "含 Claude Code / Projects / Artifacts", note: "年付 $200 一次性，折合 $17/月；月付 $20" },
+      { name: "Max", monthly: 100, currency: "USD", quota: "Pro 的 5 倍用量", note: "含每月 $100 Claude Platform API 额度" },
+      { name: "Ultra", monthly: 200, currency: "USD", quota: "无 5 小时上限", note: "含 Max 全部权益，每月 API 额度提至 $200" },
+      { name: "Team Standard", monthly: 25, promo: 20, currency: "USD", perSeat: true, quota: "标准席位", note: "年付 $20/席/月、月付 $25；2–150 人" },
+      { name: "Team Premium", monthly: 125, promo: 100, currency: "USD", perSeat: true, quota: "含 Claude Code + Claude Cowork", note: "年付 $100/席/月、月付 $125；用量为标准席位的 5 倍" },
+      { name: "Enterprise", monthly: 20, currency: "USD", perSeat: true, quota: "另按 API 价计用量", note: "年付 $20/席/月 + 使用量按 API 价计费；含 SCIM、审计日志、RBAC" },
     ],
     multipliers: [
       { model: "全部 Claude 模型", note: "不按模型算倍率，共用同一个月度额度池" },
