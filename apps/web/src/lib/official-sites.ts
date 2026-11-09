@@ -22,6 +22,10 @@ export const OFFICIAL_SITES: Record<string, string> = {
   StepFun: "https://www.stepfun.com",
   Cohere: "https://cohere.com",
   Reflection: "https://reflection.ai",
+  // 2026-11 扩白名单新增：MiMo 官方站、IBM Granite 官方产品页（均已 curl 验证 200）；
+  // LG AI Research 与 IFM（K2 Horizon）未找到可验证的独立官网，故不收录，前端显示「暂无数据」。
+  Xiaomi: "https://mimo.xiaomi.com",
+  IBM: "https://www.ibm.com/granite",
 };
 
 /** 从 URL 提取裸域名用于展示（去掉 https:// 与路径）。 */

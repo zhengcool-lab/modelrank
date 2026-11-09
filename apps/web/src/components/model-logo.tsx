@@ -171,7 +171,7 @@ export function ProductLogo({
   modelName: string;
   size?: number;
   radius?: number;
-  /** 严格模式：无映射时直接用首字母方块，不猜测 {modelId}.png（避免 404 破图） */
+  /** 兼容旧调用方保留：现在无映射一律用首字母方块，strict 不再改变行为 */
   strict?: boolean;
   /** model：模型榜图标（/product-logos）；agent：Agent 榜图标（/agent-logos） */
   kind?: "model" | "agent";
@@ -180,17 +180,11 @@ export function ProductLogo({
   const isAgent = kind === "agent";
   const mapped = isAgent ? AGENT_LOGO[modelId] : MODEL_LOGO[modelId];
   const base = isAgent ? "/agent-logos" : "/product-logos";
-  const [useSvg, setUseSvg] = useState(false);
 
-  // 未映射的模型：strict 模式直接回退字母方块；否则尝试 {modelId}.png → {modelId}.svg
-  // 已映射的图标带版本号：早期个别 logo 曾缺失返回 404，浏览器缓存失败态后会一直走 onError 回退成字母方块；
-  // 换图 / 补图后递增该版本号即可让客户端强制重新拉取。
-  const src = mapped
-    ? `${base}/${mapped}?v=${LOGO_VERSION}`
-    : useSvg
-      ? `${base}/${modelId}.svg`
-      : `${base}/${modelId}.png`;
-  const showFallback = error || (strict && !mapped);
+  const src = mapped ? `${base}/${mapped}?v=${LOGO_VERSION}` : "";
+  // 未映射的 id 直接渲染首字母方块：静态产物里 img 的 404 会在 hydration 之前完成，
+  // onError 回退链不可靠（曾导致 Muse Wonder Full 长期显示碎图），所以不再猜 {modelId}.png。
+  const showFallback = error || !mapped;
 
   if (showFallback) {
     return (
@@ -236,16 +230,7 @@ export function ProductLogo({
       <img
         src={src}
         alt={modelName}
-        onError={() => {
-          if (mapped) {
-            // 家族映射明确指定了文件，加载失败直接回退方块
-            setError(true);
-          } else if (!useSvg) {
-            setUseSvg(true);
-          } else {
-            setError(true);
-          }
-        }}
+        onError={() => setError(true)}
         style={{
           width: size * 0.84,
           height: size * 0.84,

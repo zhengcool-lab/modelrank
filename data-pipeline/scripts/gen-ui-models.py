@@ -32,6 +32,8 @@ VENDOR_CREATOR = {
     "Thinking Machines": "thinking-machines", "Inclusion AI": "inclusionai",
     "Mistral": "mistral", "NVIDIA": "nvidia", "Cohere": "cohere",
     "Meta": "meta", "Reflection": "reflection", "Nanbeige": "nanbeige",
+    "Xiaomi": "xiaomi", "LG AI Research": "lg", "IBM": "ibm",
+    "Institute of Foundation Models": "ifm",
 }
 # AA 评测子项（真实数据）：pct = 0-1 概率转百分比，pts = 原始分
 BENCH_SPECS = [
@@ -54,10 +56,13 @@ MAJOR_VENDORS = {
     "xAI", "Zhipu", "StepFun", "MiniMax", "Tencent", "Mistral", "NVIDIA", "Cohere",
     "Thinking Machines", "Inclusion AI",
     "Meta", "Reflection", "Nanbeige",
+    # 2026-11 扩白名单：小米 MiMo、LG K-EXAONE、IBM Granite、IFM K2 Horizon（均开源权重、AA 有指数分）
+    "Xiaomi", "LG AI Research", "IBM", "Institute of Foundation Models",
 }
-# 开源权重模型（名字规则判断）
+# 开源权重模型（名字规则判断；优先用 AA enrich 的 isOpenWeights，这里是回退）
 OPEN_PATTERNS = ["gpt-oss", "Qwen3.8 27B", "Qwen3.5 Omni Plus", "Llama", "Phi",
-                 "Nemotron", "DeepHermes", "Command A", "Muse Spark Open", "Nanbeige", "Beam"]
+                 "Nemotron", "DeepHermes", "Command A", "Muse Spark Open", "Nanbeige", "Beam",
+                 "MiMo", "Gemma", "Granite", "EXAONE", "North Mini", "Horizon"]
 
 
 def base_of(name: str) -> str:

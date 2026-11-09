@@ -48,6 +48,7 @@ DETAIL_VENDORS = {
     "xAI", "Zhipu", "StepFun", "MiniMax", "Tencent", "Mistral", "NVIDIA", "Cohere",
     "Thinking Machines", "Inclusion AI",
     "Meta", "Reflection", "Nanbeige",
+    "Xiaomi", "LG AI Research", "IBM", "Institute of Foundation Models",
 }
 
 # AA capability 五维字段（0-100 指数分）。前端展示顺序即此列表。
@@ -187,6 +188,7 @@ DETAIL_VENDORS = {
     "xAI", "Zhipu", "StepFun", "MiniMax", "Tencent", "Mistral", "NVIDIA", "Cohere",
     "Thinking Machines", "Inclusion AI",
     "Meta", "Reflection", "Nanbeige",
+    "Xiaomi", "LG AI Research", "IBM", "Institute of Foundation Models",
 }
 
 
@@ -285,7 +287,8 @@ def _vendor_of(name: str) -> str:
     for v, keys in [
         ("OpenAI", ["gpt", "openai", "o1", "o3", "o4", "codex", "chatgpt"]),
         ("Anthropic", ["claude"]),
-        ("Google", ["gemini"]),
+        # Gemma 是 Google 的开源权重家族，名字不带 gemini，只按 gemini 匹配会漏收
+        ("Google", ["gemini", "gemma"]),
         ("DeepSeek", ["deepseek"]),
         ("Alibaba", ["qwen", "tongyi"]),
         ("Meta", ["llama"]),
@@ -301,8 +304,14 @@ def _vendor_of(name: str) -> str:
         ("xAI", ["grok"]),
         ("Microsoft", ["phi", "microsoft"]),
         ("NVIDIA", ["nemotron"]),
-        ("Cohere", ["command"]),
+        # 只按 command 匹配会把 North 系列漏掉（North Mini Code 属 Cohere）
+        ("Cohere", ["command", "north mini"]),
         ("Reka", ["reka"]),
+        # 小米 MiMo 系列、LG 的 K-EXAONE、IBM Granite、IFM 的 K2 Horizon 均不带厂商名
+        ("Xiaomi", ["mimo", "xiaomi"]),
+        ("LG AI Research", ["exaone"]),
+        ("IBM", ["granite"]),
+        ("Institute of Foundation Models", ["horizon"]),
     ]:
         if any(k in n for k in keys):
             return v

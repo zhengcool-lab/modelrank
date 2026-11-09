@@ -1,4 +1,4 @@
-=== ModelRank 健康巡检 2026-11-09 11:19:56 ===
+=== ModelRank 健康巡检 2026-11-09 11:27:39 ===
 目标: https://modelrank-1br.pages.dev
 
 --- 页面可达性 ---
@@ -18,8 +18,10 @@
 ✅ GET /product-logos/hunyuan.png → HTTP 200
 ✅ GET /product-logos/kimi.png → HTTP 200
 ✅ GET /product-logos/kimi-k2.png → HTTP 200
+✅ GET /product-logos/meta.svg → HTTP 200
 ✅ GET /product-logos/minimax.png → HTTP 200
 ✅ GET /product-logos/mistral.png → HTTP 200
+✅ GET /product-logos/nanbeige.svg → HTTP 200
 ✅ GET /product-logos/nvidia.svg → HTTP 200
 ✅ GET /product-logos/openai.png → HTTP 200
 ✅ GET /product-logos/qwen.png → HTTP 200
@@ -102,6 +104,6 @@
 ✅ priceEstimated=true 标注 ≤ 模型数（实际 4，属诚实占位标注，非错误）
 ✅ news-data.ts 新闻条数 ≥ 10（实际 30）
 --- 性能预算 ---
-✅ 首页 HTML 体积 < 400000 字节（实际 356947）
+✅ 首页 HTML 体积 < 400000 字节（实际 356671）
 
-=== 巡检结果：通过 97 / 失败 0 ===
+=== 巡检结果：通过 99 / 失败 0 ===
