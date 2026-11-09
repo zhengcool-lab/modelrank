@@ -7,6 +7,7 @@ import type { NewsCategory } from "@/lib/types";
 import { getNewsRelatedModelId } from "@/lib/derived-data";
 import { NavHeader } from "@/components/nav-header";
 import { Footer } from "@/components/footer";
+import { PageHeader } from "@/components/page-header";
 
 const CATS: ("全部" | NewsCategory)[] = ["全部", "发布", "评测", "融资", "政策", "价格"];
 
@@ -69,18 +70,11 @@ export default function NewsPage() {
       <NavHeader />
 
       <div className="mr-container">
-      <div className="mr-pad-x" style={{ paddingTop: 14, fontSize: 12, color: "var(--mr-text-3)" }}>
-        <Link href="/" className="mr-link">模型榜</Link>
-        <span style={{ color: "var(--mr-text-4)", margin: "0 6px" }}>/</span>
-        <span style={{ color: "var(--mr-text-2)" }}>大模型新闻</span>
-      </div>
-
-      <div className="mr-pad-x" style={{ paddingTop: 24 }}>
-        <div style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.4px", color: "var(--mr-text)" }}>大模型新闻</div>
-        <div style={{ fontSize: 13, color: "var(--mr-text-2)", marginTop: 6 }}>
-          聚合 {UI_NEWS.length} 条大模型行业动态 · 发布 / 评测 / 融资 / 政策 / 价格
-        </div>
-      </div>
+      <PageHeader
+        breadcrumb={[{ label: "模型榜", href: "/" }, { label: "大模型新闻" }]}
+        title="大模型新闻"
+        subtitle={<>聚合 {UI_NEWS.length} 条大模型行业动态 · 发布 / 评测 / 融资 / 政策 / 价格</>}
+      />
 
       {/* category segmented — 单行横向滚动，避免移动端孤行换行 */}
       <div

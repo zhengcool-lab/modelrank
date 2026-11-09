@@ -364,7 +364,7 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
             alignItems: "center",
             padding: "12px 20px 14px",
             background: "var(--mr-card-2)",
-            borderBottom: "1px solid var(--mr-border)",
+            borderBottom: "0.5px solid var(--mr-hairline)",
             boxSizing: "border-box",
           }}
         >
@@ -438,7 +438,7 @@ export function LeaderboardTable({ models }: { models: UIModelRecord[] }) {
           height: 44,
           padding: "0 20px",
           background: "var(--mr-card-2)",
-          borderTop: "1px solid var(--mr-border)",
+          borderTop: "0.5px solid var(--mr-hairline)",
         }}
       >
         <span style={{ fontSize: 12, color: "var(--mr-text-3)" }}>

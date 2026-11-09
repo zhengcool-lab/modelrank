@@ -4,7 +4,7 @@ export function Footer() {
   return (
     <div
       className="mr-container mr-pad-x flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3"
-      style={{ marginTop: 22, marginBottom: 28, paddingTop: 16, borderTop: "1px solid var(--mr-border)" }}
+      style={{ marginTop: 22, marginBottom: 28, paddingTop: 16, borderTop: "0.5px solid var(--mr-hairline)" }}
     >
       <style>{`
         .footer-link {

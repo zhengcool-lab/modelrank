@@ -196,7 +196,7 @@ export function RankBadge({ n, size = 18 }: { n: number; size?: number }) {
         fontSize: Math.round(size * 0.56),
         fontWeight: 700,
         lineHeight: 1,
-        boxShadow: "0 0 0 1.5px var(--mr-card)",
+        boxShadow: "0 0 0 1px var(--mr-card)",
         zIndex: 2,
       }}
     >

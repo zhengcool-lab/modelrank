@@ -21,7 +21,7 @@ export function CompareBar() {
         background: "var(--mr-card)",
         border: "0.5px solid var(--mr-hairline)",
         borderRadius: "var(--mr-radius)",
-        boxShadow: "0 4px 16px rgba(29,33,41,0.10)",
+        boxShadow: "var(--mr-shadow)",
         padding: "10px 16px",
         display: "flex",
         alignItems: "center",

@@ -5,6 +5,7 @@ import { NavHeader } from "@/components/nav-header";
 import { Footer } from "@/components/footer";
 import { CompareBar } from "@/components/compare-bar";
 import { TierFilteredBoard } from "@/components/tier-filtered-board";
+import { PageHeader } from "@/components/page-header";
 
 export default function Home() {
   const news = UI_NEWS.slice(0, 3);
@@ -17,34 +18,26 @@ export default function Home() {
 
       <div className="mr-container">
       {/* title */}
-      <div
-        className="mr-pad-x flex flex-col sm:flex-row sm:items-start sm:justify-between"
-        style={{ paddingTop: 32 }}
-      >
-        <div>
-          <div style={{ fontSize: 32, fontWeight: 700, letterSpacing: "-0.5px", color: "var(--mr-text)", lineHeight: 1.2 }}>
-            大模型能力排行榜
-          </div>
-          <div style={{ fontSize: 13, color: "var(--mr-text-3)", marginTop: 6 }}>
+      <PageHeader
+        title="大模型能力排行榜"
+        subtitle={
+          <>
             评分来源：Artificial Analysis 智能指数（第三方公开评测 0–100）· 更新于 {lastUpdated} · 已收录 {total} 个模型 · 口径见
             <Link href="/methodology" className="mr-link" style={{ marginLeft: 4 }}>
               方法论
             </Link>
-          </div>
-        </div>
-        <a
-          href="mailto:hi@modelrank.dev?subject=订阅"
-          style={{
-            fontSize: 12,
-            color: "var(--mr-text-3)",
-            textDecoration: "none",
-            marginTop: 10,
-            whiteSpace: "nowrap",
-          }}
-        >
-          订阅变动提醒
-        </a>
-      </div>
+          </>
+        }
+        actions={
+          <a
+            href="mailto:hi@modelrank.dev?subject=订阅"
+            className="mr-btn-outline"
+            style={{ textDecoration: "none", whiteSpace: "nowrap" }}
+          >
+            订阅变动提醒
+          </a>
+        }
+      />
 
       <div style={{ marginTop: 24 }}>
         <TierFilteredBoard />

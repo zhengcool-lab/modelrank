@@ -52,7 +52,7 @@ export function NavHeader() {
     <header
       style={{
         background: "var(--mr-card)",
-        borderBottom: "1px solid var(--mr-border)",
+        borderBottom: "0.5px solid var(--mr-hairline)",
         position: "sticky",
         top: 0,
         zIndex: 40,
@@ -195,7 +195,7 @@ export function NavHeader() {
             left: 0,
             right: 0,
             background: "var(--mr-card)",
-            borderBottom: "1px solid var(--mr-border)",
+            borderBottom: "0.5px solid var(--mr-hairline)",
             boxShadow: "var(--mr-shadow)",
             padding: "8px 0",
           }}

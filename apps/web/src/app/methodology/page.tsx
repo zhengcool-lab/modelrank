@@ -4,6 +4,7 @@ import Link from "next/link";
 import { formatDate } from "@/lib/derived-data";
 import { NavHeader } from "@/components/nav-header";
 import { Footer } from "@/components/footer";
+import { PageHeader } from "@/components/page-header";
 
 export const metadata: Metadata = {
   title: "评分方法论 · ModelRank",
@@ -194,18 +195,11 @@ export default function MethodologyPage() {
       <NavHeader />
 
       <div className="mr-container">
-        <div className="mr-pad-x" style={{ paddingTop: 14, fontSize: 12, color: "var(--mr-text-3)" }}>
-          <Link href="/" className="mr-link">模型榜</Link>
-          <span style={{ color: "var(--mr-text-4)", margin: "0 6px" }}>/</span>
-          <span style={{ color: "var(--mr-text-2)" }}>评分方法论</span>
-        </div>
-
-        <div className="mr-pad-x" style={{ paddingTop: 24 }}>
-          <div style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.4px", color: "var(--mr-text)" }}>评分方法论</div>
-          <div style={{ fontSize: 13, color: "var(--mr-text-2)", marginTop: 6 }}>
-            分数只搬运、不自己算 · 每个数字都能回到源头核对
-          </div>
-        </div>
+        <PageHeader
+          breadcrumb={[{ label: "模型榜", href: "/" }, { label: "评分方法论" }]}
+          title="评分方法论"
+          subtitle="分数只搬运、不自己算 · 每个数字都能回到源头核对"
+        />
 
         <div className="mr-mx flex flex-col md:flex-row" style={{ gap: 24, marginTop: 20 }}>
           {/* 左栏：章节索引 + 侧注（sticky） */}

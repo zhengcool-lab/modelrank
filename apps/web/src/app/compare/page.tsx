@@ -7,6 +7,7 @@ import { Message } from "@arco-design/web-react";
 import { UI_MODELS } from "@/lib/seed-data";
 import { NavHeader } from "@/components/nav-header";
 import { Footer } from "@/components/footer";
+import { PageHeader } from "@/components/page-header";
 import { useCompare } from "@/context/compare";
 import { DeltaText, TierBadge } from "@/components/badges";
 import { ProductLogo } from "@/components/model-logo";
@@ -368,7 +369,7 @@ function CompareInner() {
           height: 34,
           lineHeight: "32px",
           padding: "0 12px",
-          border: "1px solid var(--mr-border)",
+          border: "0.5px solid var(--mr-hairline)",
           borderRadius: "var(--mr-radius)",
           background: "var(--mr-card)",
           color: "var(--mr-text)",
@@ -535,7 +536,7 @@ function CompareInner() {
                 style={{
                   display: "flex",
                   alignItems: "stretch",
-                  borderBottom: "1px solid var(--mr-border)",
+                  borderBottom: "0.5px solid var(--mr-hairline)",
                   background: "var(--mr-card-2)",
                   padding: "6px 0",
                 }}
@@ -620,7 +621,7 @@ function CompareInner() {
                         padding: "2px 0",
                         borderBottom:
                           i === g.rows.length - 1
-                            ? "1px solid var(--mr-border)"
+                            ? "0.5px solid var(--mr-hairline)"
                             : "1px solid var(--mr-border-soft)",
                       }}
                     >
@@ -753,7 +754,7 @@ function FilterChip({
         padding: "0 10px",
         fontSize: 12,
         borderRadius: "var(--mr-pill)",
-        border: active ? "1px solid var(--mr-primary)" : "1px solid var(--mr-border)",
+        border: active ? "1px solid var(--mr-primary)" : "0.5px solid var(--mr-hairline)",
         background: active ? "var(--mr-primary-bg)" : "transparent",
         color: active ? "var(--mr-primary)" : "var(--mr-text-2)",
         fontWeight: active ? 600 : 400,
@@ -774,22 +775,12 @@ export default function ComparePage() {
       <NavHeader />
 
       <div className="mr-container">
-        <div className="mr-pad-x" style={{ paddingTop: 14, fontSize: 12, color: "var(--mr-text-3)" }}>
-          <Link href="/" className="mr-link">
-            模型榜
-          </Link>
-          <span style={{ color: "var(--mr-text-4)", margin: "0 6px" }}>/</span>
-          <span style={{ color: "var(--mr-text-2)" }}>对比器</span>
-        </div>
-
-        <div className="mr-pad-x" style={{ paddingTop: 24, paddingBottom: 16 }}>
-          <div style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.4px", color: "var(--mr-text)" }}>
-            模型对比
-          </div>
-          <div style={{ fontSize: 13, color: "var(--mr-text-2)", marginTop: 6 }}>
-            筛选并选择 2–4 个模型，逐项对比真实榜单数据 · 数据更新于 {lastUpdated.slice(5)}
-          </div>
-        </div>
+        <PageHeader
+          breadcrumb={[{ label: "模型榜", href: "/" }, { label: "对比器" }]}
+          title="模型对比"
+          subtitle={<>筛选并选择 2–4 个模型，逐项对比真实榜单数据 · 数据更新于 {lastUpdated.slice(5)}</>}
+          bottom={16}
+        />
 
         {/* useSearchParams 必须包在 Suspense 边界内 */}
         <Suspense fallback={<div className="mr-pad-x" style={{ paddingTop: 24 }}>加载中…</div>}>

@@ -48,7 +48,7 @@ export default function DataSourcesPage() {
 
       <div className="mr-container">
       <div className="mr-pad-x" style={{ paddingTop: 24, maxWidth: 760, margin: "0 auto" }}>
-        <h1 style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.4px", color: "var(--mr-text)", margin: 0 }}>
+        <h1 style={{ fontSize: "clamp(24px, 2.6vw, 32px)", fontWeight: 700, letterSpacing: "-0.6px", color: "var(--mr-text)", margin: 0 }}>
           数据来源
         </h1>
         <div style={{ fontSize: 13, color: "var(--mr-text-2)", marginTop: 6 }}>

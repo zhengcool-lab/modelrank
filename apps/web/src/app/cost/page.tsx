@@ -10,6 +10,7 @@ import { formatDate } from "@/lib/derived-data";
 import { useCompare } from "@/context/compare";
 import { NavHeader } from "@/components/nav-header";
 import { Footer } from "@/components/footer";
+import { PageHeader } from "@/components/page-header";
 
 // 成本计算器可选模型 = UI_MODELS 中已有真实 token 单价（输入或输出价 > 0）的模型。
 // 注意：SEED_MODELS 是原型期手写模型（gpt-5 等），其 id 与真实榜单 UI_MODELS 不一致，
@@ -88,12 +89,7 @@ function CostInner() {
   if (COST_MODELS.length === 0) {
     return (
       <>
-        <div className="mr-pad-x" style={{ paddingTop: 24 }}>
-          <div style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.4px", color: "var(--mr-text)" }}>成本计算器</div>
-          <div style={{ fontSize: 13, color: "var(--mr-text-2)", marginTop: 6 }}>
-            按月用量与输入/输出比例，估算月度 API 成本
-          </div>
-        </div>
+
         <div className="mr-card mr-mx" style={{ padding: "20px 22px", marginTop: 18, maxWidth: 640 }}>
           <div style={{ fontSize: 14, fontWeight: 600, color: "var(--mr-text)" }}>暂无可计算的模型价格</div>
           <div style={{ fontSize: 13, color: "var(--mr-text-2)", marginTop: 8, lineHeight: 1.7 }}>
@@ -110,12 +106,7 @@ function CostInner() {
 
   return (
     <>
-      <div className="mr-pad-x" style={{ paddingTop: 24 }}>
-        <div style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.4px", color: "var(--mr-text)" }}>成本计算器</div>
-        <div style={{ fontSize: 13, color: "var(--mr-text-2)", marginTop: 6 }}>
-          按月用量与输入/输出比例，估算月度 API 成本
-        </div>
-      </div>
+
 
       <div className="mr-mx" style={{ display: "flex", gap: 20, flexWrap: "wrap", marginTop: 18 }}>
         {/* left params */}
@@ -257,6 +248,7 @@ function CostInner() {
           className="w-full md:w-[400px]"
           style={{
             flex: "0 1 auto",
+            alignSelf: "flex-start",
             minWidth: 0,
             background: "var(--mr-primary)",
             borderRadius: "var(--mr-radius)",
@@ -380,11 +372,12 @@ export default function CostPage() {
       <NavHeader />
 
       <div className="mr-container">
-      <div className="mr-pad-x" style={{ paddingTop: 14, fontSize: 12, color: "var(--mr-text-3)" }}>
-        <Link href="/" className="mr-link">模型榜</Link>
-        <span style={{ color: "var(--mr-text-4)", margin: "0 6px" }}>/</span>
-        <span style={{ color: "var(--mr-text-2)" }}>成本计算器</span>
-      </div>
+      <PageHeader
+        breadcrumb={[{ label: "模型榜", href: "/" }, { label: "成本计算器" }]}
+        title="成本计算器"
+        subtitle="按月用量与输入/输出比例，估算月度 API 成本"
+        bottom={16}
+      />
 
       {/* useSearchParams 必须包在 Suspense 边界内 */}
       <Suspense fallback={<div className="mr-pad-x" style={{ paddingTop: 24 }}>加载中…</div>}>

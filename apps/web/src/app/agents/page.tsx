@@ -5,6 +5,7 @@ import Link from "next/link";
 import { NavHeader } from "@/components/nav-header";
 import { Footer } from "@/components/footer";
 import { AgentBoard } from "@/components/agent-board";
+import { PageHeader } from "@/components/page-header";
 import { AGENT_PRODUCTS } from "@/lib/agent-data";
 
 export const metadata: Metadata = {
@@ -29,38 +30,22 @@ export default function AgentsPage() {
       <NavHeader />
 
       <div className="mr-container">
-        <div
-          className="mr-pad-x flex flex-col sm:flex-row sm:items-start sm:justify-between"
-          style={{ paddingTop: 32 }}
-        >
-          <div>
-            <div
-              style={{
-                fontSize: 32,
-                fontWeight: 700,
-                letterSpacing: "-0.5px",
-                color: "var(--mr-text)",
-                lineHeight: 1.2,
-              }}
-            >
-              Agent 产品榜
-            </div>
-            <div style={{ fontSize: 13, color: "var(--mr-text-3)", marginTop: 6 }}>
-              收录 {AGENT_PRODUCTS.length} 个 Agent 产品（编码 {codingCount} · 通用 {generalCount}）· 能力为编辑评估（非第三方跑分）· 价格核对于 {checked}
-              {checkedNote} · 口径见
+        <PageHeader
+          breadcrumb={[{ label: "模型榜", href: "/" }, { label: "Agent 产品榜" }]}
+          title="Agent 产品榜"
+          subtitle={
+            <>
+              收录 {AGENT_PRODUCTS.length} 个 Agent 产品（编码 {codingCount} · 通用 {generalCount}）· 能力为编辑评估（非第三方跑分）· 口径见
               <Link href="/methodology" className="mr-link" style={{ marginLeft: 4 }}>
                 方法论
               </Link>
-            </div>
-          </div>
-          <Link
-            href="/"
-            className="mr-link"
-            style={{ fontSize: 12, marginTop: 10, whiteSpace: "nowrap" }}
-          >
-            ← 返回模型榜
-          </Link>
-        </div>
+              <span style={{ display: "block", color: "var(--mr-text-4)", marginTop: 4 }}>
+                价格核对于 {checked}
+                {checkedNote}
+              </span>
+            </>
+          }
+        />
 
         <AgentBoard />
 

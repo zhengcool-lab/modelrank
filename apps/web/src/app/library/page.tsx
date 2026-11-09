@@ -6,6 +6,7 @@ import { UI_MODELS } from "@/lib/seed-data";
 import { NavHeader } from "@/components/nav-header";
 import { Footer } from "@/components/footer";
 import { ProductLogo } from "@/components/model-logo";
+import { PageHeader } from "@/components/page-header";
 
 const PAGE_SIZE = 10;
 
@@ -235,18 +236,15 @@ export default function LibraryPage() {
       <NavHeader />
 
       <div className="mr-container">
-      <div className="mr-pad-x" style={{ paddingTop: 14, fontSize: 12, color: "var(--mr-text-3)" }}>
-        <Link href="/" className="mr-link">模型榜</Link>
-        <span style={{ color: "var(--mr-text-4)", margin: "0 6px" }}>/</span>
-        <span style={{ color: "var(--mr-text-2)" }}>模型库</span>
-      </div>
-
-      <div className="mr-pad-x" style={{ paddingTop: 24 }}>
-        <div style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.4px", color: "var(--mr-text)" }}>模型库</div>
-        <div style={{ fontSize: 13, color: "var(--mr-text-2)", marginTop: 6 }}>
-          共 {rows.length} 个模型 · {sortLabel} · 数据更新于 {lastUpdated.slice(5)}
-        </div>
-      </div>
+      <PageHeader
+        breadcrumb={[{ label: "模型榜", href: "/" }, { label: "模型库" }]}
+        title="模型库"
+        subtitle={
+          <>
+            共 {rows.length} 个模型 · {sortLabel} · 数据更新于 {lastUpdated.slice(5)}
+          </>
+        }
+      />
 
       {/* 分组筛选栏：搜索 + 排序 + 厂商 + 开源闭源 + 性价比 + 价格区间（P1#23） */}
       <div className="mr-pad-x" style={{ paddingTop: 16 }}>
@@ -263,7 +261,7 @@ export default function LibraryPage() {
                 height: 32,
                 padding: "0 12px",
                 fontSize: 13,
-                border: "1px solid var(--mr-border)",
+                border: "0.5px solid var(--mr-hairline)",
                 borderRadius: "var(--mr-pill)",
                 background: "var(--mr-card)",
                 color: "var(--mr-text)",
@@ -278,7 +276,7 @@ export default function LibraryPage() {
                 height: 32,
                 padding: "0 10px",
                 fontSize: 13,
-                border: "1px solid var(--mr-border)",
+                border: "0.5px solid var(--mr-hairline)",
                 borderRadius: "var(--mr-pill)",
                 background: "var(--mr-card)",
                 color: "var(--mr-text)",
@@ -351,7 +349,7 @@ export default function LibraryPage() {
             height: 42,
             padding: "0 24px",
             background: "var(--mr-card-2)",
-            borderBottom: "1px solid var(--mr-border)",
+            borderBottom: "0.5px solid var(--mr-hairline)",
           }}
         >
           <div style={{ width: 70, flex: "none", fontSize: 12, fontWeight: 600, color: "var(--mr-text-3)" }}>排名</div>

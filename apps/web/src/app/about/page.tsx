@@ -5,6 +5,7 @@ import { NavHeader } from "@/components/nav-header";
 import { Footer } from "@/components/footer";
 import { UI_MODELS } from "@/lib/seed-data";
 import { UI_NEWS } from "@/lib/news-data";
+import { PageHeader } from "@/components/page-header";
 
 export const metadata: Metadata = {
   title: "关于我们 · ModelRank",
@@ -138,18 +139,11 @@ export default function AboutPage() {
       <NavHeader />
 
       <div className="mr-container">
-        <div className="mr-pad-x" style={{ paddingTop: 14, fontSize: 12, color: "var(--mr-text-3)" }}>
-          <Link href="/" className="mr-link">模型榜</Link>
-          <span style={{ color: "var(--mr-text-4)", margin: "0 6px" }}>/</span>
-          <span style={{ color: "var(--mr-text-2)" }}>关于</span>
-        </div>
-
-        <div className="mr-pad-x" style={{ paddingTop: 24 }}>
-          <div style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.4px", color: "var(--mr-text)" }}>关于 ModelRank</div>
-          <div style={{ fontSize: 13, color: "var(--mr-text-2)", marginTop: 6 }}>
-            独立、可核对、可申诉 · 分数搬运自公开数据，判断标注依据
-          </div>
-        </div>
+        <PageHeader
+          breadcrumb={[{ label: "模型榜", href: "/" }, { label: "关于" }]}
+          title="关于 ModelRank"
+          subtitle="独立、可核对、可申诉 · 分数搬运自公开数据，判断标注依据"
+        />
 
         <div className="mr-mx flex flex-col md:flex-row" style={{ gap: 24, marginTop: 20 }}>
           {/* 左栏：章节索引 + 站点信息（sticky） */}

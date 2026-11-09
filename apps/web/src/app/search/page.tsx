@@ -8,6 +8,7 @@ import { UI_NEWS } from "@/lib/news-data";
 import { getHotSearches, matchModelsByQuery } from "@/lib/derived-data";
 import { NavHeader } from "@/components/nav-header";
 import { Footer } from "@/components/footer";
+import { PageHeader } from "@/components/page-header";
 import { ProductLogo } from "@/components/model-logo";
 
 /** 关键词高亮：大小写不敏感匹配（中文天然小写无关），React 自动转义文本节点 */
@@ -183,13 +184,6 @@ function SearchInner() {
         }
       `}</style>
 
-      <div className="mr-pad-x" style={{ paddingTop: 24 }}>
-        <div style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.4px", color: "var(--mr-text)" }}>搜索</div>
-        <div style={{ fontSize: 13, color: "var(--mr-text-2)", marginTop: 6 }}>
-          按模型名、厂商、关键词全站检索
-        </div>
-      </div>
-
       {/* search box */}
       <div className="mr-mx sr-search-box" role="search" style={{ position: "relative", display: "flex", gap: 10, marginTop: 18 }}>
         <div style={{ position: "relative", flex: 1 }}>
@@ -209,7 +203,7 @@ function SearchInner() {
               width: "100%",
               height: 40,
               padding: "0 32px 0 12px",
-              border: "1px solid var(--mr-border)",
+              border: "0.5px solid var(--mr-hairline)",
               borderRadius: "var(--mr-pill)",
               background: "var(--mr-card)",
               color: "var(--mr-text)",
@@ -338,7 +332,7 @@ function SearchInner() {
                       fontSize: 12,
                       color: "var(--mr-text-2)",
                       background: "var(--mr-card-2)",
-                      border: "1px solid var(--mr-border)",
+                      border: "0.5px solid var(--mr-hairline)",
                       borderRadius: "var(--mr-pill)",
                       padding: "3px 12px",
                       cursor: "pointer",
@@ -500,11 +494,11 @@ export default function SearchPage() {
       <NavHeader />
 
       <div className="mr-container">
-      <div className="mr-pad-x" style={{ paddingTop: 14, fontSize: 12, color: "var(--mr-text-3)" }}>
-        <Link href="/" className="mr-link">模型榜</Link>
-        <span style={{ color: "var(--mr-text-4)", margin: "0 6px" }}>/</span>
-        <span style={{ color: "var(--mr-text-2)" }}>搜索</span>
-      </div>
+      <PageHeader
+        breadcrumb={[{ label: "模型榜", href: "/" }, { label: "搜索" }]}
+        title="搜索"
+        subtitle="按模型名、厂商、关键词全站检索"
+      />
 
       {/* useSearchParams 必须包在 Suspense 边界内，否则 next build 会报错 */}
       <Suspense fallback={<div className="mr-pad-x" style={{ paddingTop: 24 }}>加载中…</div>}>

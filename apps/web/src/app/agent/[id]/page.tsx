@@ -54,14 +54,18 @@ export default async function AgentDetailPage({ params }: Props) {
 
       <div className="mr-container">
         <div className="mr-pad-x" style={{ paddingTop: 24 }}>
-          <Link href="/agents" className="mr-link" style={{ fontSize: 12 }}>
-            ← Agent 产品榜
-          </Link>
+          <div style={{ fontSize: 12, color: "var(--mr-text-3)" }}>
+            <Link href="/" className="mr-link">模型榜</Link>
+            <span style={{ color: "var(--mr-text-4)", margin: "0 6px" }}>/</span>
+            <Link href="/agents" className="mr-link">Agent 产品榜</Link>
+            <span style={{ color: "var(--mr-text-4)", margin: "0 6px" }}>/</span>
+            <span style={{ color: "var(--mr-text-2)" }}>{a.name}</span>
+          </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: 14, marginTop: 14 }}>
             <ProductLogo modelId={a.id} modelName={a.name} size={56} radius={12} strict kind="agent" />
             <div>
-              <div style={{ fontSize: 28, fontWeight: 700, color: "var(--mr-text)", lineHeight: 1.2 }}>{a.name}</div>
+              <div style={{ fontSize: "clamp(22px, 2.4vw, 30px)", fontWeight: 700, letterSpacing: "-0.5px", color: "var(--mr-text)", lineHeight: 1.2 }}>{a.name}</div>
               <div style={{ fontSize: 13, color: "var(--mr-text-3)", marginTop: 4 }}>
                 {a.vendor} · {AGENT_CATEGORY_LABEL[a.category]}类 · {a.billingMode}
               </div>
@@ -137,7 +141,7 @@ export default async function AgentDetailPage({ params }: Props) {
           <div style={{ border: "0.5px solid var(--mr-hairline)", borderRadius: "var(--mr-radius)", overflow: "hidden", background: "var(--mr-card)" }}>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
               <thead>
-                <tr style={{ background: "var(--mr-card-2)", borderBottom: "1px solid var(--mr-border)" }}>
+                <tr style={{ background: "var(--mr-card-2)", borderBottom: "0.5px solid var(--mr-hairline)" }}>
                   {["套餐", "价格", "额度", "备注"].map((h) => (
                     <th
                       key={h}
@@ -184,7 +188,7 @@ export default async function AgentDetailPage({ params }: Props) {
             <div style={{ border: "0.5px solid var(--mr-hairline)", borderRadius: "var(--mr-radius)", overflow: "hidden", background: "var(--mr-card)" }}>
               <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
                 <thead>
-                  <tr style={{ background: "var(--mr-card-2)", borderBottom: "1px solid var(--mr-border)" }}>
+                  <tr style={{ background: "var(--mr-card-2)", borderBottom: "0.5px solid var(--mr-hairline)" }}>
                     {["模型 / 项", "倍率", "说明"].map((h) => (
                       <th
                         key={h}

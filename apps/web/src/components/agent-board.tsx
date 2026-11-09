@@ -152,7 +152,7 @@ function ListView({ list }: { list: AgentProduct[] }) {
         >
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
             <thead>
-              <tr style={{ background: "var(--mr-card-2)", borderBottom: "1px solid var(--mr-border)" }}>
+              <tr style={{ background: "var(--mr-card-2)", borderBottom: "0.5px solid var(--mr-hairline)" }}>
                 {["产品", "类别", "能力评估", "起价", "计费方式", "模型倍率", "可调用强模型"].map((h) => (
                   <th
                     key={h}
@@ -273,7 +273,7 @@ export function AgentBoard() {
                 onClick={() => setTab(t.key)}
                 style={{
                   appearance: "none",
-                  border: on ? "1px solid transparent" : "1px solid var(--mr-border)",
+                  border: on ? "1px solid transparent" : "0.5px solid var(--mr-hairline)",
                   cursor: "pointer",
                   padding: "8px 16px",
                   borderRadius: "var(--mr-radius)",

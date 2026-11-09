@@ -106,7 +106,7 @@ export default async function DetailPage({ params }: Props) {
           <ProductLogo modelId={model.id} modelName={model.name} size={56} radius={8} />
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ fontSize: 24, fontWeight: 600, letterSpacing: "-0.4px", color: "var(--mr-text)" }}>
+              <span style={{ fontSize: "clamp(22px, 2.4vw, 30px)", fontWeight: 700, letterSpacing: "-0.5px", color: "var(--mr-text)" }}>
                 {model.name}
               </span>
               <OpenTag openSource={model.openSource} />
