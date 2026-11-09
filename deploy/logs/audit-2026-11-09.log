@@ -1441,3 +1441,7 @@ fatal: unable to access 'https://github.com/zhengcool-lab/modelrank.git/': Faile
 - apps/api 原型降级：InMemoryRepository 在 NODE_ENV=production 直接抛错（演示数据不得当线上数据）；README 明确 apps/web 为唯一真相源。站点 /api 五个路由已复核均走 src/lib/repo.ts 真实数据。
 - 构建/部署：pnpm build rc=0（/tmp/b7.log）、next-on-pages rc=0（/tmp/n7.log）、wrangler 部署 e78eed6d。
 - 巡检：bash deploy/health-check.sh 111 通过 / 0 失败（/tmp/hc7.log，gzip 19,240 B / raw 419,703）。
+
+[2026-11-09 20:26:00] 用户验收决策（定稿）
+- /cost 右侧结果卡配色定稿：浅底渐变（linear-gradient(168deg, var(--mr-primary-bg) 0%, var(--mr-card) 64%)）+ 主色 42px 大数字 + 主色实心按钮，深色同结构（#5b8def 数字）。后续不再作为「待拍板」项重开。
+- 厂商 logo 接受：IBM 横排字标方卡（256×256，6,814 B）、LG simpleicons 红圆标（256×256）、IFM 48×48 放大图标（256×256，31,300 B），均已在 /detail 与 /library 页面生效，无需替换。
