@@ -47,6 +47,7 @@ DETAIL_VENDORS = {
     "OpenAI", "Anthropic", "Google", "DeepSeek", "Alibaba", "Moonshot",
     "xAI", "Zhipu", "StepFun", "MiniMax", "Tencent", "Mistral", "NVIDIA", "Cohere",
     "Thinking Machines", "Inclusion AI",
+    "Meta", "Reflection", "Nanbeige",
 }
 
 # AA capability 五维字段（0-100 指数分）。前端展示顺序即此列表。
@@ -185,6 +186,7 @@ DETAIL_VENDORS = {
     "OpenAI", "Anthropic", "Google", "DeepSeek", "Alibaba", "Moonshot",
     "xAI", "Zhipu", "StepFun", "MiniMax", "Tencent", "Mistral", "NVIDIA", "Cohere",
     "Thinking Machines", "Inclusion AI",
+    "Meta", "Reflection", "Nanbeige",
 }
 
 
