@@ -1,4 +1,4 @@
-=== ModelRank 健康巡检 2026-11-09 12:29:54 ===
+=== ModelRank 健康巡检 2026-11-09 12:34:13 ===
 目标: https://modelrank-1br.pages.dev
 
 --- 页面可达性 ---
@@ -39,6 +39,9 @@
 ✅ GET /vendor-logos/cohere.png → HTTP 200
 ✅ GET /vendor-logos/deepseek.svg → HTTP 200
 ✅ GET /vendor-logos/google.svg → HTTP 200
+✅ GET /vendor-logos/ibm.svg → HTTP 200
+✅ GET /vendor-logos/ifm.svg → HTTP 200
+✅ GET /vendor-logos/lg.svg → HTTP 200
 ✅ GET /vendor-logos/meituan.png → HTTP 200
 ✅ GET /vendor-logos/meta.svg → HTTP 200
 ✅ GET /vendor-logos/microsoft.png → HTTP 200
@@ -49,6 +52,7 @@
 ✅ GET /vendor-logos/openai.svg → HTTP 200
 ✅ GET /vendor-logos/stepfun.svg → HTTP 200
 ✅ GET /vendor-logos/tencent.png → HTTP 200
+✅ GET /vendor-logos/xiaomi.png → HTTP 200
 ✅ GET /vendor-logos/yi.png → HTTP 200
 ✅ GET /vendor-logos/zhipu.png → HTTP 200
 ✅ GET /sitemap.xml → HTTP 200
@@ -108,6 +112,6 @@
 ✅ priceEstimated=true 标注 ≤ 模型数（实际 9，属诚实占位标注，非错误）
 ✅ news-data.ts 新闻条数 ≥ 10（实际 30）
 --- 性能预算 ---
-✅ 首页传输体积（gzip）< 60000 字节（实际 18573；raw 417148）
+✅ 首页传输体积（gzip）< 60000 字节（实际 18572；raw 417148）
 
-=== 巡检结果：通过 103 / 失败 0 ===
+=== 巡检结果：通过 107 / 失败 0 ===
