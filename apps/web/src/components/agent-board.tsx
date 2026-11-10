@@ -14,7 +14,7 @@ import {
   type Grade,
 } from "@/lib/agent-data";
 
-type TabKey = "coding" | "general";
+type TabKey = "coding" | "general" | "design";
 
 const TABS: {
   key: TabKey;
@@ -33,6 +33,12 @@ const TABS: {
     label: "通用 Agent",
     cats: ["office", "general"],
     desc: "对话式助手与办公协作（文档、表格、项目管理），额度按档位发放或按积分计费。",
+  },
+  {
+    key: "design",
+    label: "设计类 Agent",
+    cats: ["design"],
+    desc: "AI 驱动的 UI/UX、网站、品牌视觉与原型设计工具，按席位订阅或积分计费；看生成质量、设计系统与交付闭环。",
   },
 ];
 
@@ -64,6 +70,7 @@ function GradePill({ label, grade }: { label: string; grade?: Grade }) {
 function gradeSummary(a: AgentProduct): string {
   const parts: string[] = [];
   if (a.grades.coding) parts.push(`编码 ${a.grades.coding}`);
+  if (a.grades.design) parts.push(`设计 ${a.grades.design}`);
   if (a.grades.office) parts.push(`办公 ${a.grades.office}`);
   if (a.grades.automation) parts.push(`自动化 ${a.grades.automation}`);
   if (a.grades.research) parts.push(`调研 ${a.grades.research}`);
@@ -110,6 +117,7 @@ function ProductRow({ a }: { a: AgentProduct }) {
       <td style={{ padding: "12px 14px", whiteSpace: "nowrap" }}>
         <span style={{ display: "flex", gap: 8 }}>
           <GradePill label="编" grade={a.grades.coding} />
+          <GradePill label="设" grade={a.grades.design} />
           <GradePill label="办" grade={a.grades.office} />
           <GradePill label="自" grade={a.grades.automation} />
           <GradePill label="研" grade={a.grades.research} />
@@ -307,8 +315,8 @@ export function AgentBoard() {
       </div>
 
       {/*
-        两个标签的内容都服务端渲染，只切换显示：切换零延迟，
-        且两类的产品与详情页内链都在 HTML 里（不被客户端状态挡住）。
+        三个标签的内容都服务端渲染，只切换显示：切换零延迟，
+        且各类产品与详情页内链都在 HTML 里（不被客户端状态挡住）。
       */}
       {byTab.map((t) => (
         <div key={t.key} style={{ display: t.key === tab ? undefined : "none" }}>

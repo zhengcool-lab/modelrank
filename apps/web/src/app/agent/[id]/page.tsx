@@ -31,6 +31,7 @@ const GRADE_TEXT: Record<Grade, string> = { S: "行业领先", A: "成熟可用"
 
 const DIM_LABEL: Record<string, string> = {
   coding: "编码",
+  design: "设计",
   research: "调研",
   office: "办公",
   automation: "自动化",

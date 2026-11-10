@@ -11,7 +11,7 @@ import { AGENT_PRODUCTS } from "@/lib/agent-data";
 export const metadata: Metadata = {
   title: "Agent 产品榜 · ModelRank",
   description:
-    "AI Agent 产品榜：编码 Agent 与通用 Agent 两类，对比能力、套餐价格与模型计费倍率，价格均标注核对日期与官方来源。",
+    "AI Agent 产品榜：编码、通用与设计类 Agent 三类，对比能力、套餐价格与模型计费倍率，价格均标注核对日期与官方来源。",
 };
 
 export default function AgentsPage() {
@@ -23,7 +23,8 @@ export default function AgentsPage() {
       ? `（最早 ${dates[0]}，逐产品核对日见详情页）`
       : "（逐产品核对日见详情页）";
   const codingCount = AGENT_PRODUCTS.filter((a) => a.category === "coding").length;
-  const generalCount = AGENT_PRODUCTS.length - codingCount;
+  const designCount = AGENT_PRODUCTS.filter((a) => a.category === "design").length;
+  const generalCount = AGENT_PRODUCTS.length - codingCount - designCount;
 
   return (
     <div>
@@ -35,7 +36,7 @@ export default function AgentsPage() {
           title="Agent 产品榜"
           subtitle={
             <>
-              收录 {AGENT_PRODUCTS.length} 个 Agent 产品（编码 {codingCount} · 通用 {generalCount}）· 能力为编辑评估（非第三方跑分）· 口径见
+              收录 {AGENT_PRODUCTS.length} 个 Agent 产品（编码 {codingCount} · 通用 {generalCount} · 设计 {designCount}）· 能力为编辑评估（非第三方跑分）· 口径见
               <Link href="/methodology" className="mr-link" style={{ marginLeft: 4 }}>
                 方法论
               </Link>

@@ -8,15 +8,18 @@
  *   分数必须与 seed-data 中同名模型完全一致，未逐一公开型号清单的产品在该列标注为推断。
  * - 倍率（multipliers）：仅有官方公开数值的产品填写 factor，其余只写定性说明，不推算、不编造。
  * - 套餐价格：monthly 为 0 且标注 quote 的档位不是免费档（需询价或按地区浮动），不参与起价计算。
+ * - 仅按年报价的席位制产品用 annual（每席每年总价），不做月均折算；annual 与 quote 档都不计入月付起价。
  */
 
-export type AgentCategory = "coding" | "office" | "general";
+export type AgentCategory = "coding" | "office" | "general" | "design";
 export type Grade = "S" | "A" | "B" | "C";
 
 export interface AgentPlan {
   name: string;
   monthly: number;
   promo?: number;
+  /** 每席每年总价（仅年付报价产品使用，不折算月价）；使用时 monthly 填 0 */
+  annual?: number;
   currency: "USD" | "CNY";
   perSeat?: boolean;
   quota?: string;
@@ -30,6 +33,7 @@ export function planPriceLabel(p: AgentPlan): string {
   if (p.quote) return "询价 / 按地区浮动";
   const sym = p.currency === "USD" ? "$" : "¥";
   const seat = p.perSeat ? "/席" : "";
+  if (p.annual && p.annual > 0) return `${sym}${p.annual}${seat}/年`;
   if (p.monthly === 0) return "免费";
   if (p.promo && p.promo > 0 && p.promo !== p.monthly) {
     return `${sym}${p.promo}${seat}/月（原价 ${sym}${p.monthly}${seat}）`;
@@ -54,6 +58,7 @@ export interface AgentProduct {
     research?: Grade;
     office?: Grade;
     automation?: Grade;
+    design?: Grade;
   };
   gradeBasis: string;
   /**
@@ -607,25 +612,193 @@ export const AGENT_PRODUCTS: AgentProduct[] = [
     priceCheckedAt: "2026-11-09",
     sources: [{ label: "Claude 定价", url: "https://claude.com/pricing", overseas: true }],
   },
+  {
+    id: "figma",
+    name: "Figma",
+    vendor: "Figma",
+    category: "design",
+    tagline: "设计协作行业标杆，内置 Figma Make 提示词生成与 AI credits，覆盖 UI 设计、原型到 Dev Mode 研发交付",
+    grades: { design: "S", automation: "A", office: "B" },
+    gradeBasis:
+      "官方定价页：专业版全席位每月含 3,000 AI credits，Figma Make 可由提示词直接生成可交互界面，Dev Mode 与 MCP Server 打通设计到研发；多人实时协作、组件与设计系统生态为行业基准，设计给 S；通用办公不是其场景。",
+    billingMode: "订阅额度",
+    models: ["Figma Make（AI 界面生成）", "官方未公开底层模型型号清单"],
+    plans: [
+      { name: "Starter", monthly: 0, currency: "USD", quota: "3 个设计文件；AI 额度 150 credits/日、上限 500/月" },
+      { name: "Professional（全席位）", monthly: 16, currency: "USD", perSeat: true, quota: "3,000 AI credits/月", note: "年付价 $16/席/月；同档另有 Dev 席位 $12、Collab 席位 $3" },
+      { name: "Organization（全席位）", monthly: 55, currency: "USD", perSeat: true, quota: "3,500 AI credits/月", note: "年付价；另有 Dev 席位 $25、Collab 席位 $5；含高级管理与 Dev Mode" },
+      { name: "Enterprise（全席位）", monthly: 90, currency: "USD", perSeat: true, quota: "4,250 AI credits/月", note: "年付价；另有 Dev 席位 $35、Collab 席位 $5；联系销售开通" },
+    ],
+    multipliers: [
+      { model: "AI credits", note: "按席位每月发放（专业 3,000 / 组织 3,500 / 企业 4,250），官方未公布逐模型倍率" },
+    ],
+    priceCheckedAt: "2026-11-10",
+    sources: [{ label: "Figma 定价", url: "https://www.figma.com/pricing/", overseas: true }],
+  },
+  {
+    id: "framer",
+    name: "Framer",
+    vendor: "Framer",
+    category: "design",
+    tagline: "提示词驱动的网站设计与发布平台，内置 AI credits、CMS 与托管，设计到上线一站式完成",
+    grades: { design: "A", automation: "A" },
+    gradeBasis:
+      "官方定价页：免费档含 500 AI credits 与 Framer 子域，Basic/Pro 每月发放 1,000/3,000 credits，支持自定义域名、CMS 与 A/B 测试；擅长营销站与作品集的生成式搭建发布，但不覆盖通用平面设计与多人设计协作，设计给 A。",
+    billingMode: "订阅额度",
+    models: ["Framer AI（网站生成）", "官方未公开底层模型型号清单"],
+    plans: [
+      { name: "Free", monthly: 0, currency: "USD", quota: "500 AI credits，Framer 子域，1 GB 带宽" },
+      { name: "Basic", monthly: 10, currency: "USD", quota: "1,000 AI credits/月，自定义域名", note: "年付价；额外编辑者 $20/月" },
+      { name: "Pro", monthly: 30, currency: "USD", quota: "3,000 credits/月，50 GB 带宽与完整 CMS", note: "年付价；额外编辑者 $20/月" },
+      { name: "Enterprise", monthly: 0, currency: "USD", quote: true, quota: "企业安全与专属支持" },
+    ],
+    multipliers: [
+      { model: "AI credits", note: "按档位每月发放（500 / 1,000 / 3,000），官方未公布逐模型倍率" },
+    ],
+    priceCheckedAt: "2026-11-10",
+    sources: [{ label: "Framer 定价", url: "https://www.framer.com/pricing/", overseas: true }],
+  },
+  {
+    id: "uizard",
+    name: "Uizard",
+    vendor: "Uizard",
+    category: "design",
+    tagline: "AI 原生 UI/UX 设计工具，文字、截图与手绘草图都能生成线框图和高保真可交互原型",
+    grades: { design: "A", automation: "B" },
+    gradeBasis:
+      "官方定价页：Autodesigner 1.5 支持文本/截图/草图多模态输入转界面，Pro 年付折合 $12/月，最多 100 个项目并开放全部模板；产品聚焦原型与线框，视觉精修与设计系统深度不及 Figma，设计给 A。",
+    billingMode: "订阅额度",
+    models: ["Autodesigner 1.5", "官方未公开底层模型型号清单"],
+    plans: [
+      { name: "Free", monthly: 0, currency: "USD", quota: "2 个项目，10 个免费模板" },
+      { name: "Pro", monthly: 12, currency: "USD", quota: "最多 100 个项目、私有项目与全部模板", note: "年付折合 $12/月（官网标注年付省 40%）" },
+      { name: "Business", monthly: 39, currency: "USD", quota: "团队协作、AI 数据 SLA 与自定义账单", note: "年付折合 $39/月" },
+      { name: "Enterprise", monthly: 0, currency: "USD", quote: true, quota: "白手套入驻与企业合规" },
+    ],
+    multipliers: [
+      { model: "订阅权益", note: "按档位开放项目数与模板，官方未公布 AI 生成的逐次倍率" },
+    ],
+    priceCheckedAt: "2026-11-10",
+    sources: [{ label: "Uizard 定价", url: "https://uizard.io/pricing/", overseas: true }],
+  },
+  {
+    id: "recraft",
+    name: "Recraft",
+    vendor: "Recraft",
+    category: "design",
+    tagline: "品牌视觉与图像生成工作台，聚合 Nano Banana、Seedream、GPT Image、Flux 等模型，支持矢量、品牌素材与视频生成",
+    grades: { design: "A", automation: "B" },
+    gradeBasis:
+      "官方定价页（中文站）：Basic 起含商用授权与私密生成，可调用多家主流图像模型与高级编辑工具，Pro 开放视频生成（Kling、Veo、Seedance 等）与并行任务；强在品牌素材和图像生产，不做协作式 UI 设计，设计给 A。",
+    billingMode: "积分制",
+    models: ["Nano Banana / Seedream / GPT Image / Flux 等图像模型", "Kling / Veo / Seedance 等视频模型（Pro 起）"],
+    plans: [
+      { name: "Free", monthly: 0, currency: "USD", quota: "每风格每天 3 次生成，图像公开且不可商用" },
+      { name: "Basic", monthly: 10, currency: "USD", quota: "1,000 积分/月，商用授权、私密生成", note: "年付 $120/年，折合 $10/月" },
+      { name: "Pro", monthly: 16, currency: "USD", quota: "2,000 积分/月，含视频生成与优先生成", note: "年付 $192/年，折合 $16/月" },
+      { name: "Teams", monthly: 18, currency: "USD", perSeat: true, quota: "每席 2,000 积分/月，共享工作空间与 SSO", note: "年付 $211/席/年，折合 $18/席/月" },
+    ],
+    multipliers: [
+      { model: "积分", note: "订阅积分每月重置、不结转，可另购永不过期的充值积分；官方未公布逐模型积分倍率" },
+    ],
+    priceCheckedAt: "2026-11-10",
+    sources: [{ label: "Recraft 定价", url: "https://www.recraft.ai/pricing", overseas: true }],
+  },
+  {
+    id: "lovable",
+    name: "Lovable",
+    vendor: "Lovable",
+    category: "design",
+    tagline: "对话式应用与网站生成平台，内置设计系统、自定义域名与一键发布，提示词直达可上线产品",
+    grades: { design: "A", automation: "S", coding: "B" },
+    gradeBasis:
+      "官方定价页：Pro/Business 各含 100 个月度 credits、设计系统与自定义域名，Business 增加团队工作区、SSO 与安全中心；从生成到发布的 Agent 化闭环成熟（自动化 S），但视觉风格受生成模板与设计系统约束，独立设计自由度弱于专业设计工具，设计给 A。",
+    billingMode: "积分制",
+    models: ["官方未公开具体模型型号清单（多模型路由）"],
+    plans: [
+      { name: "Free", monthly: 0, currency: "USD", quota: "5 个 lovable.app 子域，社区支持" },
+      { name: "Pro", monthly: 25, currency: "USD", quota: "100 credits/月，自定义域名、设计系统，去除 Lovable 标识", note: "年付价（年付赠 2 个月），支持积分滚存与充值" },
+      { name: "Business", monthly: 50, currency: "USD", quota: "100 credits/月，团队工作区、SSO 与安全中心", note: "年付价（年付赠 2 个月）" },
+      { name: "Enterprise", monthly: 0, currency: "USD", quote: true, quota: "平台费，预约演示" },
+    ],
+    multipliers: [
+      { model: "credits", note: "每月 100 个额度，未用完可滚存、可按需充值；官方未公布逐模型倍率" },
+    ],
+    priceCheckedAt: "2026-11-10",
+    sources: [{ label: "Lovable 定价", url: "https://lovable.dev/pricing", overseas: true }],
+  },
+  {
+    id: "mastergo",
+    name: "MasterGo",
+    vendor: "莫高设计",
+    category: "design",
+    tagline: "国产产设研协作设计平台，AI 企业积分、MCP 与设计系统一体化，支持 Figma 文件导入与研发交付",
+    grades: { design: "A", automation: "B", office: "B" },
+    gradeBasis:
+      "官方定价页：团队版与企业版按席位年费，含 AI 企业积分 2,500/席/年并支持 MCP，企业版具备 SAML SSO、RestAPI 与审计管控；协作与企业级管理完整，AI 生成能力仍在持续补齐，设计给 A。",
+    billingMode: "订阅额度",
+    models: ["MasterGo AI（UI 生成与设计系统）", "官方未公开底层模型型号清单"],
+    plans: [
+      { name: "初创版", monthly: 0, currency: "CNY", quota: "3 人团队、1 个编辑席位、3 个文件" },
+      { name: "团队版·编辑席位", monthly: 0, annual: 624, currency: "CNY", perSeat: true, quota: "不限文件数与席位数，含全部团队库与字体", note: "限时 65 折，¥624/席/年（原价 ¥960）；研发席位 ¥364/席/年（原价 ¥560）" },
+      { name: "企业版·设计席位", monthly: 0, annual: 1872, currency: "CNY", perSeat: true, quota: "企业团队库、SSO、RestAPI 与数据统计", note: "限时 65 折，¥1,872/席/年（原价 ¥2,880）；产品席位 ¥832、研发席位 ¥702" },
+      { name: "私有部署版", monthly: 0, currency: "CNY", quote: true, quota: "网络隔离、系统集成与 7×12 专属支持" },
+    ],
+    multipliers: [
+      { model: "AI 企业积分", note: "团队版/企业版每席位每年 2,500 积分，官方未公布逐模型倍率" },
+    ],
+    priceCheckedAt: "2026-11-10",
+    sources: [{ label: "MasterGo 定价", url: "https://mastergo.com/pricing" }],
+  },
+  {
+    id: "jsdesign",
+    name: "即时设计",
+    vendor: "即时设计",
+    category: "design",
+    tagline: "国产云端 UI 设计协作工具，基础功能永久免费，面向团队提供企业版权限管控与私有部署",
+    grades: { design: "B", office: "B" },
+    gradeBasis:
+      "官方定价页：基础版永久免费，文件、图层、资源库与协作者额度宽松（最多 200 人团队），企业版主打成员权限与数据安全、私有部署需询价；核心设计能力完整但 AI Agent 化与企业管控深度弱于头部平台，设计给 B。",
+    billingMode: "订阅额度",
+    models: ["即时设计 AI（官方未公开底层模型型号清单）"],
+    plans: [
+      { name: "基础版", monthly: 0, currency: "CNY", quota: "文件/图层/资源库不限，200 人团队，永久免费" },
+      { name: "企业版", monthly: 0, currency: "CNY", quota: "成员与团队管理、企业级安全功能", note: "官方标注限时体验，暂未公布固定定价" },
+      { name: "私有部署版", monthly: 0, currency: "CNY", quote: true, quota: "本地部署、系统集成与 7×24 专属客服" },
+    ],
+    multipliers: [
+      { model: "订阅权益", note: "当前开放功能与服务均永久免费，企业增值与私有部署需询价，无公开倍率" },
+    ],
+    priceCheckedAt: "2026-11-10",
+    sources: [{ label: "即时设计定价", url: "https://js.design/pricing" }],
+  },
 ];
 
 export const AGENT_CATEGORY_LABEL: Record<AgentCategory, string> = {
   coding: "编码",
   office: "办公",
   general: "通用",
+  design: "设计",
 };
 
 export function getAgent(id: string): AgentProduct | undefined {
   return AGENT_PRODUCTS.find((a) => a.id === id);
 }
 
-/** 起价：取最便宜的付费档（0 元档与询价档都不算），用于列表展示 */
+/** 起价：优先取最便宜的付费月付档；仅有年付报价时显示年付起价；都没有则显示询价 */
 export function entryPrice(a: AgentProduct): string {
-  const paid = a.plans.filter((p) => p.monthly > 0 && !p.quote);
-  if (paid.length === 0) return "询价";
-  const min = paid.reduce((x, y) => (x.monthly <= y.monthly ? x : y));
-  const sym = min.currency === "USD" ? "$" : "¥";
-  return `${sym}${min.monthly}${min.perSeat ? "/席" : ""}/月起`;
+  const sym = (c: "USD" | "CNY") => (c === "USD" ? "$" : "¥");
+  const monthly = a.plans.filter((p) => p.monthly > 0 && !p.quote);
+  if (monthly.length > 0) {
+    const min = monthly.reduce((x, y) => (x.monthly <= y.monthly ? x : y));
+    return `${sym(min.currency)}${min.monthly}${min.perSeat ? "/席" : ""}/月起`;
+  }
+  const annual = a.plans.filter((p) => typeof p.annual === "number" && (p.annual as number) > 0 && !p.quote);
+  if (annual.length > 0) {
+    const min = annual.reduce((x, y) => ((x.annual as number) <= (y.annual as number) ? x : y));
+    return `${sym(min.currency)}${min.annual}${min.perSeat ? "/席" : ""}/年起`;
+  }
+  return "询价";
 }
 
 /** 官方公开了数值倍率的模型条目数（factor=0 表示「不消耗积分」，不算倍率公开） */
