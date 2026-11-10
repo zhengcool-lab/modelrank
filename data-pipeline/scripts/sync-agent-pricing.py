@@ -7,8 +7,10 @@
   sync-agent-pricing.py --verify-page <html文件>    # 校验官方定价页是否仍含基准价位/档位名
 
 设计原则：
-- 基准（data-pipeline/reference/agent-pricing.json）是唯一权威，来源是人工逐档核对的官方定价页；
-- 只改 agent-data.ts 里对应产品的 plans 数组与 priceCheckedAt，不动其它产品、不动其它字段；
+- 基准（data-pipeline/reference/agent-pricing.json）是套餐价位/档位的唯一权威，来源是人工逐档核对的官方定价页；
+- 只改 agent-data.ts 里对应产品的 plans 数组，不动其它产品、不动其它字段；
+- priceCheckedAt 的权威属于每日定价核对流程（check-agent-pricing.py + refresh-agent-price-date.py）：
+  核对通过才允许刷成当天，本脚本不把单纯日期差异判为漂移，也不回退日期，避免两条流程互相打架；
 - 无法可靠解析时宁可报错退出，也不做「猜着改」。
 """
 import json
@@ -20,7 +22,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 REF = os.path.join(ROOT, "data-pipeline", "reference", "agent-pricing.json")
 SRC = os.path.join(ROOT, "apps", "web", "src", "lib", "agent-data.ts")
 
-FIELD_ORDER = ("name", "monthly", "promo", "currency", "perSeat", "quota", "note")
+FIELD_ORDER = ("name", "monthly", "annual", "promo", "currency", "perSeat", "quota", "note")
 
 
 def load_ref():
@@ -60,7 +62,7 @@ def parse_plans(block):
         body = m.group(1)
         item = {}
         for part in re.finditer(
-            r'(name|monthly|promo|currency|perSeat|quota|note): (("[^"]*")|(true|false)|(-?\d+(?:\.\d+)?))',
+            r'(name|monthly|annual|promo|currency|perSeat|quota|note): (("[^"]*")|(true|false)|(-?\d+(?:\.\d+)?))',
             body,
         ):
             k, raw = part.group(1), part.group(2)
@@ -134,11 +136,14 @@ def do_check(ref):
                 print("   " + d)
         else:
             print("[%s] 与基准一致（%d 档）" % (pid, len(cur)))
+        # 日期差异只提示、不计漂移：核对日由每日核对流程（refresh-agent-price-date.py）维护
         checked = re.search(r'priceCheckedAt: "([^"]*)"', block)
-        if not checked or checked.group(1) != ref["checkedAt"]:
+        if not checked:
             bad += 1
-            print("[%s] priceCheckedAt=%s，基准核对日=%s" % (
-                pid, checked.group(1) if checked else "缺失", ref["checkedAt"]))
+            print("[%s] priceCheckedAt 字段缺失" % pid)
+        elif checked.group(1) != ref["checkedAt"]:
+            print("[%s] 核对日 %s（基准人工核对日 %s，日期差异不计漂移）" % (
+                pid, checked.group(1), ref["checkedAt"]))
     return 2 if bad else 0
 
 
@@ -153,19 +158,14 @@ def do_write(ref):
         if not m:
             print("!! %s 找不到 plans 数组，跳过" % pid, file=sys.stderr)
             continue
-        new_block = block[: m.start()].rstrip(" \t") + render_plans(prod["plans"]) + block[m.end():]
-        new_block, n = re.subn(
-            r'priceCheckedAt: "[^"]*"',
-            'priceCheckedAt: "%s"' % ref["checkedAt"],
-            new_block,
-        )
-        if n != 1:
-            print("!! %s priceCheckedAt 字段异常" % pid, file=sys.stderr)
+        # 仅在套餐档位/价位本身漂移时回写；priceCheckedAt 由每日核对流程维护，这里不动
+        cur = parse_plans(m.group(0))
+        if not diff_plans(prod["plans"], cur):
             continue
-        if new_block != block:
-            text = text[:start] + new_block + text[end:]
-            changed += 1
-            print("[%s] 已回写 %d 档套餐价" % (pid, len(prod["plans"])))
+        new_block = block[: m.start()].rstrip(" \t") + render_plans(prod["plans"]) + block[m.end():]
+        text = text[:start] + new_block + text[end:]
+        changed += 1
+        print("[%s] 已回写 %d 档套餐价（核对日保持不变）" % (pid, len(prod["plans"])))
     if changed:
         with open(SRC, "w", encoding="utf-8") as f:
             f.write(text)

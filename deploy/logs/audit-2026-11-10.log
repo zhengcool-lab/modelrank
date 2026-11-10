@@ -478,3 +478,8 @@ fatal: unable to access 'https://github.com/zhengcool-lab/modelrank.git/': Faile
 - 巡检：health-check.sh 收录断言 21→28，新增设计 tab 文案断言与 7 个新详情页 200 探活（共 119 项）。
 - 同日「每日数据更新」闭环：管道真实数据（无 mock），模型 52（priceLevel high 11/mid 14/low 27）、新闻 30 条；wrangler 部署成功 modelrank-1br.pages.dev；巡检 119/0，gzip 19,650B。
 - 双端 webkit 截图核验：/agents 设计 tab 桌面+390 移动、/agent/mastergo（年费渲染）、/agent/jsdesign（询价渲染）均正常。
+
+[2026-11-10 10:32:54] 【修复巡检与每日核对的核对日互相回退】
+- 现象：run-all 2.5 核对通过后 refresh-agent-price-date 把 priceCheckedAt 刷为当天（11-10），health-check 2c 的 sync-agent-pricing 又以基准 JSON（11-09）为权威把日期回写，形成每日拉锯。
+- 修复：sync-agent-pricing.py 的 --check 对日期差异只提示不计漂移（缺失仍报错），--write 仅在套餐档位/价位真实漂移时回写 plans、不再触碰 priceCheckedAt；FIELD_ORDER 与解析正则补 annual 字段。
+- 验证：--check 退出 0 且不改源码，--write 输出「无需改动」；agent-data.ts 恢复为已提交的 11-10 核对日，与线上一致。
