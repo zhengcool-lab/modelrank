@@ -1,0 +1,97 @@
+{
+  "url": "https://modelrank-1br.pages.dev/detail/gemini-4-carbon",
+  "viewport": "390x844",
+  "theme": "light",
+  "title": "Gemini 4 Carbon 详情 · ModelRank",
+  "screenshot": "detail-gemini__390x844__light.png",
+  "failedRequests": [],
+  "consoleErrors": [],
+  "overflow": [],
+  "smallTargets": [
+    {
+      "tag": "a",
+      "w": 100,
+      "h": 30,
+      "text": "ModelRank",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 73,
+      "h": 32,
+      "text": "🌙 深色",
+      "cls": ""
+    },
+    {
+      "tag": "a",
+      "w": 36,
+      "h": 14,
+      "text": "模型榜",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 40,
+      "h": 14,
+      "text": "Google",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 110,
+      "h": 18,
+      "text": "用成本计算器测算 →",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "button",
+      "w": 317,
+      "h": 15,
+      "text": "01\n厂商背景\n⌄",
+      "cls": "mr-acc-head"
+    },
+    {
+      "tag": "button",
+      "w": 317,
+      "h": 15,
+      "text": "02\n地区可用性\n查看支持地区\n⌄",
+      "cls": "mr-acc-head"
+    },
+    {
+      "tag": "button",
+      "w": 317,
+      "h": 15,
+      "text": "03\n合规资质\n本站未核验厂商资质\n⌄",
+      "cls": "mr-acc-head"
+    },
+    {
+      "tag": "a",
+      "w": 36,
+      "h": 14,
+      "text": "方法论",
+      "cls": "footer-link"
+    },
+    {
+      "tag": "a",
+      "w": 48,
+      "h": 14,
+      "text": "数据来源",
+      "cls": "footer-link"
+    },
+    {
+      "tag": "a",
+      "w": 48,
+      "h": 14,
+      "text": "免责声明",
+      "cls": "footer-link"
+    },
+    {
+      "tag": "a",
+      "w": 24,
+      "h": 14,
+      "text": "关于",
+      "cls": "footer-link"
+    }
+  ],
+  "brokenImages": []
+}

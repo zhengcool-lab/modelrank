@@ -1,0 +1,223 @@
+{
+  "url": "https://modelrank-1br.pages.dev/compare",
+  "viewport": "320x700",
+  "theme": "light",
+  "title": "模型对比 · ModelRank",
+  "screenshot": "compare-2__320x700__light.png",
+  "failedRequests": [],
+  "consoleErrors": [],
+  "overflow": [],
+  "smallTargets": [
+    {
+      "tag": "a",
+      "w": 100,
+      "h": 30,
+      "text": "ModelRank",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 73,
+      "h": 32,
+      "text": "🌙 深色",
+      "cls": ""
+    },
+    {
+      "tag": "a",
+      "w": 36,
+      "h": 14,
+      "text": "模型榜",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "button",
+      "w": 8,
+      "h": 13,
+      "text": "✕",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 8,
+      "h": 13,
+      "text": "✕",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 46,
+      "h": 26,
+      "text": "全部",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 61,
+      "h": 26,
+      "text": "Google",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 76,
+      "h": 26,
+      "text": "Anthropic",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 63,
+      "h": 26,
+      "text": "OpenAI",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 49,
+      "h": 26,
+      "text": "Meta",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 61,
+      "h": 26,
+      "text": "NVIDIA",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 127,
+      "h": 26,
+      "text": "Thinking Machines",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 59,
+      "h": 26,
+      "text": "Mistral",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 63,
+      "h": 26,
+      "text": "Alibaba",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 46,
+      "h": 26,
+      "text": "全部",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 57,
+      "h": 26,
+      "text": "高成本",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 45,
+      "h": 26,
+      "text": "中等",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 57,
+      "h": 26,
+      "text": "低成本",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 46,
+      "h": 26,
+      "text": "全部",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 45,
+      "h": 26,
+      "text": "开源",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 45,
+      "h": 26,
+      "text": "闭源",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 8,
+      "h": 13,
+      "text": "✕",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 8,
+      "h": 13,
+      "text": "✕",
+      "cls": ""
+    },
+    {
+      "tag": "a",
+      "w": 211,
+      "h": 24,
+      "text": "Claude Opus 5.5",
+      "cls": ""
+    },
+    {
+      "tag": "a",
+      "w": 211,
+      "h": 24,
+      "text": "GPT-6 Astra",
+      "cls": ""
+    },
+    {
+      "tag": "a",
+      "w": 211,
+      "h": 24,
+      "text": "Claude Sonnet 5.5",
+      "cls": ""
+    },
+    {
+      "tag": "a",
+      "w": 36,
+      "h": 14,
+      "text": "方法论",
+      "cls": "footer-link"
+    },
+    {
+      "tag": "a",
+      "w": 48,
+      "h": 14,
+      "text": "数据来源",
+      "cls": "footer-link"
+    },
+    {
+      "tag": "a",
+      "w": 48,
+      "h": 14,
+      "text": "免责声明",
+      "cls": "footer-link"
+    },
+    {
+      "tag": "a",
+      "w": 24,
+      "h": 14,
+      "text": "关于",
+      "cls": "footer-link"
+    }
+  ],
+  "brokenImages": []
+}

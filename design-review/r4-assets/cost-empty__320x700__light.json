@@ -1,0 +1,398 @@
+{
+  "url": "https://modelrank-1br.pages.dev/cost",
+  "viewport": "320x700",
+  "theme": "light",
+  "title": "成本计算器 · ModelRank",
+  "screenshot": "cost-empty__320x700__light.png",
+  "failedRequests": [],
+  "consoleErrors": [],
+  "overflow": [],
+  "smallTargets": [
+    {
+      "tag": "a",
+      "w": 100,
+      "h": 30,
+      "text": "ModelRank",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 73,
+      "h": 32,
+      "text": "🌙 深色",
+      "cls": ""
+    },
+    {
+      "tag": "a",
+      "w": 36,
+      "h": 14,
+      "text": "模型榜",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "Gemini 4 Carbon",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "Claude Opus 5.5",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "GPT-6 Astra",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "Claude Sonnet 5.5",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "GPT-6.1 Sol",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "GPT-6.1 Terra",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "Claude Fable 5.1",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "Gemini 4 Argon",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "Kimi K3.1 Pro",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "Muse Wonder",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "Claude Haiku 5.5",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "Tencent Hy4",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "Grok 4.7",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "Qwen3.8 Max",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "DeepSeek V4.1 Flash 1017",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "GLM-5.3",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "Gemini 3.8 Flash",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "Inkling 2 Small",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "Ling 3.1 Flash 1019",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "MiMo-V2.6-Pro",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "MiniMax-M3.1-Flash",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "Step 5 Preview",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "GPT-6 Luna",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "GLM-5.3-Flash",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "MiMo-V2.6-Flash",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "Mistral Large 4",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "Muse Spark Open",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "DeepSeek V4 Pro 0813",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "Qwen3.8 27B",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "MiniMax-M3",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "Beam 1.0",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "Nemotron 3.5 Super VL",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "Inkling Small",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "Gemini 3.5 Flash-Lite",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "Nemotron 3 Ultra",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "Inkling",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "Muse Glimmer",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "Nemotron 3.5 Lightning",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "Granite 4.2 8B",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "Mistral Medium 3.5",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 116,
+      "h": 32,
+      "text": "Mistral Small 4",
+      "cls": ""
+    },
+    {
+      "tag": "input",
+      "w": 156,
+      "h": 30,
+      "text": "",
+      "cls": "arco-input arco-input-size-default"
+    },
+    {
+      "tag": "input",
+      "w": 183,
+      "h": 16,
+      "text": "输入占比 α",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 54,
+      "h": 32,
+      "text": "0%",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 64,
+      "h": 32,
+      "text": "30%",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 62,
+      "h": 32,
+      "text": "60%",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 242,
+      "h": 32,
+      "text": "Claude Opus 5.5\n≈$628/月",
+      "cls": "hover:opacity-80"
+    },
+    {
+      "tag": "button",
+      "w": 242,
+      "h": 32,
+      "text": "Gemini 4 Argon\n≈$628/月",
+      "cls": "hover:opacity-80"
+    },
+    {
+      "tag": "a",
+      "w": 36,
+      "h": 14,
+      "text": "方法论",
+      "cls": "footer-link"
+    },
+    {
+      "tag": "a",
+      "w": 48,
+      "h": 14,
+      "text": "数据来源",
+      "cls": "footer-link"
+    },
+    {
+      "tag": "a",
+      "w": 48,
+      "h": 14,
+      "text": "免责声明",
+      "cls": "footer-link"
+    },
+    {
+      "tag": "a",
+      "w": 24,
+      "h": 14,
+      "text": "关于",
+      "cls": "footer-link"
+    }
+  ],
+  "brokenImages": []
+}

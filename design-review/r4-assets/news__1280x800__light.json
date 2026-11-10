@@ -1,0 +1,12 @@
+{
+  "url": "https://modelrank-1br.pages.dev/news",
+  "viewport": "1280x800",
+  "theme": "light",
+  "title": "大模型新闻 · ModelRank",
+  "screenshot": "news__1280x800__light.png",
+  "failedRequests": [],
+  "consoleErrors": [],
+  "overflow": [],
+  "smallTargets": [],
+  "brokenImages": []
+}

@@ -1,0 +1,97 @@
+{
+  "url": "https://modelrank-1br.pages.dev/search",
+  "viewport": "320x700",
+  "theme": "light",
+  "title": "搜索 · ModelRank",
+  "screenshot": "search__320x700__light.png",
+  "failedRequests": [],
+  "consoleErrors": [],
+  "overflow": [],
+  "smallTargets": [
+    {
+      "tag": "a",
+      "w": 100,
+      "h": 30,
+      "text": "ModelRank",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 73,
+      "h": 32,
+      "text": "🌙 深色",
+      "cls": ""
+    },
+    {
+      "tag": "a",
+      "w": 36,
+      "h": 14,
+      "text": "模型榜",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 60,
+      "h": 14,
+      "text": "全量模型库",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "button",
+      "w": 54,
+      "h": 24,
+      "text": "GPT",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 54,
+      "h": 24,
+      "text": "开源",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 54,
+      "h": 24,
+      "text": "价格",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 88,
+      "h": 24,
+      "text": "DeepSeek",
+      "cls": ""
+    },
+    {
+      "tag": "a",
+      "w": 36,
+      "h": 14,
+      "text": "方法论",
+      "cls": "footer-link"
+    },
+    {
+      "tag": "a",
+      "w": 48,
+      "h": 14,
+      "text": "数据来源",
+      "cls": "footer-link"
+    },
+    {
+      "tag": "a",
+      "w": 48,
+      "h": 14,
+      "text": "免责声明",
+      "cls": "footer-link"
+    },
+    {
+      "tag": "a",
+      "w": 24,
+      "h": 14,
+      "text": "关于",
+      "cls": "footer-link"
+    }
+  ],
+  "brokenImages": []
+}
