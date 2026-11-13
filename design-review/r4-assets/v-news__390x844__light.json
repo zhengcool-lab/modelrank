@@ -1,0 +1,90 @@
+{
+  "url": "https://modelrank-1br.pages.dev/news",
+  "viewport": "390x844",
+  "theme": "light",
+  "title": "大模型新闻 · ModelRank",
+  "screenshot": "v-news__390x844__light.png",
+  "failedRequests": [],
+  "consoleErrors": [],
+  "overflow": [],
+  "smallTargets": [
+    {
+      "tag": "a",
+      "w": 100,
+      "h": 30,
+      "text": "ModelRank",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 73,
+      "h": 32,
+      "text": "🌙 深色",
+      "cls": ""
+    },
+    {
+      "tag": "a",
+      "w": 36,
+      "h": 14,
+      "text": "模型榜",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "button",
+      "w": 74,
+      "h": 28,
+      "text": "全部\n30",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 74,
+      "h": 28,
+      "text": "发布\n29",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 68,
+      "h": 28,
+      "text": "融资\n1",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 188,
+      "h": 32,
+      "text": "加载更多（剩余 22 条）",
+      "cls": "mr-btn-outline"
+    },
+    {
+      "tag": "a",
+      "w": 36,
+      "h": 14,
+      "text": "方法论",
+      "cls": "footer-link"
+    },
+    {
+      "tag": "a",
+      "w": 48,
+      "h": 14,
+      "text": "数据来源",
+      "cls": "footer-link"
+    },
+    {
+      "tag": "a",
+      "w": 48,
+      "h": 14,
+      "text": "免责声明",
+      "cls": "footer-link"
+    },
+    {
+      "tag": "a",
+      "w": 24,
+      "h": 14,
+      "text": "关于",
+      "cls": "footer-link"
+    }
+  ],
+  "brokenImages": []
+}

@@ -1,0 +1,265 @@
+{
+  "url": "https://modelrank-1br.pages.dev/agent/mastergo",
+  "viewport": "390x844",
+  "theme": "light",
+  "title": "MasterGo · Agent 产品详情 · ModelRank",
+  "screenshot": "v-agentdetail__390x844__light.png",
+  "failedRequests": [],
+  "consoleErrors": [],
+  "overflow": [],
+  "smallTargets": [
+    {
+      "tag": "a",
+      "w": 100,
+      "h": 30,
+      "text": "ModelRank",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 73,
+      "h": 32,
+      "text": "🌙 深色",
+      "cls": ""
+    },
+    {
+      "tag": "a",
+      "w": 36,
+      "h": 14,
+      "text": "模型榜",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 72,
+      "h": 14,
+      "text": "Agent 产品榜",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 358,
+      "h": 18,
+      "text": "MasterGo 定价",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 73,
+      "h": 18,
+      "text": "Claude Code",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 38,
+      "h": 18,
+      "text": "Cursor",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 83,
+      "h": 18,
+      "text": "GitHub Copilot",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 36,
+      "h": 18,
+      "text": "Codex",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 32,
+      "h": 18,
+      "text": "Devin",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 31,
+      "h": 18,
+      "text": "TRAE",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 65,
+      "h": 18,
+      "text": "WorkBuddy",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 51,
+      "h": 18,
+      "text": "ChatGPT",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 39,
+      "h": 18,
+      "text": "Gemini",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 56,
+      "h": 18,
+      "text": "扣子 Coze",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 37,
+      "h": 18,
+      "text": "Manus",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 52,
+      "h": 18,
+      "text": "Windsurf",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 22,
+      "h": 18,
+      "text": "Kiro",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 84,
+      "h": 18,
+      "text": "Augment Code",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 32,
+      "h": 18,
+      "text": "Replit",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 49,
+      "h": 18,
+      "text": "bolt.new",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 14,
+      "h": 18,
+      "text": "v0",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 30,
+      "h": 18,
+      "text": "Warp",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 22,
+      "h": 18,
+      "text": "Zed",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 52,
+      "h": 18,
+      "text": "Notion AI",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 39,
+      "h": 18,
+      "text": "Claude",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 34,
+      "h": 18,
+      "text": "Figma",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 40,
+      "h": 18,
+      "text": "Framer",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 37,
+      "h": 18,
+      "text": "Uizard",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 41,
+      "h": 18,
+      "text": "Recraft",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 44,
+      "h": 18,
+      "text": "Lovable",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 48,
+      "h": 18,
+      "text": "即时设计",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 36,
+      "h": 14,
+      "text": "方法论",
+      "cls": "footer-link"
+    },
+    {
+      "tag": "a",
+      "w": 48,
+      "h": 14,
+      "text": "数据来源",
+      "cls": "footer-link"
+    },
+    {
+      "tag": "a",
+      "w": 48,
+      "h": 14,
+      "text": "免责声明",
+      "cls": "footer-link"
+    },
+    {
+      "tag": "a",
+      "w": 24,
+      "h": 14,
+      "text": "关于",
+      "cls": "footer-link"
+    }
+  ],
+  "brokenImages": []
+}

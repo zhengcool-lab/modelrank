@@ -1,0 +1,19 @@
+{
+  "url": "https://modelrank-1br.pages.dev/no-such-page",
+  "viewport": "1440x900",
+  "theme": "light",
+  "title": "ModelRank 模型榜",
+  "screenshot": "v-404__1440x900__light.png",
+  "failedRequests": [
+    {
+      "status": 404,
+      "url": "https://modelrank-1br.pages.dev/no-such-page"
+    }
+  ],
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 404 ()"
+  ],
+  "overflow": [],
+  "smallTargets": [],
+  "brokenImages": []
+}

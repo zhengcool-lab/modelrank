@@ -1,0 +1,97 @@
+{
+  "url": "https://modelrank-1br.pages.dev/data-sources",
+  "viewport": "390x844",
+  "theme": "light",
+  "title": "数据来源 · ModelRank",
+  "screenshot": "v-datasources__390x844__light.png",
+  "failedRequests": [],
+  "consoleErrors": [],
+  "overflow": [],
+  "smallTargets": [
+    {
+      "tag": "a",
+      "w": 100,
+      "h": 30,
+      "text": "ModelRank",
+      "cls": ""
+    },
+    {
+      "tag": "button",
+      "w": 73,
+      "h": 32,
+      "text": "🌙 深色",
+      "cls": ""
+    },
+    {
+      "tag": "a",
+      "w": 177,
+      "h": 16,
+      "text": "LMSYS Chatbot Arena (Elo)",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 100,
+      "h": 16,
+      "text": "GPQA Diamond",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 67,
+      "h": 16,
+      "text": "LiveBench",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 130,
+      "h": 16,
+      "text": "SWE-bench Verified",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 43,
+      "h": 16,
+      "text": "C-Eval",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 56,
+      "h": 16,
+      "text": "方法论页",
+      "cls": "mr-link"
+    },
+    {
+      "tag": "a",
+      "w": 36,
+      "h": 14,
+      "text": "方法论",
+      "cls": "footer-link"
+    },
+    {
+      "tag": "a",
+      "w": 48,
+      "h": 14,
+      "text": "数据来源",
+      "cls": "footer-link"
+    },
+    {
+      "tag": "a",
+      "w": 48,
+      "h": 14,
+      "text": "免责声明",
+      "cls": "footer-link"
+    },
+    {
+      "tag": "a",
+      "w": 24,
+      "h": 14,
+      "text": "关于",
+      "cls": "footer-link"
+    }
+  ],
+  "brokenImages": []
+}
